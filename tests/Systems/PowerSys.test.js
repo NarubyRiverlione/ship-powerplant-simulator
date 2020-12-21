@@ -1,5 +1,6 @@
 const PowerSystem = require('../../Systems/PowerSystem')
 const { CstBoundaries } = require('../../Cst')
+const { PowerSys: CstPower } = CstBoundaries
 
 let powerSys
 beforeEach(() => {
@@ -14,19 +15,29 @@ describe('Init power', () => {
   test('Shore power not connected at startup', () => {
     expect(powerSys.ShoreBreaker.isOpen).toBeTruthy()
   })
-})
-
-describe('Shore power', () => {
-  test('Providers after connecting shore', () => {
-    powerSys.ConnectShore()
-    expect(powerSys.Providers).toBe(CstBoundaries.PowerSys.Shore)
-    expect(powerSys.MainBus1.Voltage).toBe(0)
+  test('Emergency generator is not running at startup', () => {
+    expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
   })
-  test('Providers after disconnecting shore', () => {
+  test('No power in no busses at startup', () => {
+    powerSys.Thick()
+    expect(powerSys.MainBus1.Voltage).toBe(0)
+    expect(powerSys.EmergencyBus.Voltage).toBe(0)
+  })
+})
+describe('Shore power', () => {
+  test('Providers power after connecting shore', () => {
+    powerSys.ConnectShore()
+    powerSys.Thick()
+    expect(powerSys.Providers).toBe(CstPower.Shore)
+    expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
+    expect(powerSys.MainBus1.Voltage).toBe(0) // main breaker is open -> no voltage in main bus
+  })
+  test('No power after disconnecting shore with no emergence generator running', () => {
     powerSys.ConnectShore()
     powerSys.DisconnectShore()
     expect(powerSys.Providers).toBe(0)
     expect(powerSys.MainBus1.Voltage).toBe(0)
+    expect(powerSys.EmergencyBus.Voltage).toBe(0)
   })
 })
 describe('Main bus', () => {
@@ -35,15 +46,15 @@ describe('Main bus', () => {
     powerSys.MainBreaker1.Close()
     powerSys.Thick()
     expect(powerSys.MainBreaker1.isOpen).toBeFalsy()
-    expect(powerSys.MainBreaker1.Providers).toBe(CstBoundaries.PowerSys.Shore)
-    expect(powerSys.MainBus1.Providers).toBe(CstBoundaries.PowerSys.Shore)
-    expect(powerSys.MainBus1.Voltage).toBe(CstBoundaries.PowerSys.Voltage)
+    expect(powerSys.MainBreaker1.Providers).toBe(CstPower.Shore)
+    expect(powerSys.MainBus1.Providers).toBe(CstPower.Shore)
+    expect(powerSys.MainBus1.Voltage).toBe(CstPower.Voltage)
   })
   test('Main breaker closed with shore power and to much consumers --> breaker open, main bus has no voltage', () => {
     powerSys.ConnectShore()
     powerSys.MainBreaker1.Close()
     powerSys.Thick()
-    powerSys.MainBreaker1.Load = CstBoundaries.PowerSys.Shore + 1
+    powerSys.MainBreaker1.Load = CstPower.Shore + 1
     powerSys.Thick()
     expect(powerSys.MainBreaker1.isOpen).toBeTruthy()
     expect(powerSys.MainBus1.Providers).toBe(0)
@@ -53,7 +64,7 @@ describe('Main bus', () => {
     powerSys.ConnectShore()
     powerSys.MainBreaker1.Close()
     powerSys.Thick()
-    powerSys.MainBreaker1.Load = CstBoundaries.PowerSys.Shore + 1
+    powerSys.MainBreaker1.Load = CstPower.Shore + 1
     powerSys.Thick()
 
     powerSys.MainBreaker1.Close()
@@ -61,5 +72,33 @@ describe('Main bus', () => {
     expect(powerSys.MainBreaker1.isOpen).toBeTruthy()
     expect(powerSys.MainBus1.Providers).toBe(0)
     expect(powerSys.MainBus1.Voltage).toBe(0)
+  })
+})
+describe('Emergency generator', () => {
+  test('Start emergency generator = provides power to emergency bus only', () => {
+    powerSys.EmergencyGen.Start()
+    powerSys.Thick()
+    expect(powerSys.EmergencyGen.isRunning).toBeTruthy()
+    expect(powerSys.Providers).toBe(CstPower.EmergencyBus.RatedFor)
+    expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
+    expect(powerSys.MainBus1.Voltage).toBe(0)
+  })
+  test('After connecting shore emergency generator stops', () => {
+    powerSys.EmergencyGen.Start()
+    powerSys.Thick()
+    powerSys.ConnectShore()
+    powerSys.Thick()
+    expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
+    expect(powerSys.Providers).toBe(CstPower.Shore)
+    expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
+  })
+  test('already connected to shore & starting emergency generator --> trip = stops', () => {
+    powerSys.ConnectShore()
+    powerSys.Thick()
+    powerSys.EmergencyGen.Start()
+    powerSys.Thick()
+    expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
+    expect(powerSys.Providers).toBe(CstPower.Shore)
+    expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
   })
 })
