@@ -11,6 +11,8 @@ module.exports = class PowerSystem {
 
     this.MainBreaker1 = new Breaker('Main bus 1 breaker')
     this.MainBus1 = new PowerBus('Main bus 1')
+
+    this.EmergencyBus = new PowerBus('Emergency bus')
     this.Providers = 0
   }
 
@@ -31,5 +33,7 @@ module.exports = class PowerSystem {
 
     this.MainBus1.Providers = this.MainBreaker1.isOpen ? 0 : this.MainBreaker1.Providers
     this.MainBus1.Thick()
+
+    this.EmergencyBus = this.Providers
   }
 }

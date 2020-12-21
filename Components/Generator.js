@@ -1,28 +1,26 @@
 module.exports = class Generator {
-  constructor() {
-    this.Running = false
+  constructor(name, rate) {
+    this.Name = name
+    this.RatedFor = rate
+    this.isRunning = false
+    this.Output = 0
     this.HasFuel = false
     this.HasCooling = false
+    this.HasLubrication = false
   }
 
+  TestRunning() { return this.HasCooling && this.HasFuel && this.HasLubrication }
+
   Start() {
-    if (!this.HasFuel) {
-      this.Running = false
-      return { Running: false, Message: 'No fuel, cannot start' }
-    }
-    this.Running = true
-    return { Running: this.Running, Message: 'Succesfull start' }
+    this.isRunning = this.TestRunning()
   }
 
   Stop() {
-    this.Running = false
-    return { Running: false, Message: 'Generator stopped' }
+    this.isRunning = false
   }
 
-  Status() {
-    return {
-      Running: this.Running,
-      HasFuel: this.HasFuel
-    }
+  Thick() {
+    this.isRunning = this.isRunning && this.TestRunning()
+    this.Output = this.isRunning ? this.RatedFor : 0
   }
 }
