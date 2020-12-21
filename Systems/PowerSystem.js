@@ -4,8 +4,10 @@ const Breaker = require('../Components/Breaker')
 const PowerBus = require('../Components/PowerBus')
 const { PowerSys: CstPower } = CstBoundaries
 /*
-                Shore -->-- ShoreBreaker -->|               |-<--- Emergency generator
-==== PROVIDERS  =============================================
+  Diesel generator 1 -->  Breaker DsGen 1
+                                  |         ShoreBreaker <-- Shore
+                                  |                |       |-<--- Emergency generator
+==== PROVIDERS  ============================================
                         |
                    MainBreaker1
                         |
@@ -20,19 +22,25 @@ module.exports = class PowerSystem {
     // #region Shore power
     this.ShoreBreaker = new Breaker('Shore breaker')
     this.ShoreBreaker.Providers = CstPower.Shore
-    this.ShoreBreaker.RatedFor = CstPower.Shore + 2000 // todo use case?
+    this.ShoreBreaker.RatedFor = CstPower.Shore + 2000 // TODO use case rated for in breaker?
     // #endregion
     // #region Mainbus & breaker
     this.MainBreaker1 = new Breaker('Main bus 1 breaker')
     this.MainBus1 = new PowerBus('Main bus 1')
     // #endregion
-    // #region Emergence Generator
+    // #region Emergency Generator
     this.EmergencyBus = new PowerBus('Emergency bus')
-    this.EmergencyGen = new Generator('Emergency generator', CstPower.EmergencyBus.RatedFor)
+    this.EmergencyGen = new Generator('Emergency generator', CstPower.EmergencyGen.RatedFor)
     // emergency generator doesn't need cooling nor lubrication
     this.EmergencyGen.HasCooling = true; this.EmergencyGen.HasLubrication = true
     // TODO emergency generator needs fuel ?
     this.EmergencyGen.HasFuel = true
+    // #endregion
+    // #region Diesel Generator 1
+    this.DsGen1 = new Generator('Diesel generator 1', CstPower.DsGen1.RatedFor)
+    // TODO diesel generator workaround cooling & lubrication not coded yet
+    this.DsGen1.HasCooling = true; this.DsGen1.HasLubrication = true
+    this.DsGenBreaker1 = new Breaker('Breaker diesel generator 1 ')
     // #endregion
   }
 
@@ -49,18 +57,28 @@ module.exports = class PowerSystem {
   }
 
   Thick() {
-    // already connected to Shore and start emergency generator --> generator trips
-    if (!this.ShoreBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
+    // Check generators
+    this.EmergencyGen.Thick()
+    this.DsGen1.Thick()
 
+    // already connected to Shore  and start emergency generator --> emergency generator trips
+    if (!this.ShoreBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
+    // DsGen is running and breaker is closed and start emergency generator --> emergency generator trips
+    if (this.DsGen1.isRunning && !this.DsGenBreaker1.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
+
+    // #region Providers
     /* Also recalculate Providers form zero  */
     // emergency generator connect to Providers
-    this.Providers = this.EmergencyGen.isRunning ? CstPower.EmergencyBus.RatedFor : 0
+    this.Providers = this.EmergencyGen.isRunning ? this.EmergencyGen.Output : 0
     // shore connects to Providers
     this.Providers += this.ShoreBreaker.isOpen ? 0 : CstPower.Shore
+    // breaker diesel generator 1 connect to Providers
+    this.Providers += this.DsGenBreaker1.isOpen ? 0 : this.DsGen1.Output
     // emergency bus takes from shore or emergency generator
     // TODO takes also for diesel generator(s)
     this.EmergencyBus.Providers = this.Providers
     this.EmergencyBus.Thick()
+    // #endregion
 
     //  main breaker is connected to Provides
     this.MainBreaker1.Providers = this.Providers

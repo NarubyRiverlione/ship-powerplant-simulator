@@ -23,6 +23,11 @@ describe('Init power', () => {
     expect(powerSys.MainBus1.Voltage).toBe(0)
     expect(powerSys.EmergencyBus.Voltage).toBe(0)
   })
+  test('Diesel generator 1 not running, breaker open', () => {
+    powerSys.Thick()
+    expect(powerSys.DsGen1.isRunning).toBeFalsy()
+    expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
+  })
 })
 describe('Shore power', () => {
   test('Providers power after connecting shore', () => {
@@ -79,7 +84,7 @@ describe('Emergency generator', () => {
     powerSys.EmergencyGen.Start()
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeTruthy()
-    expect(powerSys.Providers).toBe(CstPower.EmergencyBus.RatedFor)
+    expect(powerSys.Providers).toBe(CstPower.EmergencyGen.RatedFor)
     expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
     expect(powerSys.MainBus1.Voltage).toBe(0)
   })
@@ -100,5 +105,45 @@ describe('Emergency generator', () => {
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
     expect(powerSys.Providers).toBe(CstPower.Shore)
     expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
+  })
+  test('already DsGen 1 running & starting emergency generator --> trip = stops', () => {
+    powerSys.DsGen1.isRunning = true
+    powerSys.DsGen1.HasFuel = true
+    powerSys.DsGen1.HasCooling = true
+    powerSys.DsGen1.HasLubrication = true
+    powerSys.DsGenBreaker1.isOpen = false
+    powerSys.EmergencyGen.Start()
+    powerSys.Thick()
+    expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
+    expect(powerSys.Providers).toBe(CstPower.DsGen1.RatedFor)
+    expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
+  })
+})
+describe('Diesel generator 1', () => {
+  test('Start DS 1, leave breaker open --> nothing provided', () => {
+    //  workaround to give DsGen1 fuel, cooling, lubrication.
+    //  Don't test Generator here, test powerSys
+    powerSys.DsGen1.HasFuel = true
+    powerSys.DsGen1.HasCooling = true
+    powerSys.DsGen1.HasLubrication = true
+    powerSys.DsGen1.Start()
+    powerSys.Thick()
+    expect(powerSys.DsGen1.isRunning).toBeTruthy()
+    expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
+    expect(powerSys.Providers).toBe(0)
+  })
+  test('Start DS 1, close breaker  -->  providing', () => {
+    //  workaround to give DsGen1 fuel, cooling, lubrication.
+    //  Don't test Generator here, test powerSys
+    powerSys.DsGen1.HasFuel = true
+    powerSys.DsGen1.HasCooling = true
+    powerSys.DsGen1.HasLubrication = true
+    powerSys.DsGen1.Start()
+    powerSys.Thick()
+    powerSys.DsGenBreaker1.Close()
+    powerSys.Thick()
+    expect(powerSys.DsGen1.isRunning).toBeTruthy()
+    expect(powerSys.DsGenBreaker1.isOpen).toBeFalsy()
+    expect(powerSys.Providers).toBe(CstPower.DsGen1.RatedFor)
   })
 })
