@@ -2,9 +2,13 @@ const PowerSystem = require('../../Systems/PowerSystem')
 const { CstBoundaries } = require('../../Cst')
 const { PowerSys: CstPower } = CstBoundaries
 
+const fuelAmount = 10000
+const fuelSource = {}
+fuelSource.Content = () => fuelAmount
+
 let powerSys
 beforeEach(() => {
-  powerSys = new PowerSystem()
+  powerSys = new PowerSystem(fuelSource)
 })
 
 describe('Init power', () => {
@@ -27,6 +31,7 @@ describe('Init power', () => {
     powerSys.Thick()
     expect(powerSys.DsGen1.isRunning).toBeFalsy()
     expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
+    expect(powerSys.DsGen1.FuelIntakeValve.Source).toEqual(fuelSource)
   })
 })
 describe('Shore power', () => {
@@ -107,11 +112,12 @@ describe('Emergency generator', () => {
     expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
   })
   test('already DsGen 1 running & starting emergency generator --> trip = stops', () => {
-    powerSys.DsGen1.isRunning = true
-    powerSys.DsGen1.HasFuel = true
+    powerSys.DsGen1.FuelIntakeValve.Close()
+    powerSys.DsGen1.Start()
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
     powerSys.DsGenBreaker1.isOpen = false
+    powerSys.Thick()
     powerSys.EmergencyGen.Start()
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
@@ -123,9 +129,9 @@ describe('Diesel generator 1', () => {
   test('Start DS 1, leave breaker open --> nothing provided', () => {
     //  workaround to give DsGen1 fuel, cooling, lubrication.
     //  Don't test Generator here, test powerSys
-    powerSys.DsGen1.HasFuel = true
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
+    powerSys.DsGen1.FuelIntakeValve.Close()
     powerSys.DsGen1.Start()
     powerSys.Thick()
     expect(powerSys.DsGen1.isRunning).toBeTruthy()
@@ -135,9 +141,9 @@ describe('Diesel generator 1', () => {
   test('Start DS 1, close breaker  -->  providing', () => {
     //  workaround to give DsGen1 fuel, cooling, lubrication.
     //  Don't test Generator here, test powerSys
-    powerSys.DsGen1.HasFuel = true
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
+    powerSys.DsGen1.FuelIntakeValve.Close()
     powerSys.DsGen1.Start()
     powerSys.Thick()
     powerSys.DsGenBreaker1.Close()

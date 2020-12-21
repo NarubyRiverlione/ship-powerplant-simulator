@@ -10,13 +10,14 @@ module.exports = class Simulator {
 
   Reset() {
     this.Running = null // ref setIntervall
-    this.Power = new PowerSystem()
+    this.PowerSys = new PowerSystem()
     this.FuelSys = new FuelSystem()
     return this.Status()
   }
 
   Thick() {
     this.FuelSys.Thick()
+    this.PowerSys.Thick()
   }
 
   Start() {

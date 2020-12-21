@@ -1,5 +1,6 @@
 const { CstBoundaries } = require('../Cst')
 const Generator = require('../Components/Generator')
+const DieselGenerator = require('../Components/DieselGenerator')
 const Breaker = require('../Components/Breaker')
 const PowerBus = require('../Components/PowerBus')
 const { PowerSys: CstPower } = CstBoundaries
@@ -17,7 +18,7 @@ const { PowerSys: CstPower } = CstBoundaries
 
 */
 module.exports = class PowerSystem {
-  constructor() {
+  constructor(DsGen1_FuelSource) {
     this.Providers = 0 // sum of all providers, can be connected to main busses
     // #region Shore power
     this.ShoreBreaker = new Breaker('Shore breaker')
@@ -37,9 +38,7 @@ module.exports = class PowerSystem {
     this.EmergencyGen.HasFuel = true
     // #endregion
     // #region Diesel Generator 1
-    this.DsGen1 = new Generator('Diesel generator 1', CstPower.DsGen1.RatedFor)
-    // TODO diesel generator workaround cooling & lubrication not coded yet
-    this.DsGen1.HasCooling = true; this.DsGen1.HasLubrication = true
+    this.DsGen1 = new DieselGenerator('Diesel generator 1', CstPower.DsGen1.RatedFor, DsGen1_FuelSource)
     this.DsGenBreaker1 = new Breaker('Breaker diesel generator 1 ')
     // #endregion
   }
