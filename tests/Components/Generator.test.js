@@ -1,4 +1,4 @@
-const Generator = require('../Generator')
+const Generator = require('../../Components/Generator')
 
 let generator
 beforeEach(() => {

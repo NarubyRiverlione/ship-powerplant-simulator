@@ -1,7 +1,7 @@
-const Tank = require('./Components/Tank')
-const Valve = require('./Components/Valve')
+const Tank = require('../Components/Tank')
+const Valve = require('../Components/Valve')
 
-const { CstFuelSys, CstTxt } = require('./Cst')
+const { CstFuelSys, CstTxt } = require('../Cst')
 const { FuelSysTxt } = CstTxt
 
 module.exports = class FuelSystem {

@@ -1,4 +1,4 @@
-const Valve = require('../Components/Valve')
+const Valve = require('../../Components/Valve')
 
 let valve
 beforeEach(() => {

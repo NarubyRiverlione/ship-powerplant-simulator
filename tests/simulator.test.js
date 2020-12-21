@@ -1,4 +1,4 @@
-const Simulator = require('../Simulator')
+const Simulator = require('../../Simulator')
 
 let simulator
 beforeEach(() => {

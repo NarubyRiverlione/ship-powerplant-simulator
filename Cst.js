@@ -73,7 +73,19 @@ const CstTxt = {
 }
 
 const CstBoundaries = {
-  Power: { Max: 440, Min: 0 }
+  PowerSys: {
+    Voltage: 440,
+    Shore: 10000, // 10kW
+    MainBus1: {
+      RatedFor: 30000 // 30 kW
+    },
+    MainBus2: {
+      RatedFor: 20000 // 20 kW
+    },
+    EmergencyBus: {
+      RatedFor: 1000 // 1 kW
+    }
+  }
 }
 
 const CstChanges = {
