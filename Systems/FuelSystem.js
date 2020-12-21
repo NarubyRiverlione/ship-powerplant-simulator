@@ -35,7 +35,7 @@ module.exports = class FuelSystem {
     this.DsStorageOutletValve.cbNowClosed = () => {
       // only transfer from storage to service tank
       // if this outlet and service inlet valve are both is closed
-      if (!this.DsServiceIntakeValve.IsOpen) {
+      if (!this.DsServiceIntakeValve.isOpen) {
         this.DieselTank.Removing = true
         this.DsServiceTank.Adding = true
         this.DieselTank.RemoveEachStep += CstFuelSys.DsServiceTank.TankAddStep
@@ -57,7 +57,7 @@ module.exports = class FuelSystem {
     this.DsServiceIntakeValve.cbNowClosed = () => {
       // only transfer from storage to service tank
       // if the outlet storage and this service inlet valve are both closed
-      if (!this.DsStorageOutletValve.IsOpen) {
+      if (!this.DsStorageOutletValve.isOpen) {
         this.DieselTank.Removing = true
         this.DsServiceTank.Adding = true
         // add removing from storage, may bee other target are also draining the storage

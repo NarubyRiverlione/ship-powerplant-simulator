@@ -1,6 +1,6 @@
 module.exports = class Valve {
   constructor(source = null) {
-    this.IsOpen = true
+    this.isOpen = true
     this.cbNowOpen = null
     this.cbNowClosed = null
     this.Source = source
@@ -9,24 +9,24 @@ module.exports = class Valve {
   }
 
   Open() {
-    this.IsOpen = true
+    this.isOpen = true
     if (this.cbNowOpen) this.cbNowOpen()
   }
 
   Close() {
-    this.IsOpen = false
+    this.isOpen = false
     if (this.cbNowClosed) this.cbNowClosed()
   }
 
   Content() {
     const input = this.Source ? this.Source.Content() : 0
-    return this.IsOpen ? 0 : input
+    return this.isOpen ? 0 : input
   }
 
   Status() {
     return {
-      status: this.IsOpen,
-      statusMessage: this.IsOpen
+      status: this.isOpen,
+      statusMessage: this.isOpen
         ? `${this.Name} is open`
         : `${this.Name} is closed`
     }

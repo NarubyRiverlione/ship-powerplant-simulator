@@ -11,13 +11,13 @@ describe('init', () => {
     expect(dsgen.RatedFor).toBe(Rated)
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.FuelIntakeValve.Source).toEqual(fuelSource)
-    expect(dsgen.FuelIntakeValve.IsOpen).toBeTruthy()
+    expect(dsgen.FuelIntakeValve.isOpen).toBeTruthy()
   })
 })
 describe('Start', () => {
   test('with open fuel valve = not running', () => {
     const dsgen = new DieselGenerator('test diesel generator', Rated, fuelSource)
-    expect(dsgen.FuelIntakeValve.IsOpen).toBeTruthy()
+    expect(dsgen.FuelIntakeValve.isOpen).toBeTruthy()
     dsgen.Start()
     dsgen.Thick()
     expect(dsgen.isRunning).toBeFalsy()

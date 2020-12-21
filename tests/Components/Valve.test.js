@@ -7,12 +7,12 @@ beforeEach(() => {
 
 describe('Valve init', () => {
   test('Valve starts open, without output', () => {
-    expect(valve.IsOpen).toBeTruthy()
+    expect(valve.isOpen).toBeTruthy()
     expect(valve.Content()).toBe(0)
   })
   test('Valve with input starts open, without output', () => {
     const valveWithInput = new Valve()
-    expect(valveWithInput.IsOpen).toBeTruthy()
+    expect(valveWithInput.isOpen).toBeTruthy()
     expect(valveWithInput.Content()).toBe(0)
   })
   test('Valve status', () => {
