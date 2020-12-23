@@ -1,5 +1,8 @@
+const { makeObservable, observable, action } = require('mobx')
+
 module.exports = class Generator {
   constructor(name, rate) {
+
     this.Name = name
     this.RatedFor = rate
     this.isRunning = false
@@ -7,6 +10,18 @@ module.exports = class Generator {
     this.HasFuel = false
     this.HasCooling = false
     this.HasLubrication = false
+
+    makeObservable(this, {
+      isRunning: observable,
+      Output: observable,
+      HasFuel: observable,
+      HasCooling: observable,
+      HasLubrication: observable,
+      Start: action,
+      Stop: action,
+      Thick: action
+    })
+
   }
 
   TestRunning() { return this.HasCooling && this.HasFuel && this.HasLubrication }

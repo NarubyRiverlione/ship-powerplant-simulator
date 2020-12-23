@@ -1,3 +1,6 @@
+const { makeObservable, observable, action } = require('mobx')
+
+
 module.exports = class Breaker {
   constructor(name) {
     this.Name = name
@@ -5,6 +8,12 @@ module.exports = class Breaker {
     this.RatedFor = 0
     this.Load = 0
     this.Providers = 0
+    makeObservable(this, {
+      isOpen: observable,
+      Open: action,
+      Close: action,
+      Thick: action
+    })
   }
 
   // Load > RatedFor

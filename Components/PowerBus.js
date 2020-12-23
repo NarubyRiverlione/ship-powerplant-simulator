@@ -1,4 +1,5 @@
 const { CstBoundaries } = require('../Cst')
+const { makeObservable, observable, action } = require('mobx')
 
 module.exports = class PowerBus {
   constructor(name) {
@@ -6,6 +7,11 @@ module.exports = class PowerBus {
     this.Voltage = 0
     this.Providers = 0
     // this.Consumers = 0
+    makeObservable(this, {
+      Voltage: observable,
+      Providers: observable,
+      Thick: action
+    })
   }
 
   Thick() {

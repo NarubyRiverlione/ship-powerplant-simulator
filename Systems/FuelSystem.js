@@ -1,3 +1,4 @@
+const { makeObservable, action } = require('mobx')
 const Tank = require('../Components/Tank')
 const Valve = require('../Components/Valve')
 
@@ -6,6 +7,7 @@ const { FuelSysTxt } = CstTxt
 
 module.exports = class FuelSystem {
   constructor() {
+    makeObservable(this, { Thick: action })
     // #region Diesel storage tank, filled from shore via the intake valve
     this.DieselTank = new Tank(FuelSysTxt.DsStorageTank, CstFuelSys.DsStorageTank.TankVolume)
     this.DieselTank.Name = FuelSysTxt.DsStorage

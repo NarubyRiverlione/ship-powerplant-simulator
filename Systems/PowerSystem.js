@@ -1,3 +1,5 @@
+const { makeObservable, action } = require('mobx')
+
 const { CstBoundaries } = require('../Cst')
 const Generator = require('../Components/Generator')
 const DieselGenerator = require('../Components/DieselGenerator')
@@ -19,6 +21,7 @@ const { PowerSys: CstPower } = CstBoundaries
 */
 module.exports = class PowerSystem {
   constructor(DsGen1_FuelSource) {
+    makeObservable(this, { Thick: action, ConnectShore: action, DisconnectShore: action })
     this.Providers = 0 // sum of all providers, can be connected to main busses
     // #region Shore power
     this.ShoreBreaker = new Breaker('Shore breaker')
