@@ -14,22 +14,13 @@ describe('Fuel system init', () => {
   })
   test('Diesel shore fill valve is open', () => {
     expect(fuelSys.DieselShoreFillValve.isOpen).toBeTruthy()
-    const { status, statusMessage } = fuelSys.DieselShoreFillValve.Status()
-    expect(status).toBeTruthy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsShoreFillValve} is open`)
   })
   test('Diesel fuel storage outlet valve is open', () => {
     expect(fuelSys.DsStorageOutletValve.isOpen).toBeTruthy()
-    const { status, statusMessage } = fuelSys.DsStorageOutletValve.Status()
-    expect(status).toBeTruthy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsStorageOutletValve} is open`)
     expect(fuelSys.DsStorageOutletValve.Content()).toBe(0) // empty dieseltank = empty fuel line valve
   })
   test('Diesel fuel service intake valve is open', () => {
     expect(fuelSys.DsServiceIntakeValve.isOpen).toBeTruthy()
-    const { status, statusMessage } = fuelSys.DsServiceIntakeValve.Status()
-    expect(status).toBeTruthy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsServiceIntakeValve} is open`)
     expect(fuelSys.DsServiceIntakeValve.Content()).toBe(0) // empty dieseltank = empty fuel line valve
   })
 })
@@ -37,9 +28,7 @@ describe('Fuel system init', () => {
 describe('Diesel storage tank: fill from shore', () => {
   test('Closing shore fill valve, adding to diesel tank then open valve', () => {
     fuelSys.DieselShoreFillValve.Close()
-    const { status, statusMessage } = fuelSys.DieselShoreFillValve.Status()
-    expect(status).toBeFalsy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsShoreFillValve} is closed`)
+    expect(fuelSys.DieselShoreFillValve.isOpen).toBeFalsy()
     // add 1
     fuelSys.Thick()
     expect(fuelSys.DieselTank.Content()).toBe(CstFuelSys.DsStorageTank.TankAddStep)
@@ -68,9 +57,7 @@ describe('Diesel storage tank: fill from shore', () => {
     fuelSys.DieselTank.cbAdded = () => { steps += 1 }
 
     fuelSys.DieselShoreFillValve.Close()
-    const { status, statusMessage } = fuelSys.DieselShoreFillValve.Status()
-    expect(status).toBeFalsy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsShoreFillValve} is closed`)
+    expect(fuelSys.DieselShoreFillValve.isOpen).toBeFalsy()
 
     do {
       fuelSys.Thick()
@@ -83,18 +70,14 @@ describe('Diesel storage tank: outlet valve', () => {
     fuelSys.DieselTank.Inside = 2000
     fuelSys.DsStorageOutletValve.Close()
     expect(fuelSys.DsStorageOutletValve.Content()).toBe(2000)
-    const { status, statusMessage } = fuelSys.DsStorageOutletValve.Status()
-    expect(status).toBeFalsy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsStorageOutletValve} is closed`)
+    expect(fuelSys.DsStorageOutletValve.isOpen).toBeFalsy()
   })
   test('Open a previous closed storage line valve', () => {
     fuelSys.DieselTank.Inside = 2000
     fuelSys.DsStorageOutletValve.Close()
     fuelSys.DsStorageOutletValve.Open()
     expect(fuelSys.DsStorageOutletValve.Content()).toBe(0)
-    const { status, statusMessage } = fuelSys.DsStorageOutletValve.Status()
-    expect(status).toBeTruthy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsStorageOutletValve} is open`)
+    expect(fuelSys.DsStorageOutletValve.isOpen).toBeTruthy()
   })
 })
 
@@ -105,9 +88,7 @@ describe('Diesel service tank', () => {
     fuelSys.DsStorageOutletValve.Open()
     fuelSys.DsServiceIntakeValve.Close()
     expect(fuelSys.DsServiceIntakeValve.Content()).toBe(0)
-    const { status, statusMessage } = fuelSys.DsServiceIntakeValve.Status()
-    expect(status).toBeFalsy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsServiceIntakeValve} is closed`)
+    expect(fuelSys.DsServiceIntakeValve.isOpen).toBeFalsy()
     fuelSys.Thick()
     expect(fuelSys.DieselTank.Content()).toBe(contentTank)
     expect(fuelSys.DsServiceTank.Content()).toBe(0)
@@ -118,9 +99,7 @@ describe('Diesel service tank', () => {
     fuelSys.DsStorageOutletValve.Close()
     fuelSys.DsServiceIntakeValve.Open()
     expect(fuelSys.DsServiceIntakeValve.Content()).toBe(0)
-    const { status, statusMessage } = fuelSys.DsServiceIntakeValve.Status()
-    expect(status).toBeTruthy()
-    expect(statusMessage).toEqual(`${FuelSysTxt.DsServiceIntakeValve} is open`)
+    expect(fuelSys.DsServiceIntakeValve.isOpen).toBeTruthy()
     fuelSys.Thick()
     expect(fuelSys.DieselTank.Content()).toBe(contentTank)
     expect(fuelSys.DsServiceTank.Content()).toBe(0)
