@@ -26,7 +26,7 @@ describe('Simulator running tests', () => {
   })
 })
 
-describe.skip('Fuel sys via simulator start', () => {
+describe('Fuel sys via simulator start', () => {
   test('Fill diesel storage tank from shore', done => {
     simulator.Start()
     simulator.FuelSys.DieselShoreFillValve.Close()
