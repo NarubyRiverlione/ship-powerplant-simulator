@@ -1,3 +1,4 @@
+const { makeAutoObservable } = require('mobx')
 module.exports = class Valve {
   constructor(source = null) {
     this.isOpen = true
@@ -6,6 +7,7 @@ module.exports = class Valve {
     this.Source = source
     this.Target = null
     this.Name = ''
+    makeAutoObservable(this)
   }
 
   Open() {

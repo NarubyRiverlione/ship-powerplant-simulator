@@ -31,7 +31,7 @@ describe('Init power', () => {
     powerSys.Thick()
     expect(powerSys.DsGen1.isRunning).toBeFalsy()
     expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
-    expect(powerSys.DsGen1.FuelIntakeValve.Source).toEqual(fuelSource)
+    expect(powerSys.DsGen1.FuelIntakeValve.Source.Content()).toBe(fuelAmount)
   })
 })
 describe('Shore power', () => {

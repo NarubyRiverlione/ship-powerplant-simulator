@@ -1,3 +1,5 @@
+const { makeObservable, observable, action } = require('mobx')
+
 const Generator = require('./Generator')
 const Valve = require('./Valve')
 
@@ -8,6 +10,14 @@ module.exports = class DieselGenerator extends Generator {
     // TODO workaround coolant & lubrication not coded yet
     this.HasCooling = true
     this.HasLubrication = true
+
+    makeObservable(this, {
+      FuelIntakeValve: observable,
+      CheckFuel: action,
+      Start: action,
+      Stop: action,
+      Thick: action
+    })
   }
 
   CheckFuel() {

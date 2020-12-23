@@ -1,3 +1,4 @@
+const { makeAutoObservable } = require('mobx')
 // const { CstChanges } = require('../Cst')
 module.exports = class Tank {
   constructor(Name, Max, StartContent = 0) {
@@ -13,6 +14,7 @@ module.exports = class Tank {
     this.cbFull = null
     this.cbAdded = null
     this.cbRemoved = null
+    makeAutoObservable(this)
   }
 
   Content() {
