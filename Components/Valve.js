@@ -25,12 +25,8 @@ module.exports = class Valve {
     return this.isOpen ? 0 : input
   }
 
-  Status() {
-    return {
-      status: this.isOpen,
-      statusMessage: this.isOpen
-        ? `${this.Name} is open`
-        : `${this.Name} is closed`
-    }
+  Toggle() {
+    if (this.isOpen) this.Close()
+    else this.Open()
   }
 }

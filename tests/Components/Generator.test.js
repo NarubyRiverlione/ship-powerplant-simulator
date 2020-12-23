@@ -15,7 +15,6 @@ describe('Generator init', () => {
     expect(generator.Output).toBe(0)
   })
 })
-
 describe('Generator start/stop', () => {
   test('Cannot start without fuel', () => {
     generator.HasLubrication = true; generator.HasCooling = true
@@ -52,7 +51,6 @@ describe('Generator start/stop', () => {
     expect(generator.isRunning).toBeTruthy()
     expect(generator.Output).toBe(rate)
   })
-
   test('No running after stop', () => {
     generator.RatedFor = 1236982
     generator.HasFuel = true
@@ -65,7 +63,6 @@ describe('Generator start/stop', () => {
     expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
   })
-
   test('Trip without fuel', () => {
     generator.HasLubrication = true; generator.HasCooling = true; generator.HasFuel = true
     generator.Start()
@@ -92,5 +89,18 @@ describe('Generator start/stop', () => {
     generator.Thick()
     expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
+  })
+})
+describe('Toggle', () => {
+  test('toggle stopped --> running', () => {
+    generator.HasCooling = true; generator.HasFuel = true; generator.HasLubrication = true
+    generator.Toggle()
+    expect(generator.isRunning).toBeTruthy()
+  })
+  test('toggle running --> stopped', () => {
+    generator.HasCooling = true; generator.HasFuel = true; generator.HasLubrication = true
+    generator.Start()
+    generator.Toggle()
+    expect(generator.isRunning).toBeFalsy()
   })
 })

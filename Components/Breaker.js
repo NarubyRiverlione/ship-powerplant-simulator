@@ -1,6 +1,5 @@
 const { makeAutoObservable } = require('mobx')
 
-
 module.exports = class Breaker {
   constructor(name) {
     this.Name = name
@@ -33,5 +32,10 @@ module.exports = class Breaker {
   Close() {
     this.isOpen = false
     this.TestLoad()
+  }
+
+  Toggle() {
+    if (this.isOpen) this.Close()
+    else this.Open()
   }
 }

@@ -18,7 +18,8 @@ module.exports = class Generator {
       HasLubrication: observable,
       Start: action,
       Stop: action,
-      Thick: action
+      Thick: action,
+      Toggle: action
     })
   }
 
@@ -30,6 +31,11 @@ module.exports = class Generator {
 
   Stop() {
     this.isRunning = false
+  }
+
+  Toggle() {
+    if (this.isRunning) this.Stop()
+    else this.Start()
   }
 
   Thick() {

@@ -56,3 +56,16 @@ describe('Breaker loaded', () => {
     expect(breaker.isOpen).toBeTruthy()
   })
 })
+describe('Toggle breaker', () => {
+  test('toggle open --> closed', () => {
+    const breaker = new Breaker()
+    breaker.Toggle()
+    expect(breaker.isOpen).toBeFalsy()
+  })
+  test('toggle closed --> open', () => {
+    const breaker = new Breaker()
+    breaker.Close()
+    breaker.Toggle()
+    expect(breaker.isOpen).toBeTruthy()
+  })
+})

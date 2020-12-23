@@ -1,6 +1,6 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Simulator logic for ship powerplant",
   "main": "Simulator.js",
   "scripts": {
