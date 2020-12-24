@@ -128,7 +128,7 @@ describe('Emergency generator', () => {
 })
 describe('Diesel generator 1', () => {
   test('Start DS 1, leave breaker open --> nothing provided', () => {
-    //  workaround to give DsGen1 fuel, cooling, lubrication.
+    //  workaround to give DsGen1  cooling, lubrication.
     //  Don't test Generator here, test powerSys
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
@@ -140,7 +140,7 @@ describe('Diesel generator 1', () => {
     expect(powerSys.Providers).toBe(0)
   })
   test('Start DS 1, close breaker  -->  providing', () => {
-    //  workaround to give DsGen1 fuel, cooling, lubrication.
+    //  workaround to give DsGen1  cooling, lubrication.
     //  Don't test Generator here, test powerSys
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
@@ -152,5 +152,20 @@ describe('Diesel generator 1', () => {
     expect(powerSys.DsGen1.isRunning).toBeTruthy()
     expect(powerSys.DsGenBreaker1.isOpen).toBeFalsy()
     expect(powerSys.Providers).toBe(CstPower.DsGen1.RatedFor)
+  })
+  test('Stop a running generator --> trip generator breaker', () => {
+    //  workaround to give DsGen1  cooling, lubrication.
+    //  Don't test Generator here, test powerSys
+    powerSys.DsGen1.HasCooling = true
+    powerSys.DsGen1.HasLubrication = true
+    powerSys.DsGen1.FuelIntakeValve.Open()
+    powerSys.DsGen1.Start()
+    powerSys.Thick()
+    powerSys.DsGenBreaker1.Close()
+    powerSys.Thick()
+
+    powerSys.DsGen1.Stop()
+    powerSys.Thick()
+    expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
   })
 })

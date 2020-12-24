@@ -67,6 +67,8 @@ module.exports = class PowerSystem {
     if (!this.ShoreBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
     // DsGen is running and breaker is closed and start emergency generator --> emergency generator trips
     if (this.DsGen1.isRunning && !this.DsGenBreaker1.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
+    // DsGen is stopped --> trip generator breaker
+    if (!this.DsGen1.isRunning && !this.DsGenBreaker1.isOpen) this.DsGenBreaker1.Open()
 
     // #region Providers
     /* Also recalculate Providers form zero  */
