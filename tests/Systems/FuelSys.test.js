@@ -117,20 +117,23 @@ describe('Diesel service tank', () => {
     expect(fuelSys.DieselTank.Content()).toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep * 2)
     expect(fuelSys.DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
   })
-  test('close storage outlet then close diesel service intake valve +  = transfer', () => {
+  test('close storage outlet then close diesel service intake valve = transfer', () => {
     const contentTank = 2000
     fuelSys.DieselTank.Inside = contentTank
     fuelSys.DsStorageOutletValve.Close()
     fuelSys.DsServiceIntakeValve.Close()
 
     fuelSys.Thick()
+    expect(fuelSys.DieselTank.RemoveEachStep).toBe(CstFuelSys.DsServiceTank.TankAddStep)
+    expect(fuelSys.DsServiceTank.AddEachStep).toBe(CstFuelSys.DsServiceTank.TankAddStep)
+
     expect(fuelSys.DieselTank.Content()).toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep)
     expect(fuelSys.DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep)
     fuelSys.Thick()
     expect(fuelSys.DieselTank.Content()).toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep * 2)
     expect(fuelSys.DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
   })
-  test('re-open diesel service intake valve after both are closed = no more transfer', () => {
+  test('re-open diesel service intake valve after both are closed = stop transfer', () => {
     const contentTank = 2000
     fuelSys.DieselTank.Inside = contentTank
     fuelSys.DsStorageOutletValve.Close()
@@ -141,8 +144,9 @@ describe('Diesel service tank', () => {
     fuelSys.Thick()
     expect(fuelSys.DieselTank.Content()).toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep)
     expect(fuelSys.DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep)
+    expect(fuelSys.DieselTank.RemoveEachStep).toBe(0)
   })
-  test('re-open diesel storage outlet valve after both are closed = no more transfer', () => {
+  test('re-open diesel storage outlet valve after both are closed = stoptransfer', () => {
     const contentTank = 2000
     fuelSys.DieselTank.Inside = contentTank
     fuelSys.DsStorageOutletValve.Close()
@@ -153,7 +157,22 @@ describe('Diesel service tank', () => {
     fuelSys.Thick()
     expect(fuelSys.DieselTank.Content()).toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep)
     expect(fuelSys.DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep)
+    expect(fuelSys.DieselTank.RemoveEachStep).toBe(0)
   })
+  test('re-open both valves after there where closed = no transfer (no double remove)', () => {
+    const contentTank = 2000
+    fuelSys.DieselTank.Inside = contentTank
+    fuelSys.DsStorageOutletValve.Close()
+    fuelSys.DsServiceIntakeValve.Close()
+    fuelSys.Thick()
+    fuelSys.Thick()
+    fuelSys.DsStorageOutletValve.Open()
+    fuelSys.DsServiceIntakeValve.Open()
+    fuelSys.Thick()
+
+    expect(fuelSys.DieselTank.RemoveEachStep).toBe(0)
+  })
+
   test('service tank is full, stop transfer, storage stops drain', () => {
     const contentDsTank = 2000
     fuelSys.DieselTank.Inside = contentDsTank

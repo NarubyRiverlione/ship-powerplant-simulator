@@ -48,8 +48,11 @@ module.exports = class FuelSystem {
     this.DsStorageOutletValve.cbNowOpen = () => {
       this.DieselTank.Removing = false
       this.DsServiceTank.Adding = false
-      // stop removing form storage may bee other target are also draining the storage
-      this.DieselTank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep
+      if (!this.DsServiceIntakeValve.isOpen) {
+        // stop removing form storage if serviceIntake is also open
+        // may bee other target are also draining the storage
+        this.DieselTank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep
+      }
     }
     // #endregion
 
@@ -71,8 +74,11 @@ module.exports = class FuelSystem {
     this.DsServiceIntakeValve.cbNowOpen = () => {
       this.DieselTank.Removing = false
       this.DsServiceTank.Adding = false
-      // stop removing form storage, may bee other target are also draining the storage
-      this.DieselTank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep
+      if (!this.DsStorageOutletValve.isOpen) {
+        // stop removing from storage if DsOutlet is also open,
+        //  may bee other target are also draining the storage.
+        this.DieselTank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep
+      }
     }
     // #endregion
   }
