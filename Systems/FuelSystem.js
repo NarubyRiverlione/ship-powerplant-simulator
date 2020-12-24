@@ -79,6 +79,11 @@ module.exports = class FuelSystem {
       }
     }
     // #endregion
+
+    // #region Outlet service valve
+    this.DsServiceOutletValve = new Valve(FuelSysTxt.DsServiceOutletValve)
+    this.DsServiceOutletValve.Source = this.DsServiceTank
+    // #endregion
   }
 
   Thick() {

@@ -17,7 +17,8 @@ const CstTxt = {
     DsServiceTank: 'Diesel service tank',
     DsShoreFillValve: 'Diesel shore fill valve',
     DsStorageOutletValve: 'Diesel storage outlet valve',
-    DsServiceIntakeValve: 'Diesel service intake valve'
+    DsServiceIntakeValve: 'Diesel service intake valve',
+    DsServiceOutletValve: 'Diesel service outlet valve'
   }
 }
 
@@ -25,12 +26,6 @@ const CstBoundaries = {
   PowerSys: {
     Voltage: 440,
     Shore: 10000, // 10kW
-    // MainBus1: {
-    //   RatedFor: 30000 // 30 kW
-    // },
-    // MainBus2: {
-    //   RatedFor: 20000 // 20 kW
-    // },
     EmergencyGen: {
       RatedFor: 1000 // 1 kW
     },

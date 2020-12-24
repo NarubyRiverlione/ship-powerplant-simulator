@@ -9,6 +9,7 @@ describe('init', () => {
     const dsgen = new DieselGenerator('test diesel generator', Rated, fuelSource)
     expect(dsgen.RatedFor).toBe(Rated)
     expect(dsgen.isRunning).toBeFalsy()
+    expect(dsgen.HasFuel).toBeFalsy()
     // valve only has content of opened, so test here source
     expect(dsgen.FuelIntakeValve.Source.Content()).toBe(fuelAmount)
     expect(dsgen.FuelIntakeValve.isOpen).toBeFalsy()

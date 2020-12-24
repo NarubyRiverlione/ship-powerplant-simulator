@@ -2,6 +2,7 @@ const PowerSystem = require('../../Systems/PowerSystem')
 const { CstBoundaries } = require('../../Cst')
 const { PowerSys: CstPower } = CstBoundaries
 
+// fake fuel source, testing diesel generator only here, not the complete system (that's simulator test)
 const fuelAmount = 10000
 const fuelSource = { Content: () => fuelAmount }
 
