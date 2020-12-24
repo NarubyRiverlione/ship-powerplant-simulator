@@ -1,12 +1,12 @@
 const { makeAutoObservable } = require('mobx')
 module.exports = class Valve {
-  constructor(source = null) {
-    this.isOpen = true
+  constructor(name) {
+    this.isOpen = false
     this.cbNowOpen = null
     this.cbNowClosed = null
-    this.Source = source
+    this.Source = null
     this.Target = null
-    this.Name = ''
+    this.Name = name
     makeAutoObservable(this)
   }
 
@@ -21,8 +21,8 @@ module.exports = class Valve {
   }
 
   Content() {
-    const input = this.Source ? this.Source.Content() : 0
-    return this.isOpen ? 0 : input
+    const input = this.Source ? this.Source.Content() : null
+    return this.isOpen ? input : 0
   }
 
   Toggle() {

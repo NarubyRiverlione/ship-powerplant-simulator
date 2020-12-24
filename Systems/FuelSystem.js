@@ -10,73 +10,71 @@ module.exports = class FuelSystem {
     makeObservable(this, { Thick: action })
     // #region Diesel storage tank, filled from shore via the intake valve
     this.DieselTank = new Tank(FuelSysTxt.DsStorageTank, CstFuelSys.DsStorageTank.TankVolume)
-    this.DieselTank.Name = FuelSysTxt.DsStorage
     this.DieselTank.AddEachStep = CstFuelSys.DsStorageTank.TankAddStep
     // #endregion
 
     // #region Diesel service tank, filled from the storage line via the service intake valve
-    this.DsServiceTank = new Tank(FuelSysTxt.DsStorageTank, CstFuelSys.DsServiceTank.TankVolume)
-    this.DsServiceTank.Name = FuelSysTxt.DsServiceTank
+    this.DsServiceTank = new Tank(FuelSysTxt.DsServiceTank, CstFuelSys.DsServiceTank.TankVolume)
     this.DsServiceTank.cbFull = () => { this.DieselTank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep }
     // #endregion
 
     // #region Intake valve from shore to diesel storage tank
-    this.DieselShoreFillValve = new Valve({ Content: CstFuelSys.ShoreVolume })
-    this.DieselShoreFillValve.Name = FuelSysTxt.DsShoreFillValve
-    this.DieselShoreFillValve.cbNowClosed = () => {
+    this.DieselShoreFillValve = new Valve(FuelSysTxt.DsShoreFillValve)
+    this.DieselShoreFillValve.Source = { Content: () => CstFuelSys.ShoreVolume }
+    this.DieselShoreFillValve.cbNowOpen = () => {
       this.DieselTank.Adding = true
     }
-    this.DieselShoreFillValve.cbNowOpen = () => {
+    this.DieselShoreFillValve.cbNowClosed = () => {
       this.DieselTank.Adding = false
     }
     // #endregion
 
     // #region Outlet valve from diesel storage tank to storage line
-    this.DsStorageOutletValve = new Valve(this.DieselTank)
-    this.DsStorageOutletValve.Name = FuelSysTxt.DsStorageOutletValve
-    this.DsStorageOutletValve.cbNowClosed = () => {
+    this.DsStorageOutletValve = new Valve(FuelSysTxt.DsStorageOutletValve)
+    this.DsStorageOutletValve.Source = this.DieselTank
+    this.DsStorageOutletValve.cbNowOpen = () => {
       // only transfer from storage to service tank
-      // if this outlet and service inlet valve are both is closed
-      if (!this.DsServiceIntakeValve.isOpen) {
+      // if this outlet and service inlet valve are both is open
+      if (this.DsServiceIntakeValve.isOpen) {
         this.DieselTank.Removing = true
         this.DsServiceTank.Adding = true
         this.DieselTank.RemoveEachStep += CstFuelSys.DsServiceTank.TankAddStep
       }
     }
-    // as both outlet valves and service intake valve needs to be open to transfer
-    // and this outlet  is now closing --> stop transfer
-    this.DsStorageOutletValve.cbNowOpen = () => {
+    // as both outlet valves and service intake valve needs to be closed to transfer
+    // and this outlet  is now open --> stop transfer
+    this.DsStorageOutletValve.cbNowClosed = () => {
       this.DieselTank.Removing = false
       this.DsServiceTank.Adding = false
-      if (!this.DsServiceIntakeValve.isOpen) {
-        // stop removing form storage if serviceIntake is also open
-        // may bee other target are also draining the storage
+      if (this.DsServiceIntakeValve.isOpen) {
+        // stop removing form storage if serviceIntake is also closed
+        // may be other target are also draining the storage
         this.DieselTank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep
       }
     }
     // #endregion
 
     // #region Intake service valve
-    this.DsServiceIntakeValve = new Valve(this.DsStorageOutletValve)
-    this.DsServiceIntakeValve.Name = FuelSysTxt.DsServiceIntakeValve
-    this.DsServiceIntakeValve.cbNowClosed = () => {
+    this.DsServiceIntakeValve = new Valve(FuelSysTxt.DsServiceIntakeValve)
+    this.DsServiceIntakeValve.Source = this.DsStorageOutletValve
+    this.DsServiceIntakeValve.cbNowOpen = () => {
       // only transfer from storage to service tank
-      // if the outlet storage and this service inlet valve are both closed
-      if (!this.DsStorageOutletValve.isOpen) {
+      // if the outlet storage and this service inlet valve are both open
+      if (this.DsStorageOutletValve.isOpen) {
         this.DieselTank.Removing = true
         this.DsServiceTank.Adding = true
         // add removing from storage, may bee other target are also draining the storage
         this.DieselTank.RemoveEachStep += CstFuelSys.DsServiceTank.TankAddStep
       }
     }
-    // as both outlet valves and service intake valve needs to be open to transfer
-    // and this inlet  is now closing --> stop transfer
-    this.DsServiceIntakeValve.cbNowOpen = () => {
+    // as both outlet valves and service intake valve needs to be closed to transfer
+    // and this inlet  is now open --> stop transfer
+    this.DsServiceIntakeValve.cbNowClosed = () => {
       this.DieselTank.Removing = false
       this.DsServiceTank.Adding = false
-      if (!this.DsStorageOutletValve.isOpen) {
-        // stop removing from storage if DsOutlet is also open,
-        //  may bee other target are also draining the storage.
+      if (this.DsStorageOutletValve.isOpen) {
+        // stop removing from storage if DsOutlet is also closed,
+        //  may be other target are also draining the storage.
         this.DieselTank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep
       }
     }

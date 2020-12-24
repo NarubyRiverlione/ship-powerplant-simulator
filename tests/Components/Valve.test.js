@@ -1,62 +1,59 @@
 const Valve = require('../../Components/Valve')
 
-let valve
-beforeEach(() => {
-  valve = new Valve()
-})
-
 describe('Valve init', () => {
-  test('Valve starts open, without output', () => {
-    expect(valve.isOpen).toBeTruthy()
+  test('Valve starts closed, without output', () => {
+    const name = 'Test valve'
+    const valve = new Valve(name)
+    expect(valve.isOpen).toBeFalsy()
     expect(valve.Content()).toBe(0)
+    expect(valve.Name).toBe(name)
   })
-  test('Valve with input starts open, without output', () => {
+  test('Valve with input starts closed, without output', () => {
     const valveWithInput = new Valve()
-    expect(valveWithInput.isOpen).toBeTruthy()
+    expect(valveWithInput.isOpen).toBeFalsy()
     expect(valveWithInput.Content()).toBe(0)
   })
 })
 
-describe('Valve close', () => {
-  test('Closed valve has no content', () => {
+describe('Valve open', () => {
+  test('Open valve has content', () => {
     const sourceContent = 12345.6
     const testValve = new Valve()
-    testValve.Source = {}
-    testValve.Source.Content = () => sourceContent
-    const name = 'Test valve'
-    testValve.Name = name
-    testValve.Close()
+    testValve.Source = { Content: () => sourceContent }
+
+    testValve.Open()
     expect(testValve.Content()).toBe(sourceContent)
-    expect(testValve.isOpen).toBeFalsy()
+    expect(testValve.isOpen).toBeTruthy()
   })
-  test('Closed valve has output and delivers feedback', () => {
+  test('Open valve has output and delivers feedback', () => {
     const sourceContent = 458
     const answer = 'test feedback closing valve'
     let cbFlag = false
-    const cbClosing = (feedback) => {
-      // console.debug('closing cb')
+    const cbOpening = (feedback) => {
       expect(feedback).toBe(answer)
       cbFlag = true
     }
 
-    const testValve = new Valve({}, null, cbClosing(answer))
-    testValve.Source.Content = () => sourceContent
+    const testValve = new Valve()
+    testValve.cbNowOpen = cbOpening(answer)
+    testValve.Source = { Content: () => sourceContent }
 
-    testValve.Close()
+    testValve.Open()
     expect(testValve.Content()).toBe(sourceContent)
     expect(cbFlag).toBeTruthy()
   })
 })
 
-describe('Valve open after closed', () => {
-  test('Open en previous closed valve has no output', () => {
+describe('Valve closed after was open', () => {
+  test('Closed a previous opened valve = no output', () => {
     const input = 7892
-    const testValve = new Valve({ Content: input })
-    testValve.Close()
+    const testValve = new Valve()
+    testValve.Source = { Content: () => input }
     testValve.Open()
-    expect(valve.Content()).toBe(0)
+    testValve.Close()
+    expect(testValve.Content()).toBe(0)
   })
-  test('Open en previous closed valve has no output and provides feedback', () => {
+  test('Closed a previous opened valve  = output and provides feedback', () => {
     const input = 7892
     let cbFlag = false
     const answer = 'test feedback opening valve'
@@ -66,21 +63,25 @@ describe('Valve open after closed', () => {
       cbFlag = true
     }
 
-    const testValve = new Valve({ Content: input }, cbOpening(answer))
-    testValve.Close()
+    const testValve = new Valve()
+    testValve.Source = { Content: () => input }
+    testValve.cbNowOpen = cbOpening(answer)
     testValve.Open()
-    expect(valve.Content()).toBe(0)
+    testValve.Close()
+    expect(testValve.Content()).toBe(0)
     expect(cbFlag).toBeTruthy()
   })
 })
 describe('Toggle valve', () => {
-  test('toggle open -> closed', () => {
-    valve.Toggle()
-    expect(valve.isOpen).toBeFalsy()
-  })
   test('toggle closed -> open', () => {
-    valve.Close()
+    const valve = new Valve()
     valve.Toggle()
     expect(valve.isOpen).toBeTruthy()
+  })
+  test('toggle open -> closed', () => {
+    const valve = new Valve()
+    valve.Open()
+    valve.Toggle()
+    expect(valve.isOpen).toBeFalsy()
   })
 })

@@ -29,7 +29,7 @@ describe('Simulator running tests', () => {
 describe('Fuel sys via simulator start', () => {
   test('Fill diesel storage tank from shore', done => {
     simulator.Start()
-    simulator.FuelSys.DieselShoreFillValve.Close()
+    simulator.FuelSys.DieselShoreFillValve.Open()
     setTimeout(() => {
       expect(simulator.FuelSys.DieselTank.Content()).not.toBe(0)
       done()

@@ -3,8 +3,7 @@ const { CstBoundaries } = require('../../Cst')
 const { PowerSys: CstPower } = CstBoundaries
 
 const fuelAmount = 10000
-const fuelSource = {}
-fuelSource.Content = () => fuelAmount
+const fuelSource = { Content: () => fuelAmount }
 
 let powerSys
 beforeEach(() => {
@@ -31,6 +30,7 @@ describe('Init power', () => {
     powerSys.Thick()
     expect(powerSys.DsGen1.isRunning).toBeFalsy()
     expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
+    // valve only has content of opened, so test here source
     expect(powerSys.DsGen1.FuelIntakeValve.Source.Content()).toBe(fuelAmount)
   })
 })
@@ -112,12 +112,13 @@ describe('Emergency generator', () => {
     expect(powerSys.EmergencyBus.Voltage).toBe(CstPower.Voltage)
   })
   test('already DsGen 1 running & starting emergency generator --> trip = stops', () => {
-    powerSys.DsGen1.FuelIntakeValve.Close()
-    powerSys.DsGen1.Start()
+    powerSys.DsGen1.FuelIntakeValve.Open()
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
+    powerSys.DsGen1.Start()
     powerSys.DsGenBreaker1.isOpen = false
     powerSys.Thick()
+    expect(powerSys.DsGen1.isRunning).toBeTruthy()
     powerSys.EmergencyGen.Start()
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
@@ -131,7 +132,7 @@ describe('Diesel generator 1', () => {
     //  Don't test Generator here, test powerSys
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
-    powerSys.DsGen1.FuelIntakeValve.Close()
+    powerSys.DsGen1.FuelIntakeValve.Open()
     powerSys.DsGen1.Start()
     powerSys.Thick()
     expect(powerSys.DsGen1.isRunning).toBeTruthy()
@@ -143,7 +144,7 @@ describe('Diesel generator 1', () => {
     //  Don't test Generator here, test powerSys
     powerSys.DsGen1.HasCooling = true
     powerSys.DsGen1.HasLubrication = true
-    powerSys.DsGen1.FuelIntakeValve.Close()
+    powerSys.DsGen1.FuelIntakeValve.Open()
     powerSys.DsGen1.Start()
     powerSys.Thick()
     powerSys.DsGenBreaker1.Close()

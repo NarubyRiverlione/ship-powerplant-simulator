@@ -4,10 +4,13 @@ const CstTxt = {
     Started: 'Simulation is running'
   },
   PowerTxt: {
-    Connected: 'connected',
-    Disconnected: 'disconnected',
-    Running: 'running',
-    NotRunning: 'not running'
+    // Connected: 'connected',
+    // Disconnected: 'disconnected',
+    // Running: 'running',
+    // NotRunning: 'not running'
+    DieselGen1: 'Diesel generator 1',
+    EmergencyGen: 'Emergency genertor',
+    DsGen1_FuelIntake: 'Diesel generator 1 - fuel intake valve'
   },
   FuelSysTxt: {
     DsStorageTank: 'Diesel storage tank',
