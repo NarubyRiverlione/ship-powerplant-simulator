@@ -132,7 +132,7 @@ describe('Diesel generator', () => {
       simulator.Thick()
       expect(DsGen1.HasFuel).toBeFalsy()
     })
-    test.only('Running generator consumes fuel from service tank', () => {
+    test('Running generator consumes fuel from service tank', () => {
       const { PowerSys: { DsGen1 } } = simulator
       const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
 
@@ -149,7 +149,14 @@ describe('Diesel generator', () => {
       expect(DsGen1.FuelProvider).toEqual(DsServiceTank)
       // expect(DsGen1.FuelIntakeValve.Source).toEqual(DsServiceOutletValve)
       expect(DsServiceTank.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
-      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption)
+      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+        - CstFuelSys.DieselGenerator.Consumption)
+      simulator.Thick()
+      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+        - CstFuelSys.DieselGenerator.Consumption * 2)
+      simulator.Thick()
+      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+        - CstFuelSys.DieselGenerator.Consumption * 3)
     })
   })
 })

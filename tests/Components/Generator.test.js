@@ -105,6 +105,7 @@ describe('Fuel consumption', () => {
     expect(generator.isRunning).toBeTruthy()
     expect(generator.FuelConsumption).toBe(consumption)
     expect(generator.FuelProvider.RemoveEachStep).toBe(consumption)
+    expect(generator.FuelProvider.Removing).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(consumption)
   })
   test('stop after running = no consume fuel', () => {
@@ -121,6 +122,7 @@ describe('Fuel consumption', () => {
     generator.Thick()
 
     expect(fuelSource.RemoveEachStep).toBe(0)
+    expect(generator.FuelProvider.Removing).toBeFalsy()
   })
 })
 describe('Toggle', () => {

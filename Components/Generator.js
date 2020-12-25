@@ -39,12 +39,19 @@ module.exports = class Generator {
 
   Start() {
     this.isRunning = true
-    if (this.FuelProvider) this.FuelProvider.RemoveEachStep += this.FuelConsumption
+
+    if (this.FuelProvider) {
+      this.FuelProvider.Removing = true
+      this.FuelProvider.RemoveEachStep += this.FuelConsumption
+    }
   }
 
   Stop() {
     this.isRunning = false
-    if (this.FuelProvider) this.FuelProvider.RemoveEachStep -= this.FuelConsumption
+    if (this.FuelProvider) {
+      this.FuelProvider.Removing = false
+      this.FuelProvider.RemoveEachStep -= this.FuelConsumption
+    }
   }
 
   Toggle() {

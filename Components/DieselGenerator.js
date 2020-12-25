@@ -8,8 +8,6 @@ module.exports = class DieselGenerator extends Generator {
     this.FuelIntakeValve = new Valve(name + ' - fuel intake valve')
     this.FuelIntakeValve.Source = dieselValve
     this.FuelProvider = dieselSource
-    this.HasCooling = false
-    this.HasLubrication = false
 
     makeObservable(this, {
       FuelIntakeValve: observable,
