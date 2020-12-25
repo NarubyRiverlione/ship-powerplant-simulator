@@ -3,13 +3,13 @@ const Generator = require('./Generator')
 const Valve = require('./Valve')
 
 module.exports = class DieselGenerator extends Generator {
-  constructor(name, rate, dieselSource) {
+  constructor(name, rate, dieselSource, dieselValve) {
     super(name, rate)
     this.FuelIntakeValve = new Valve(name + ' - fuel intake valve')
-    this.FuelIntakeValve.Source = dieselSource
-    // TODO workaround coolant & lubrication not coded yet
-    this.HasCooling = true
-    this.HasLubrication = true
+    this.FuelIntakeValve.Source = dieselValve
+    this.FuelProvider = dieselSource
+    this.HasCooling = false
+    this.HasLubrication = false
 
     makeObservable(this, {
       FuelIntakeValve: observable,

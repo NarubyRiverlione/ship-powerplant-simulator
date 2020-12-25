@@ -44,14 +44,12 @@ const CstFuelSys = {
   DsStorageTank: {
     TankVolume: 2500,
     TankAddStep: 50
-    //  TankRemoveStep: 10
   },
   DsServiceTank: {
     TankVolume: 1000,
     TankAddStep: 10
-    //   TankRemoveStep: 1
-  }
-
+  },
+  DieselGenerator: { Consumption: 1 }
 }
 
 module.exports = {

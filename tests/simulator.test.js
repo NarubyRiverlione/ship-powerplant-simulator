@@ -1,8 +1,12 @@
-const Simulator = require('../../Simulator')
+const Simulator = require('../Simulator')
 const { CstFuelSys, CstChanges } = require('../Cst')
 let simulator
 beforeEach(() => {
   simulator = new Simulator()
+  //  workaround to give DsGen1  cooling, lubrication.
+  //  Don't test Generator here, test simulator
+  simulator.PowerSys.DsGen1.HasCooling = true
+  simulator.PowerSys.DsGen1.HasLubrication = true
 })
 
 describe('Simulator running tests', () => {
@@ -46,7 +50,7 @@ describe('Diesel generator', () => {
 
       DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
 
-      expect(DsGen1.FuelIntakeValve.Source).toEqual(DsServiceOutletValve)
+      //  expect(DsGen1.FuelIntakeValve.Source).toEqual(DsServiceOutletValve)
 
       DsServiceOutletValve.Open()
       expect(DsServiceOutletValve.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
@@ -127,6 +131,25 @@ describe('Diesel generator', () => {
 
       simulator.Thick()
       expect(DsGen1.HasFuel).toBeFalsy()
+    })
+    test.only('Running generator consumes fuel from service tank', () => {
+      const { PowerSys: { DsGen1 } } = simulator
+      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
+
+      DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      DsServiceOutletValve.Open()
+      DsGen1.FuelIntakeValve.Open()
+      simulator.Thick()
+      DsGen1.Start()
+      simulator.Thick()
+      expect(DsGen1.HasFuel).toBeTruthy()
+      expect(DsGen1.isRunning).toBeTruthy()
+
+      expect(DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
+      expect(DsGen1.FuelProvider).toEqual(DsServiceTank)
+      // expect(DsGen1.FuelIntakeValve.Source).toEqual(DsServiceOutletValve)
+      expect(DsServiceTank.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
+      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption)
     })
   })
 })

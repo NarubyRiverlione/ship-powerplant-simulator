@@ -43,35 +43,4 @@ module.exports = class Tank {
     if (this.Adding) this.Add()
     if (this.Removing) this.Remove()
   }
-
-  /*
-  StartAdding(cbAdded) {
-    this.Adding = setInterval(() => {
-      this.Add()
-      if (cbAdded) cbAdded()
-    }, CstChanges.TankInterval)
-  }
-
-  StopAdding() {
-    if (this.Adding) {
-      clearInterval(this.Adding)
-      this.Adding = null
-    }
-  }
-
-  StartRemoving(cbRemoved) {
-    this.Removing = setInterval(() => {
-      this.Remove()
-      if (cbRemoved) cbRemoved()
-    }, CstChanges.TankInterval)
-  }
-
-  StopRemoving() {
-    if (this.Removing) {
-      clearInterval(this.Removing)
-      this.Removing = null
-    }
-  }
-}
-*/
 }

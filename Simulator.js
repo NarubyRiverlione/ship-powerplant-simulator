@@ -12,10 +12,9 @@ module.exports = class Simulator {
   }
 
   Reset() {
-    this.Running = null // ref setIntervall
+    this.Running = null // ref setInterval
     this.FuelSys = new FuelSystem()
-    const DsGenFuelSupplier = this.FuelSys.DsServiceOutletValve
-    this.PowerSys = new PowerSystem(DsGenFuelSupplier)
+    this.PowerSys = new PowerSystem(this.FuelSys.DsServiceTank, this.FuelSys.DsServiceOutletValve)
   }
 
   Thick() {

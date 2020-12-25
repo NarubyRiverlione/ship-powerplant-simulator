@@ -16,7 +16,8 @@
       "name": "vscode-jest-tests",
       "request": "launch",
       "args": [
-        "--runInBand"
+        "--runInBand",
+        "Simulato.test.js"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",

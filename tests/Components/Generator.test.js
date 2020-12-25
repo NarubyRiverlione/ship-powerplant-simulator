@@ -20,24 +20,24 @@ describe('Generator start/stop', () => {
     generator.HasLubrication = true; generator.HasCooling = true
     expect(generator.HasFuel).toBeFalsy()
     generator.Start()
-    expect(generator.isRunning).toBeFalsy()
     generator.Thick()
+    expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
   })
   test('Cannot start without cooling', () => {
     generator.HasFuel = true; generator.HasLubrication = true
     expect(generator.HasCooling).toBeFalsy()
     generator.Start()
-    expect(generator.isRunning).toBeFalsy()
     generator.Thick()
+    expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
   })
   test('Cannot start without lubrication', () => {
     generator.HasFuel = true; generator.HasCooling = true
     expect(generator.HasLubrication).toBeFalsy()
     generator.Start()
-    expect(generator.isRunning).toBeFalsy()
     generator.Thick()
+    expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
   })
   test('Correct start', () => {
@@ -89,6 +89,38 @@ describe('Generator start/stop', () => {
     generator.Thick()
     expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
+  })
+})
+describe('Fuel consumption', () => {
+  test('running = consume fuel', () => {
+    const consumption = 1235
+    const fuelSource = { RemoveEachStep: 0 }
+    generator.FuelProvider = fuelSource
+    generator.FuelConsumption = consumption
+    generator.HasFuel = true
+    generator.HasCooling = true
+    generator.HasLubrication = true
+    generator.Start()
+    generator.Thick()
+    expect(generator.isRunning).toBeTruthy()
+    expect(generator.FuelConsumption).toBe(consumption)
+    expect(generator.FuelProvider.RemoveEachStep).toBe(consumption)
+    expect(fuelSource.RemoveEachStep).toBe(consumption)
+  })
+  test('stop after running = no consume fuel', () => {
+    const consumption = 1235
+    const fuelSource = { RemoveEachStep: 0 }
+    generator.FuelProvider = fuelSource
+    generator.FuelConsumption = consumption
+    generator.HasFuel = true
+    generator.HasCooling = true
+    generator.HasLubrication = true
+    generator.Start()
+    generator.Thick()
+    generator.Stop()
+    generator.Thick()
+
+    expect(fuelSource.RemoveEachStep).toBe(0)
   })
 })
 describe('Toggle', () => {
