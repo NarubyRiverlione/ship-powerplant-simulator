@@ -3,29 +3,39 @@ const { CstFuelSys } = require('../../Cst')
 
 const Rated = 30000
 const startFuelAmount = 10000
+const startLubAmount = 2000
+
 let dsgen
 let fuelSource
+const lubSource = { Content: () => startLubAmount }
 
 beforeEach(() => {
   fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
 
-  const dummyValve = { Source: fuelSource, isOpen: false }
-  dummyValve.Content = () => fuelSource.Content()
+  const dummyFuelValve = { Source: fuelSource, isOpen: false }
+  dummyFuelValve.Content = () => fuelSource.Content()
 
-  dsgen = new DieselGenerator('test diesel generator', Rated, fuelSource, dummyValve)
+  const dummyLubValve = { Source: lubSource, isOpen: false }
+
+  dsgen = new DieselGenerator('test diesel generator', Rated,
+    fuelSource, dummyFuelValve,
+    lubSource, dummyLubValve)
 
   dsgen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
-  //  workaround to give DsGen1  cooling, lubrication.
+  //  workaround to give DsGen1  cooling
   //  Don't test Generator here, test powerSys
   dsgen.HasCooling = true
-  dsgen.HasLubrication = true
 })
 
 describe('init', () => {
-  test('Fuel valve closed at start', () => {
+  test('generator not running', () => {
     expect(dsgen.RatedFor).toBe(Rated)
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasFuel).toBeFalsy()
+    // expect(dsgen.HasCooling).toBeFalsy()
+    expect(dsgen.HasLubrication).toBeFalsy()
+  })
+  test('Fuel intake valve closed at start', () => {
     //  expect(dsgen.FuelIntakeValve.Source).toEqual(dummyValve)
     // valve only has content of opened, so test here source
     expect(dsgen.FuelIntakeValve.Source.Content()).toBe(startFuelAmount)
@@ -33,6 +43,11 @@ describe('init', () => {
     expect(dsgen.FuelProvider).toEqual(fuelSource)
     expect(dsgen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
     expect(fuelSource.RemoveEachStep).toBe(0)
+  })
+  test('Lubrication intake valve closed at start', () => {
+    expect(dsgen.LubIntakeValve.Source.Content()).toBe(startLubAmount)
+    expect(dsgen.LubIntakeValve.isOpen).toBeFalsy()
+    expect(dsgen.LubProvider).toEqual(lubSource)
   })
 })
 describe('Start', () => {

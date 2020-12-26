@@ -3,6 +3,7 @@ const { makeAutoObservable } = require('mobx')
 const { CstChanges } = require('./Cst')
 const PowerSystem = require('./Systems/PowerSystem')
 const FuelSystem = require('./Systems/FuelSystem')
+const LubricationSystem = require('./Systems/LubricationSystem')
 
 module.exports = class Simulator {
   constructor() {
@@ -14,12 +15,14 @@ module.exports = class Simulator {
   Reset() {
     this.Running = null // ref setInterval
     this.FuelSys = new FuelSystem()
+    this.LubSys = new LubricationSystem()
     this.PowerSys = new PowerSystem(this.FuelSys.DsServiceTank, this.FuelSys.DsServiceOutletValve)
   }
 
   Thick() {
     this.FuelSys.Thick()
     this.PowerSys.Thick()
+    this.LubSys.Thick()
   }
 
   Start() {

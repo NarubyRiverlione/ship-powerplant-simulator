@@ -5,7 +5,7 @@ module.exports = class Valve {
     this.cbNowOpen = null
     this.cbNowClosed = null
     this.Source = null
-    this.Target = null
+    // this.Target = null
     this.Name = name
     makeAutoObservable(this)
   }

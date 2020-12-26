@@ -1,10 +1,10 @@
 const { makeAutoObservable } = require('mobx')
 // const { CstChanges } = require('../Cst')
 module.exports = class Tank {
-  constructor(Name, Max, StartContent = 0) {
+  constructor(Name, Volume, StartContent = 0) {
     this.Name = Name
     this.Inside = StartContent
-    this.MaxContent = Max
+    this.Volume = Volume
 
     // flags are needed to remember when tank is full/empty that
     // was filling/removing to resume after tank is no longer full/empty
@@ -25,16 +25,16 @@ module.exports = class Tank {
   }
 
   Add() {
-    if (this.Inside === this.MaxContent) {
+    if (this.Inside === this.Volume) {
       // already full, prevent calling cbFull multiple times
       return
     }
-    if (this.AddEachStep + this.Inside < this.MaxContent) {
+    if (this.AddEachStep + this.Inside < this.Volume) {
       this.Inside += this.AddEachStep
       if (this.cbAdded) this.cbAdded(this.AddEachStep)
     } else {
       // prevent overfill
-      this.Inside = this.MaxContent
+      this.Inside = this.Volume
       if (this.cbFull) this.cbFull()
     }
   }

@@ -5,7 +5,7 @@ describe('Tank init', () => {
   test('New empty tank', () => {
     const name = 'test tank'
     const tank = new Tank(name, 250)
-    expect(tank.MaxContent).toBe(250)
+    expect(tank.Volume).toBe(250)
     expect(tank.Content()).toBe(0)
     expect(tank.Name).toBe(name)
     expect(tank.Adding).toBeFalsy()
@@ -14,7 +14,7 @@ describe('Tank init', () => {
   test('New tank with content', () => {
     const name = 'tank with conent'
     const tank = new Tank(name, 3000, 100)
-    expect(tank.MaxContent).toBe(3000)
+    expect(tank.Volume).toBe(3000)
     expect(tank.Content()).toBe(100)
     expect(tank.Name).toBe(name)
     expect(tank.Adding).toBeFalsy()
