@@ -5,18 +5,25 @@ const { PowerSys: CstPower } = CstBoundaries
 // fake fuel source, testing diesel generator only here, not the complete system (that's simulator test)
 // const fuelSource = { Content: () => fuelAmount, RemoveEachStep: 0 }
 
-const startFuelAmount = 10000
 let powerSys
+const startFuelAmount = 10000
+const startLubAmount = 2000
+
 let fuelSource
+const lubSource = { Content: () => startLubAmount }
+
 beforeEach(() => {
   fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
-  const dummyValve = { Source: fuelSource, isOpen: false }
-  dummyValve.Content = () => fuelSource.Content()
-  powerSys = new PowerSystem(fuelSource, dummyValve)
-  //  workaround to give DsGen1  cooling, lubrication.
-  //  Don't test Generator here, test powerSys
+
+  const dummyFuelValve = { Source: fuelSource, isOpen: true }
+  dummyFuelValve.Content = () => fuelSource.Content()
+
+  const dummyLubValve = { Source: lubSource, isOpen: true }
+  dummyLubValve.Content = () => lubSource.Content()
+
+  powerSys = new PowerSystem(dummyFuelValve, dummyLubValve)
+  //  workaround to give DsGen1  cooling
   powerSys.DsGen1.HasCooling = true
-  powerSys.DsGen1.HasLubrication = true
 })
 
 describe('Init power', () => {
@@ -124,8 +131,9 @@ describe('Emergency generator', () => {
   })
   test('already DsGen 1 running & starting emergency generator --> trip = stops', () => {
     powerSys.DsGen1.FuelIntakeValve.Open()
+    powerSys.DsGen1.LubIntakeValve.Open()
     powerSys.DsGen1.HasCooling = true
-    powerSys.DsGen1.HasLubrication = true
+
     powerSys.DsGen1.Start()
     powerSys.DsGenBreaker1.isOpen = false
     powerSys.Thick()
@@ -140,6 +148,7 @@ describe('Emergency generator', () => {
 describe('Diesel generator 1', () => {
   test('Start DS 1, leave breaker open --> nothing provided', () => {
     powerSys.DsGen1.FuelIntakeValve.Open()
+    powerSys.DsGen1.LubIntakeValve.Open()
     powerSys.DsGen1.Start()
     powerSys.Thick()
     expect(powerSys.DsGen1.isRunning).toBeTruthy()
@@ -148,6 +157,7 @@ describe('Diesel generator 1', () => {
   })
   test('Start DS 1, close breaker  -->  providing', () => {
     powerSys.DsGen1.FuelIntakeValve.Open()
+    powerSys.DsGen1.LubIntakeValve.Open()
     powerSys.DsGen1.Start()
     powerSys.Thick()
     powerSys.DsGenBreaker1.Close()
@@ -158,8 +168,10 @@ describe('Diesel generator 1', () => {
   })
   test('Stop a running generator --> trip generator breaker', () => {
     powerSys.DsGen1.FuelIntakeValve.Open()
+    powerSys.DsGen1.LubIntakeValve.Open()
     powerSys.DsGen1.Start()
     powerSys.Thick()
+    expect(powerSys.DsGen1.isRunning).toBeTruthy()
     powerSys.DsGenBreaker1.Close()
     powerSys.Thick()
 
@@ -169,7 +181,9 @@ describe('Diesel generator 1', () => {
   })
   test('Running DS 1, consume fuel = set fuel consumption', () => {
     powerSys.DsGen1.FuelIntakeValve.Open()
+    powerSys.DsGen1.LubIntakeValve.Open()
     powerSys.DsGen1.Start()
+    expect(powerSys.DsGen1.isRunning).toBeTruthy()
     expect(powerSys.DsGen1.FuelProvider).toEqual(fuelSource)
     expect(powerSys.DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
 

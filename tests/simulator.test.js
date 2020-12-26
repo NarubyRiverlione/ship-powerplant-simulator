@@ -1,5 +1,5 @@
 const Simulator = require('../Simulator')
-const { CstFuelSys, CstChanges } = require('../Cst')
+const { CstFuelSys, CstChanges, CstLubSys } = require('../Cst')
 let simulator
 beforeEach(() => {
   simulator = new Simulator()
@@ -35,10 +35,11 @@ describe('Simulator running tests', () => {
 
 describe('Fuel sys via simulator start', () => {
   test('Fill diesel storage tank from shore', () => {
-    simulator.FuelSys.DieselShoreFillValve.Open()
+    simulator.FuelSys.DsShoreValve.Open()
+    simulator.FuelSys.DsStorage.IntakeValve.Open()
     simulator.Thick()
     simulator.Thick()
-    expect(simulator.FuelSys.DieselTank.Content()).toBe(CstFuelSys.DsStorageTank.TankAddStep * 2)
+    expect(simulator.FuelSys.DsStorage.Tank.Content()).toBe(CstFuelSys.DsStorageTank.TankAddStep * 2)
   })
 })
 
@@ -46,14 +47,14 @@ describe('Diesel generator', () => {
   describe('Fuel from diesel service tank', () => {
     test('open service outlet valve and DsGen intake valve = has fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
+      const { FuelSys: { DsService } } = simulator
 
-      DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
 
-      //  expect(DsGen1.FuelIntakeValve.Source).toEqual(DsServiceOutletValve)
+      //  expect(DsGen1.FuelIntakeValve.Source).toEqual(DsService.OutletValve)
 
-      DsServiceOutletValve.Open()
-      expect(DsServiceOutletValve.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
+      DsService.OutletValve.Open()
+      expect(DsService.OutletValve.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
 
       DsGen1.FuelIntakeValve.Open()
       expect(DsGen1.FuelIntakeValve.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
@@ -63,11 +64,11 @@ describe('Diesel generator', () => {
     })
     test('closed service outlet valve + open  DsGen intake valve = no fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
+      const { FuelSys: { DsService } } = simulator
 
-      DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
-      expect(DsServiceOutletValve.isOpen).toBeFalsy()
-      expect(DsServiceOutletValve.Content()).toBe(0)
+      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      expect(DsService.OutletValve.isOpen).toBeFalsy()
+      expect(DsService.OutletValve.Content()).toBe(0)
 
       DsGen1.FuelIntakeValve.Open()
       expect(DsGen1.FuelIntakeValve.Content()).toBe(0)
@@ -77,12 +78,12 @@ describe('Diesel generator', () => {
     })
     test('open service outlet valve +closed DsGen intake valve = no fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
+      const { FuelSys: { DsService } } = simulator
 
-      DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
 
-      DsServiceOutletValve.Open()
-      expect(DsServiceOutletValve.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
+      DsService.OutletValve.Open()
+      expect(DsService.OutletValve.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
 
       expect(DsGen1.FuelIntakeValve.isOpen).toBeFalsy()
       expect(DsGen1.FuelIntakeValve.Content()).toBe(0)
@@ -92,24 +93,24 @@ describe('Diesel generator', () => {
     })
     test('close service outlet valve after both valves where open = no fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
+      const { FuelSys: { DsService } } = simulator
 
-      DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
-      DsServiceOutletValve.Open()
+      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      DsService.OutletValve.Open()
       DsGen1.FuelIntakeValve.Open()
       simulator.Thick()
 
-      DsServiceOutletValve.Close()
+      DsService.OutletValve.Close()
       simulator.Thick()
 
       expect(DsGen1.HasFuel).toBeFalsy()
     })
     test('close generator intake valve after both valves where open = no fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
+      const { FuelSys: { DsService } } = simulator
 
-      DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
-      DsServiceOutletValve.Open()
+      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      DsService.OutletValve.Open()
       DsGen1.FuelIntakeValve.Open()
       simulator.Thick()
 
@@ -120,11 +121,11 @@ describe('Diesel generator', () => {
     })
     test('both valves are open but service tank is empty = generator has no fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
-      expect(DsServiceTank.Content()).toBe(0)
+      const { FuelSys: { DsService } } = simulator
+      expect(DsService.Tank.Content()).toBe(0)
 
-      DsServiceOutletValve.Open()
-      expect(DsServiceOutletValve.Content()).toBe(0)
+      DsService.OutletValve.Open()
+      expect(DsService.OutletValve.Content()).toBe(0)
 
       DsGen1.FuelIntakeValve.Open()
       expect(DsGen1.FuelIntakeValve.Content()).toBe(0)
@@ -134,28 +135,41 @@ describe('Diesel generator', () => {
     })
     test('Running generator consumes fuel from service tank', () => {
       const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsServiceOutletValve, DsServiceTank } } = simulator
+      const { FuelSys: { DsService } } = simulator
+      const { LubSys: { Storage: LubStorage } } = simulator
 
-      DsServiceTank.Inside = CstFuelSys.DsServiceTank.TankVolume
-      DsServiceOutletValve.Open()
+      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      DsService.OutletValve.Open()
       DsGen1.FuelIntakeValve.Open()
       simulator.Thick()
+      expect(DsGen1.HasFuel).toBeTruthy()
+
+      LubStorage.Tank.Inside = CstLubSys.StorageTank.TankVolume
+      LubStorage.OutletValve.Open()
+      DsGen1.LubIntakeValve.Open()
+      simulator.Thick()
+      expect(DsGen1.HasLubrication).toBeTruthy()
+
       DsGen1.Start()
       simulator.Thick()
-      expect(DsGen1.HasFuel).toBeTruthy()
       expect(DsGen1.isRunning).toBeTruthy()
 
       expect(DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
-      expect(DsGen1.FuelProvider).toEqual(DsServiceTank)
-      // expect(DsGen1.FuelIntakeValve.Source).toEqual(DsServiceOutletValve)
-      expect(DsServiceTank.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
-      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+
+      expect(DsGen1.FuelProvider).toEqual(DsService.Tank)
+      expect(DsGen1.FuelProvider.Removing).toBeTruthy()
+      expect(DsService.Tank.Removing).toBeTruthy()
+      expect(DsService.Tank.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
+
+      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
         - CstFuelSys.DieselGenerator.Consumption)
+
       simulator.Thick()
-      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
         - CstFuelSys.DieselGenerator.Consumption * 2)
+
       simulator.Thick()
-      expect(DsServiceTank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
         - CstFuelSys.DieselGenerator.Consumption * 3)
     })
   })

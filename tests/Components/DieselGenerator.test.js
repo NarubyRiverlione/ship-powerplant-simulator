@@ -12,14 +12,14 @@ const lubSource = { Content: () => startLubAmount }
 beforeEach(() => {
   fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
 
-  const dummyFuelValve = { Source: fuelSource, isOpen: false }
+  const dummyFuelValve = { Source: fuelSource, isOpen: true }
   dummyFuelValve.Content = () => fuelSource.Content()
 
-  const dummyLubValve = { Source: lubSource, isOpen: false }
+  const dummyLubValve = { Source: lubSource, isOpen: true }
+  dummyLubValve.Content = () => lubSource.Content()
 
   dsgen = new DieselGenerator('test diesel generator', Rated,
-    fuelSource, dummyFuelValve,
-    lubSource, dummyLubValve)
+    dummyFuelValve, dummyLubValve)
 
   dsgen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
   //  workaround to give DsGen1  cooling
@@ -36,11 +36,9 @@ describe('init', () => {
     expect(dsgen.HasLubrication).toBeFalsy()
   })
   test('Fuel intake valve closed at start', () => {
-    //  expect(dsgen.FuelIntakeValve.Source).toEqual(dummyValve)
-    // valve only has content of opened, so test here source
     expect(dsgen.FuelIntakeValve.Source.Content()).toBe(startFuelAmount)
     expect(dsgen.FuelIntakeValve.isOpen).toBeFalsy()
-    expect(dsgen.FuelProvider).toEqual(fuelSource)
+    // expect(dsgen.FuelProvider).toEqual(fuelSource)
     expect(dsgen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
@@ -51,26 +49,49 @@ describe('init', () => {
   })
 })
 describe('Start', () => {
-  test('with closed fuel valve = not running', () => {
-    const fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
-    const dummyValve = { Source: fuelSource, isOpen: false }
-    dummyValve.Content = () => fuelSource.Content()
-
-    const dsgen = new DieselGenerator('test diesel generator', Rated, fuelSource, dummyValve)
-    dsgen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
-
+  test('closed fuel & lubrication valves = cannot start', () => {
     expect(dsgen.FuelIntakeValve.isOpen).toBeFalsy()
-    expect(dsgen.FuelIntakeValve.Content()).toBe(0)
+    expect(dsgen.LubIntakeValve.isOpen).toBeFalsy()
+
+    dsgen.Start()
+    dsgen.Thick()
+    expect(dsgen.isRunning).toBeFalsy()
+    expect(dsgen.HasFuel).toBeFalsy()
+    expect(dsgen.HasLubrication).toBeFalsy()
+  })
+  test('closed fuel intake, open lubrication valve = cannot start', () => {
+    dsgen.LubIntakeValve.Open()
+    dsgen.Thick()
+    expect(dsgen.LubIntakeValve.Content()).toBe(startLubAmount)
+    expect(dsgen.HasLubrication).toBeTruthy()
     dsgen.Start()
     dsgen.Thick()
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasFuel).toBeFalsy()
   })
-  test('with open fuel valve = running  = consumes fuel', () => {
+  test('open fuel intake, closed lubrication valve = cannot start', () => {
     dsgen.FuelIntakeValve.Open()
     dsgen.Thick()
+    expect(dsgen.FuelIntakeValve.isOpen).toBeTruthy()
     expect(dsgen.FuelIntakeValve.Content()).toBe(startFuelAmount)
     expect(dsgen.HasFuel).toBeTruthy()
+    dsgen.Start()
+    dsgen.Thick()
+    expect(dsgen.isRunning).toBeFalsy()
+    expect(dsgen.HasLubrication).toBeFalsy()
+  })
+  test('open fuel valve & open lubrication = can start = consumes fuel', () => {
+    dsgen.FuelIntakeValve.Open()
+    dsgen.Thick()
+    expect(dsgen.FuelIntakeValve.isOpen).toBeTruthy()
+    expect(dsgen.FuelIntakeValve.Content()).toBe(startFuelAmount)
+    expect(dsgen.HasFuel).toBeTruthy()
+
+    dsgen.LubIntakeValve.Open()
+    dsgen.Thick()
+    expect(dsgen.LubIntakeValve.Content()).toBe(startLubAmount)
+    expect(dsgen.HasLubrication).toBeTruthy()
+
     dsgen.Start()
     dsgen.Thick()
     expect(dsgen.isRunning).toBeTruthy()
@@ -79,8 +100,9 @@ describe('Start', () => {
   })
   test('running and open fuel valve = stop', () => {
     dsgen.FuelIntakeValve.Open()
-    dsgen.Thick()
+    dsgen.LubIntakeValve.Open()
     dsgen.Start()
+    dsgen.Thick()
     expect(dsgen.isRunning).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
 
@@ -88,6 +110,20 @@ describe('Start', () => {
     dsgen.Thick()
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasFuel).toBeFalsy()
+    expect(fuelSource.RemoveEachStep).toBe(0)
+  })
+  test('running and open lubrication valve = stop', () => {
+    dsgen.FuelIntakeValve.Open()
+    dsgen.LubIntakeValve.Open()
+    dsgen.Start()
+    dsgen.Thick()
+    expect(dsgen.isRunning).toBeTruthy()
+    expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
+
+    dsgen.LubIntakeValve.Close()
+    dsgen.Thick()
+    expect(dsgen.isRunning).toBeFalsy()
+    expect(dsgen.HasLubrication).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
 })

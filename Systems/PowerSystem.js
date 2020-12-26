@@ -20,7 +20,7 @@ const { PowerSys: CstPower } = CstBoundaries
 
 */
 module.exports = class PowerSystem {
-  constructor(DsGen1_FuelSource, DsGen1_FuelValve) {
+  constructor(DsGen1FuelValve, DsGenLubValve) {
     this.Providers = 0 // sum of all providers, can be connected to main busses
     // #region Shore power
     this.ShoreBreaker = new Breaker('Shore breaker')
@@ -41,7 +41,7 @@ module.exports = class PowerSystem {
     // #endregion
     // #region Diesel Generator 1
     this.DsGen1 = new DieselGenerator('Diesel generator 1', CstPower.DsGen1.RatedFor,
-      DsGen1_FuelSource, DsGen1_FuelValve)
+      DsGen1FuelValve, DsGenLubValve)
     this.DsGen1.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
     this.DsGenBreaker1 = new Breaker('Breaker diesel generator 1 ')
     // #endregion

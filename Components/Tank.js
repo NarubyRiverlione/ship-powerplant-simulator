@@ -49,19 +49,19 @@ module.exports = class Tank {
   Thick() {
     if (this.Adding) this.Add()
     if (this.Removing) this.Remove()
+    /* istanbul ignore if  */
     if (this.RemoveEachStep < 0) {
       console.warn(`Tank:${this.name} had a negative RemoveEachStep `)
       this.RemoveEachStep = 0
-      debugger
     }
+    /* istanbul ignore if  */
     if (this.AddEachStep < 0) {
       console.warn(`Tank:${this.name} had a negative AddEachStep `)
       this.AddEachStep = 0
-      debugger
     }
+    /* istanbul ignore if  */
     if (this.Inside === undefined || !Number.isInteger(this.Inside)) {
       console.warn(`Tank ${this.name} contents is not a number`)
-      debugger
     }
   }
 }

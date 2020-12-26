@@ -17,7 +17,7 @@
       "request": "launch",
       "args": [
         "--runInBand",
-        "FuelSys.test.js"
+        "Simulator.test.js"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",

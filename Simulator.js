@@ -16,12 +16,12 @@ module.exports = class Simulator {
     this.Running = null // ref setInterval
     this.FuelSys = new FuelSystem()
     this.LubSys = new LubricationSystem()
-    this.PowerSys = new PowerSystem(this.FuelSys.DsServiceTank, this.FuelSys.DsServiceOutletValve)
+    this.PowerSys = new PowerSystem(this.FuelSys.DsService.OutletValve, this.LubSys.Storage.OutletValve)
   }
 
   Thick() {
-    this.FuelSys.Thick()
     this.PowerSys.Thick()
+    this.FuelSys.Thick()
     this.LubSys.Thick()
   }
 
