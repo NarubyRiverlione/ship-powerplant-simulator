@@ -16,9 +16,9 @@ const CstTxt = {
     DsStorageTank: 'Diesel storage tank',
     DsServiceTank: 'Diesel service tank',
     DsShoreFillValve: 'Diesel shore fill valve',
-    DsStorageOutletValve: 'Diesel storage outlet valve',
-    DsServiceIntakeValve: 'Diesel service intake valve',
-    DsServiceOutletValve: 'Diesel service outlet valve'
+    DsStorageOutletValve: 'Diesel storage - outlet valve',
+    DsServiceIntakeValve: 'Diesel service - intake valve',
+    DsServiceOutletValve: 'Diesel service - outlet valve'
   },
   LubSysTxt: {
     LubShoreFillValve: 'Lubrication shore fill valve',
@@ -45,7 +45,7 @@ const CstChanges = {
 }
 const CstLubSys = {
   ShoreVolume: 1000000,
-  LubStorageTank: {
+  StorageTank: {
     TankVolume: 1000,
     TankAddStep: 100
   }

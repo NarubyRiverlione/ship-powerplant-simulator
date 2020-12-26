@@ -1,27 +1,30 @@
+const { makeObservable, action } = require('mobx')
+const TankWithValves = require('../Components/TankWithValves')
 const Valve = require('../Components/Valve')
-const Tank = require('../Components/Tank')
 const { CstTxt, CstLubSys } = require('../Cst')
 
 const { LubSysTxt } = CstTxt
+
 module.exports = class LubSys {
   constructor() {
-    this.LubStorageTank = new Tank(LubSysTxt.LubStorageTank, CstLubSys.LubStorageTank.TankVolume)
-    this.LubStorageTank.AddEachStep = CstLubSys.LubStorageTank.TankAddStep
-
-    this.LubShoreIntakeValve = new Valve(LubSysTxt.LubShoreFillValve)
-    this.LubShoreIntakeValve.Source = { Content: () => CstLubSys.ShoreVolume }
-    this.LubShoreIntakeValve.cbNowOpen = () => {
-      this.LubStorageTank.Adding = true
+    makeObservable(this, { Thick: action })
+    this.ShoreValve = new Valve(LubSysTxt.LubShoreFillValve)
+    this.ShoreValve.Source = { Content: () => LubSysTxt.ShoreVolume }
+    // if both shore and storage intake valves are open --> filling
+    this.ShoreValve.cbNowOpen = () => {
+      if (this.Storage.IntakeValve.isOpen) this.Storage.Tank.Adding = true
     }
-    this.LubShoreIntakeValve.cbNowClosed = () => {
-      this.LubStorageTank.Adding = false
+    this.ShoreValve.cbNowClosed = () => {
+      this.Storage.Tank.Adding = false
     }
 
-    this.LubStorageOutletValve = new Valve(LubSysTxt.LubStorageOutletValve)
-    this.LubStorageOutletValve.Source = this.LubStorageTank
+    this.Storage = new TankWithValves(LubSysTxt.LubStorageTank,
+      CstLubSys.StorageTank.TankVolume, 0, this.ShoreValve)
+
+    this.Storage.Tank.AddEachStep = CstLubSys.StorageTank.TankAddStep
   }
 
   Thick() {
-    this.LubStorageTank.Thick()
+    this.Storage.Tank.Thick()
   }
 }
