@@ -41,24 +41,26 @@ const CstBoundaries = {
 }
 
 const CstChanges = {
-  Interval: 1000
+  Interval: 1000,
+  DrainStep: 10
 }
 const CstLubSys = {
   ShoreVolume: 1000000,
   StorageTank: {
-    TankVolume: 1000,
-    TankAddStep: 100
+    TankVolume: 100,
+    TankAddStep: 10
   }
 
 }
 const CstFuelSys = {
   ShoreVolume: 1000000,
   DsStorageTank: {
-    TankVolume: 2500,
-    TankAddStep: 50
+    TankVolume: 100,
+    TankAddStep: 10,
+    DrainStep: 10
   },
   DsServiceTank: {
-    TankVolume: 1000,
+    TankVolume: 100,
     TankAddStep: 10
   },
   DieselGenerator: { Consumption: 1 }

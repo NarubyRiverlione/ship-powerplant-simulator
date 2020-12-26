@@ -1,4 +1,5 @@
 const TankWithValves = require('../../Components/TankWithValves')
+const { CstChanges } = require('../../Cst')
 
 let tankV
 const Volume = 315689746
@@ -31,6 +32,9 @@ describe('Init', () => {
   test('outlet source', () => {
     expect(tankV.OutletValve.Source).toEqual(tankV.Tank)
     expect(tankV.OutletValve.Source.Content()).toBe(StartContent)
+  })
+  test('Drain valve is closed', () => {
+    expect(tankV.DrainValve.isOpen).toBeFalsy()
   })
 })
 
@@ -75,4 +79,26 @@ describe('Intake valve', () => {
     expect(tankV.Tank.Adding).toBeFalsy()
   })
   */
+})
+
+describe('Drain valve', () => {
+  test('open drain valve = remove from tank', () => {
+    const startContent = 1435
+    const drainTarget = { Inside: 0, AddEachStep: 0, Adding: false }
+    tankV.Tank.Inside = startContent
+    tankV.DrainTarget = drainTarget
+    tankV.DrainValve.Open()
+    tankV.Thick()
+    expect(tankV.Tank.Content()).toBe(startContent - CstChanges.DrainStep)
+    expect(drainTarget.AddEachStep).toBe(CstChanges.DrainStep)
+    expect(drainTarget.Adding).toBeTruthy()
+  })
+  test('closing previous open drain valve = stop remove from tank', () => {
+    const startContent = 563
+    tankV.Tank.Inside = startContent
+    tankV.DrainValve.Open()
+    tankV.Thick()
+    tankV.DrainValve.Close()
+    expect(tankV.Tank.Content()).toBe(startContent - CstChanges.DrainStep)
+  })
 })

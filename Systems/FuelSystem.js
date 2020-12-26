@@ -70,7 +70,7 @@ module.exports = class FuelSystem {
 
     // service tank needs first to Thick to detect full
     // -> stop from removing from storage
-    this.DsService.Tank.Thick()
-    this.DsStorage.Tank.Thick()
+    this.DsService.Thick()
+    this.DsStorage.Thick()
   }
 }
