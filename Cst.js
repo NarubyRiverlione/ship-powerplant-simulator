@@ -24,18 +24,24 @@ const CstTxt = {
     LubShoreFillValve: 'Lubrication shore fill valve',
     LubStorageTank: 'Lubrication storage tank',
     LubStorageOutletValve: 'Lubrication storage outlet valve'
+  },
+  AirSysTxt: {
+    AirReceiver1: 'Start air receiver 1',
+    AirReceiver2: 'Start air receiver 1',
+    EmergencyReceiver: 'Emergency  start air receiver'
+
   }
 }
 
 const CstBoundaries = {
   PowerSys: {
     Voltage: 440,
-    Shore: 10000, // 10kW
+    Shore: 1000, // 1 kW
     EmergencyGen: {
-      RatedFor: 1000 // 1 kW
+      RatedFor: 200 // 200 W
     },
     DsGen1: {
-      RatedFor: 30000 // 30 kW
+      RatedFor: 1000 // 1 kW
     }
   }
 }
@@ -50,7 +56,6 @@ const CstLubSys = {
     TankVolume: 100,
     TankAddStep: 10
   }
-
 }
 const CstFuelSys = {
   ShoreVolume: 1000000,
@@ -65,11 +70,26 @@ const CstFuelSys = {
   },
   DieselGenerator: { Consumption: 1 }
 }
+const CstAirSys = {
+  Compress1: {
+    AddStep: 0.1,
+    Volume: 100
+  },
+  EmergencyCompress: {
+    AddStep: 0.1,
+    Volume: 100
+  },
+  AirReceiver1: {
+    TankVolume: 100
+  },
+  DieselGenerator: { MinPressure: 2 }
+}
 
 module.exports = {
   CstBoundaries,
   CstChanges,
   CstTxt,
   CstFuelSys,
-  CstLubSys
+  CstLubSys,
+  CstAirSys
 }

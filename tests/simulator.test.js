@@ -1,5 +1,7 @@
 const Simulator = require('../Simulator')
-const { CstFuelSys, CstChanges, CstLubSys } = require('../Cst')
+const {
+  CstFuelSys, CstChanges, CstLubSys, CstAirSys
+} = require('../Cst')
 let simulator
 beforeEach(() => {
   simulator = new Simulator()
@@ -45,7 +47,7 @@ describe('Fuel sys via simulator start', () => {
 
 describe('Diesel generator', () => {
   describe('Fuel from diesel service tank', () => {
-    test('open service outlet valve and DsGen intake valve = has fuel', () => {
+    test('open service outlet valve & DsGen intake valve = has fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
       const { FuelSys: { DsService } } = simulator
 
@@ -62,7 +64,7 @@ describe('Diesel generator', () => {
       simulator.Thick()
       expect(DsGen1.HasFuel).toBeTruthy()
     })
-    test('closed service outlet valve + open  DsGen intake valve = no fuel', () => {
+    test('closed service outlet valve & open  DsGen intake valve = no fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
       const { FuelSys: { DsService } } = simulator
 
@@ -76,7 +78,7 @@ describe('Diesel generator', () => {
       simulator.Thick()
       expect(DsGen1.HasFuel).toBeFalsy()
     })
-    test('open service outlet valve +closed DsGen intake valve = no fuel', () => {
+    test('open service outlet valve & closed DsGen intake valve = no fuel', () => {
       const { PowerSys: { DsGen1 } } = simulator
       const { FuelSys: { DsService } } = simulator
 
@@ -137,6 +139,7 @@ describe('Diesel generator', () => {
       const { PowerSys: { DsGen1 } } = simulator
       const { FuelSys: { DsService } } = simulator
       const { LubSys: { Storage: LubStorage } } = simulator
+      const { AirSys: { Receiver1 } } = simulator
 
       DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
       DsService.OutletValve.Open()
@@ -149,6 +152,11 @@ describe('Diesel generator', () => {
       DsGen1.LubIntakeValve.Open()
       simulator.Thick()
       expect(DsGen1.HasLubrication).toBeTruthy()
+
+      Receiver1.Tank.Inside = CstAirSys.AirReceiver1.TankVolume
+      Receiver1.OutletValve.Open()
+      DsGen1.AirIntakeValve.Open()
+      simulator.Thick()
 
       DsGen1.Start()
       simulator.Thick()

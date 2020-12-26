@@ -1,9 +1,10 @@
 const { makeObservable, observable, action } = require('mobx')
 const Generator = require('./Generator')
 const Valve = require('./Valve')
+const { CstAirSys } = require('../Cst')
 
 module.exports = class DieselGenerator extends Generator {
-  constructor(name, rate, dieselValve, lubValve) {
+  constructor(name, rate, dieselValve, lubValve, airValve) {
     super(name, rate)
     this.FuelIntakeValve = new Valve(name + ' - fuel intake valve')
     this.FuelIntakeValve.Source = dieselValve
@@ -12,6 +13,10 @@ module.exports = class DieselGenerator extends Generator {
     this.LubIntakeValve = new Valve(name + ' - lubrication intake valve')
     this.LubIntakeValve.Source = lubValve
     this.LubProvider = lubValve.Source
+
+    this.AirIntakeValve = new Valve(name + ' - Air intake valve')
+    this.AirIntakeValve.Source = airValve
+    this.AirProvider = airValve.Source
 
     makeObservable(this, {
       // FuelIntakeValve: observable,
@@ -31,10 +36,14 @@ module.exports = class DieselGenerator extends Generator {
     this.HasLubrication = this.LubIntakeValve.Content() !== 0
   }
 
+  CheckAir() {
+    return this.AirIntakeValve.Content() >= CstAirSys.DieselGenerator.MinPressure
+  }
+
   Start() {
     this.CheckFuel()
     this.CheckLubrication()
-    super.Start()
+    if (this.CheckAir()) super.Start()
   }
 
   Thick() {
