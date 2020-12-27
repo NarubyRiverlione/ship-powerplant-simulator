@@ -21,8 +21,9 @@ module.exports = class Simulator {
     this.PowerSys = new PowerSystem(
       this.FuelSys.DsService.OutletValve,
       this.LubSys.Storage.OutletValve,
-      this.AirSys.Receiver1.OutletValve
+      this.AirSys.EmergencyReceiver.OutletValve
     )
+    this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
   }
 
   Thick() {

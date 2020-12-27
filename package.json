@@ -1,15 +1,16 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "description": "Simulator logic for ship powerplant",
   "main": "Simulator.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint . --fix",
     "test:coverage": "npm test -- --coverage",
     "test:badges": "npm run test:coverage  && istanbul-badges-readme",
     "test": "jest"
   },
-  "author": "Naruby Riverloine",
+  "author": "Naruby Riverlione",
   "repository": {
     "url": "https://github.com/NarubyRiverlione/ship-powerplant-simulator"
   },

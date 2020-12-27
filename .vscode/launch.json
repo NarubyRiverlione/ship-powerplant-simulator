@@ -18,6 +18,7 @@
       "args": [
         "--runInBand",
         "Simulator.test.js"
+        // "AirSys.test.js"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",

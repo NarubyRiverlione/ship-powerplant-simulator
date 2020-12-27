@@ -1,14 +1,13 @@
 const Simulator = require('../Simulator')
 const {
-  CstFuelSys, CstChanges, CstLubSys, CstAirSys
+  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstBoundaries
 } = require('../Cst')
 let simulator
 beforeEach(() => {
   simulator = new Simulator()
-  //  workaround to give DsGen1  cooling, lubrication.
+  //  workaround to give DsGen1  cooling,
   //  Don't test Generator here, test simulator
   simulator.PowerSys.DsGen1.HasCooling = true
-  simulator.PowerSys.DsGen1.HasLubrication = true
 })
 
 describe('Simulator running tests', () => {
@@ -139,7 +138,7 @@ describe('Diesel generator', () => {
       const { PowerSys: { DsGen1 } } = simulator
       const { FuelSys: { DsService } } = simulator
       const { LubSys: { Storage: LubStorage } } = simulator
-      const { AirSys: { Receiver1 } } = simulator
+      const { AirSys: { EmergencyReceiver } } = simulator
 
       DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
       DsService.OutletValve.Open()
@@ -153,8 +152,8 @@ describe('Diesel generator', () => {
       simulator.Thick()
       expect(DsGen1.HasLubrication).toBeTruthy()
 
-      Receiver1.Tank.Inside = CstAirSys.AirReceiver1.TankVolume
-      Receiver1.OutletValve.Open()
+      EmergencyReceiver.Tank.Inside = CstAirSys.EmergencyReceiver.TankPressure
+      EmergencyReceiver.OutletValve.Open()
       DsGen1.AirIntakeValve.Open()
       simulator.Thick()
 
@@ -179,6 +178,49 @@ describe('Diesel generator', () => {
       simulator.Thick()
       expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
         - CstFuelSys.DieselGenerator.Consumption * 3)
+    })
+  })
+  describe('full startup diesel generator, startup power via emergency generator', () => {
+    test('with full diesel service tank and lubrication storage tank', () => {
+      const { PowerSys: { DsGen1, EmergencyGen, EmergencyBus } } = simulator
+      const { FuelSys: { DsService } } = simulator
+      const { LubSys: { Storage: LubStorage } } = simulator
+      const { AirSys: { EmergencyReceiver, EmergencyCompressor, EmergencyOutletValve } } = simulator
+      // Fuel (fake full diesel service tank)
+      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
+      DsService.OutletValve.Open()
+      DsGen1.FuelIntakeValve.Open()
+      simulator.Thick()
+      expect(DsGen1.HasFuel).toBeTruthy()
+      // Lubrication (fake full lub storage tank)
+      LubStorage.Tank.Inside = CstLubSys.StorageTank.TankVolume
+      LubStorage.OutletValve.Open()
+      DsGen1.LubIntakeValve.Open()
+      simulator.Thick()
+      expect(DsGen1.HasLubrication).toBeTruthy()
+      // startup emergency generator
+      EmergencyGen.Start()
+      simulator.Thick()
+      expect(EmergencyBus.Voltage).toBe(CstBoundaries.PowerSys.Voltage)
+      // startup emergency start air compressor
+      EmergencyOutletValve.Open()
+      EmergencyReceiver.IntakeValve.Open()
+      EmergencyCompressor.Start()
+      simulator.Thick()
+      expect(EmergencyReceiver.Tank.Content()).toBe(CstAirSys.EmergencyCompressor.AddStep)
+      // wait until enough pressure in the emergency receiver to start the diesel generator
+      do {
+        simulator.Thick()
+      } while (EmergencyReceiver.Tank.Content() < CstAirSys.DieselGenerator.MinPressure)
+      // connect start air
+      EmergencyReceiver.OutletValve.Open()
+      DsGen1.AirIntakeValve.Open()
+      simulator.Thick()
+
+      // startup diesel generator 1
+      DsGen1.Start()
+      simulator.Thick()
+      expect(DsGen1.isRunning).toBeTruthy()
     })
   })
 })

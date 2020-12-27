@@ -4,10 +4,6 @@ const CstTxt = {
     Started: 'Simulation is running'
   },
   PowerTxt: {
-    // Connected: 'connected',
-    // Disconnected: 'disconnected',
-    // Running: 'running',
-    // NotRunning: 'not running'
     DieselGen1: 'Diesel generator 1',
     EmergencyGen: 'Emergency genertor',
     DsGen1_FuelIntake: 'Diesel generator 1 - fuel intake valve'
@@ -28,8 +24,8 @@ const CstTxt = {
   AirSysTxt: {
     AirReceiver1: 'Start air receiver 1',
     AirReceiver2: 'Start air receiver 1',
-    EmergencyReceiver: 'Emergency  start air receiver'
-
+    EmergencyReceiver: 'Emergency  start air receiver',
+    EmergencyCompressor: 'Emergency compressor'
   }
 }
 
@@ -71,16 +67,17 @@ const CstFuelSys = {
   DieselGenerator: { Consumption: 1 }
 }
 const CstAirSys = {
-  Compress1: {
-    AddStep: 0.1,
-    Volume: 100
+  Compressor1: {
+    AddStep: 0.1
   },
-  EmergencyCompress: {
-    AddStep: 0.1,
-    Volume: 100
+  EmergencyCompressor: {
+    AddStep: 0.1
   },
-  AirReceiver1: {
-    TankVolume: 100
+  StartAirReceiver1: {
+    TankPressure: 5
+  },
+  EmergencyReceiver: {
+    TankPressure: 3
   },
   DieselGenerator: { MinPressure: 2 }
 }

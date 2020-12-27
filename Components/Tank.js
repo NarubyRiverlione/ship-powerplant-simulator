@@ -1,7 +1,7 @@
 const { makeAutoObservable } = require('mobx')
 // const { CstChanges } = require('../Cst')
 module.exports = class Tank {
-  constructor(Name, Volume, StartContent = 0) {
+  constructor(Name, Volume, StartContent = 0.0) {
     this.Name = Name
     this.Inside = StartContent
     this.Volume = Volume
@@ -11,8 +11,8 @@ module.exports = class Tank {
     this.Adding = false
     this.Removing = false
 
-    this.AddEachStep = 0
-    this.RemoveEachStep = 0
+    this.AddEachStep = 0.0
+    this.RemoveEachStep = 0.0
 
     this.cbFull = null
     this.cbAdded = null
@@ -43,7 +43,7 @@ module.exports = class Tank {
     if (this.Inside - this.RemoveEachStep > 0) {
       this.Inside -= this.RemoveEachStep
       if (this.cbRemoved) this.cbRemoved(this.RemoveEachStep)
-    } else { this.Inside = 0 }
+    } else { this.Inside = 0.0 }
   }
 
   Thick() {
@@ -51,17 +51,17 @@ module.exports = class Tank {
     if (this.Removing) this.Remove()
     /* istanbul ignore if  */
     if (this.RemoveEachStep < 0) {
-      console.warn(`Tank:${this.name} had a negative RemoveEachStep `)
+      console.warn(`Tank:${this.Name} had a negative RemoveEachStep `)
       this.RemoveEachStep = 0
     }
     /* istanbul ignore if  */
     if (this.AddEachStep < 0) {
-      console.warn(`Tank:${this.name} had a negative AddEachStep `)
+      console.warn(`Tank:${this.Name} had a negative AddEachStep `)
       this.AddEachStep = 0
     }
     /* istanbul ignore if  */
-    if (this.Inside === undefined || !Number.isInteger(this.Inside)) {
-      console.warn(`Tank ${this.name} contents is not a number`)
+    if (this.Inside === undefined || Number.isNaN(this.Inside)) {
+      console.warn(`Tank ${this.Name} contents is not a number: ${this.Inside}`)
     }
   }
 }
