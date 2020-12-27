@@ -1,4 +1,4 @@
-const Compressor = require('../../Components/Compressor')
+const Compressor = require('../../src/Components/Compressor')
 
 describe('Init', () => {
   test('set possible output', () => {

@@ -1,4 +1,4 @@
-const Appliance = require('../../Components/Appliance')
+const Appliance = require('../../src/Components/Appliance')
 
 describe('Init', () => {
   test('bus', () => {
@@ -40,6 +40,20 @@ describe('start/stop', () => {
     expect(appliance.isRunning).toBeTruthy()
     testBus.Voltage = 0
     appliance.Thick()
+    expect(appliance.isRunning).toBeFalsy()
+  })
+  test('toggle not running  =  running', () => {
+    const testBus = { Voltage: 158 }
+    const appliance = new Appliance('test bus', testBus)
+    appliance.Toggle()
+    expect(appliance.isRunning).toBeTruthy()
+  })
+  test('toggle  running  =  not running', () => {
+    const testBus = { Voltage: 158 }
+    const appliance = new Appliance('test bus', testBus)
+    appliance.Start()
+    appliance.Thick()
+    appliance.Toggle()
     expect(appliance.isRunning).toBeFalsy()
   })
 })

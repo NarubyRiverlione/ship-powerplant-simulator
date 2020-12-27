@@ -1,5 +1,5 @@
-const AirSys = require('../../Systems/AirSystem')
-const { CstAirSys } = require('../../Cst')
+const AirSys = require('../../src/Systems/AirSystem')
+const { CstAirSys } = require('../../src/Cst')
 
 let airSys
 const dummyMainBus = { Voltage: 440 }

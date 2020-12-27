@@ -1,4 +1,4 @@
-const { CstBoundaries } = require('../Cst')
+const { CstPowerSys } = require('../Cst')
 const { makeAutoObservable } = require('mobx')
 
 module.exports = class PowerBus {
@@ -11,7 +11,7 @@ module.exports = class PowerBus {
 
   Thick() {
     this.Voltage = this.Providers > 0
-      ? CstBoundaries.PowerSys.Voltage
+      ? CstPowerSys.Voltage
       : 0
   }
 }

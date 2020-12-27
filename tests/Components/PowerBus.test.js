@@ -1,5 +1,5 @@
-const PowerBus = require('../../Components/PowerBus')
-const { CstBoundaries } = require('../../Cst')
+const PowerBus = require('../../src/Components/PowerBus')
+const { CstPowerSys } = require('../../src/Cst')
 
 describe('Init', () => {
   test('init', () => {
@@ -16,7 +16,7 @@ describe('Voltage', () => {
     const testBus = new PowerBus('test bus')
     testBus.Providers = 1000
     testBus.Thick()
-    expect(testBus.Voltage).toBe(CstBoundaries.PowerSys.Voltage)
+    expect(testBus.Voltage).toBe(CstPowerSys.Voltage)
   })
   test('Remove provider --> voltage =0 ', () => {
     const testBus = new PowerBus('test bus')

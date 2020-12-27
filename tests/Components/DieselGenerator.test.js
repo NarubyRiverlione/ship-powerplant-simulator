@@ -1,5 +1,5 @@
-const DieselGenerator = require('../../Components/DieselGenerator')
-const { CstFuelSys, CstAirSys } = require('../../Cst')
+const DieselGenerator = require('../../src/Components/DieselGenerator')
+const { CstFuelSys, CstAirSys } = require('../../src/Cst')
 
 const Rated = 30000
 const startFuelAmount = 10000

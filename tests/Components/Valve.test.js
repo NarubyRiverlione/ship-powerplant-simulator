@@ -1,4 +1,4 @@
-const Valve = require('../../Components/Valve')
+const Valve = require('../../src/Components/Valve')
 
 describe('Valve init', () => {
   test('Valve starts closed, without output', () => {

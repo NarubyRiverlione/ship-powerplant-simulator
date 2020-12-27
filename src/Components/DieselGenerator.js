@@ -1,5 +1,5 @@
 const {
-  makeObservable, observable, action, computed
+  makeObservable, action, computed
 } = require('mobx')
 const Generator = require('./Generator')
 const Valve = require('./Valve')
@@ -21,8 +21,6 @@ module.exports = class DieselGenerator extends Generator {
     this.AirProvider = airValve.Source
 
     makeObservable(this, {
-      // FuelIntakeValve: observable,
-      // LubIntakeValve: observable,
       CheckAir: computed,
       Start: action,
       Stop: action,

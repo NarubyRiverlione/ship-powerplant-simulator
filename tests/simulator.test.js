@@ -1,7 +1,7 @@
-const Simulator = require('../Simulator')
+const Simulator = require('../src/Simulator')
 const {
-  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstBoundaries
-} = require('../Cst')
+  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys
+} = require('../src/Cst')
 let simulator
 beforeEach(() => {
   simulator = new Simulator()
@@ -201,7 +201,7 @@ describe('Diesel generator', () => {
       // startup emergency generator
       EmergencyGen.Start()
       simulator.Thick()
-      expect(EmergencyBus.Voltage).toBe(CstBoundaries.PowerSys.Voltage)
+      expect(EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
       // startup emergency start air compressor
       EmergencyOutletValve.Open()
       EmergencyReceiver.IntakeValve.Open()

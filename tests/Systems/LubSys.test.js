@@ -1,5 +1,5 @@
-const LubSys = require('../../Systems/LubricationSystem')
-const { CstLubSys } = require('../../Cst')
+const LubSys = require('../../src/Systems/LubricationSystem')
+const { CstLubSys } = require('../../src/Cst')
 
 let lubSys
 beforeEach(() => {

@@ -1,5 +1,4 @@
-const Tank = require('../../Components/Tank')
-// const { CstBoundaries } = require('../Cst')
+const Tank = require('../../src/Components/Tank')
 
 describe('Tank init', () => {
   test('New empty tank', () => {

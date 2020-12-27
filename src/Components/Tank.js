@@ -1,5 +1,5 @@
 const { makeAutoObservable } = require('mobx')
-// const { CstChanges } = require('../Cst')
+
 module.exports = class Tank {
   constructor(Name, Volume, StartContent = 0.0) {
     this.Name = Name

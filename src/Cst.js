@@ -29,16 +29,14 @@ const CstTxt = {
   }
 }
 
-const CstBoundaries = {
-  PowerSys: {
-    Voltage: 440,
-    Shore: 1000, // 1 kW
-    EmergencyGen: {
-      RatedFor: 200 // 200 W
-    },
-    DsGen1: {
-      RatedFor: 1000 // 1 kW
-    }
+const CstPowerSys = {
+  Voltage: 440,
+  Shore: 1000, // 1 kW
+  EmergencyGen: {
+    RatedFor: 200 // 200 W
+  },
+  DsGen1: {
+    RatedFor: 1000 // 1 kW
   }
 }
 
@@ -68,22 +66,22 @@ const CstFuelSys = {
 }
 const CstAirSys = {
   Compressor1: {
-    AddStep: 0.1
+    AddStep: 10
   },
   EmergencyCompressor: {
-    AddStep: 0.1
+    AddStep: 10
   },
   StartAirReceiver1: {
     TankPressure: 5
   },
   EmergencyReceiver: {
-    TankPressure: 3
+    TankPressure: 100
   },
   DieselGenerator: { MinPressure: 2 }
 }
 
 module.exports = {
-  CstBoundaries,
+  CstPowerSys,
   CstChanges,
   CstTxt,
   CstFuelSys,

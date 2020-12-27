@@ -1,5 +1,5 @@
-const TankWithValves = require('../../Components/TankWithValves')
-const { CstChanges } = require('../../Cst')
+const TankWithValves = require('../../src/Components/TankWithValves')
+const { CstChanges } = require('../../src/Cst')
 
 let tankV
 const Volume = 315689746

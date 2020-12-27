@@ -1,4 +1,4 @@
-const Breaker = require('../../Components/Breaker')
+const Breaker = require('../../src/Components/Breaker')
 
 describe('Init breaker', () => {
   test('beaker is open', () => {

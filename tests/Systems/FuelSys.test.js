@@ -1,5 +1,5 @@
-const FuelSystem = require('../../Systems/FuelSystem')
-const { CstFuelSys, CstTxt } = require('../../Cst')
+const FuelSystem = require('../../src/Systems/FuelSystem')
+const { CstFuelSys, CstTxt } = require('../../src/Cst')
 const { FuelSysTxt } = CstTxt
 
 let fuelSys
