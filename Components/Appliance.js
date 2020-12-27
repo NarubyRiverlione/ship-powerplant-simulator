@@ -28,4 +28,9 @@ module.exports = class Appliance {
   Thick() {
     this.isRunning = this.isRunning && this.CheckPower()
   }
+
+  Toggle() {
+    if (this.isRunning) this.Stop()
+    else this.Start()
+  }
 }

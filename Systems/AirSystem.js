@@ -1,4 +1,4 @@
-const { makeObservable, action } = require('mobx')
+const { makeAutoObservable } = require('mobx')
 const TankWithValves = require('../Components/TankWithValves')
 const Valve = require('../Components/Valve')
 const Compressor = require('../Components/Compressor')
@@ -8,7 +8,6 @@ const { AirSysTxt } = CstTxt
 
 module.exports = class AirSys {
   constructor(mainBus, emergencyBus) {
-    makeObservable(this, { Thick: action })
     // #region  Compressor 1
     // this.Compressor1 = new Compressor(AirSysTxt.Compressor1,
     //   mainBus, CstAirSys.Compressor1.AddStep)
@@ -38,6 +37,7 @@ module.exports = class AirSys {
 
     this.EmergencyReceiver.Tank.AddEachStep = CstAirSys.EmergencyCompressor.AddStep
     // #endregion
+    makeAutoObservable(this)
   }
 
   Thick() {
