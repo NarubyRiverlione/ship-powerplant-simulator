@@ -26,6 +26,13 @@ const CstTxt = {
     AirReceiver2: 'Start air receiver 1',
     EmergencyReceiver: 'Emergency  start air receiver',
     EmergencyCompressor: 'Emergency compressor'
+  },
+  CoolantSysTxt: {
+    LowSuctionIntakeValve: 'Low suction Sea Chest intake valve ',
+    HighSuctionIntakeValve: 'High suction Sea Chest intake valve ',
+    AuxSuctionPump: 'Sea water Auxiliary suction pump',
+    SuctionPump1: 'Sea water Suction pump 1',
+    SuctionPump2: 'Sea water Suction pump 2'
   }
 }
 
@@ -45,14 +52,14 @@ const CstChanges = {
   DrainStep: 10
 }
 const CstLubSys = {
-  ShoreVolume: 1000000,
+  ShoreVolume: 1e6,
   StorageTank: {
     TankVolume: 100,
     TankAddStep: 10
   }
 }
 const CstFuelSys = {
-  ShoreVolume: 1000000,
+  ShoreVolume: 1e6,
   DsStorageTank: {
     TankVolume: 100,
     TankAddStep: 10,
@@ -80,11 +87,18 @@ const CstAirSys = {
   DieselGenerator: { MinPressure: 2 }
 }
 
+const CStCoolantSys = {
+  SeaChest: 1e6,
+  AuxSuctionPump: 1e3,
+  SuctionPumps: 1e4
+}
+
 module.exports = {
   CstPowerSys,
   CstChanges,
   CstTxt,
   CstFuelSys,
   CstLubSys,
-  CstAirSys
+  CstAirSys,
+  CStCoolantSys
 }

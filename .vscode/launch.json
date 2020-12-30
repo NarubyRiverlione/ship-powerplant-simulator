@@ -17,8 +17,8 @@
       "request": "launch",
       "args": [
         "--runInBand",
-        "Simulator.test.js"
-        // "AirSys.test.js"
+        //"Simulator.test.js"
+        "CoolantSys.test.js"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",

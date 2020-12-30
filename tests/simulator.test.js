@@ -1,6 +1,6 @@
 const Simulator = require('../src/Simulator')
 const {
-  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys
+  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys, CStCoolantSys
 } = require('../src/Cst')
 let simulator
 beforeEach(() => {
@@ -222,5 +222,22 @@ describe('Diesel generator', () => {
       simulator.Thick()
       expect(DsGen1.isRunning).toBeTruthy()
     })
+  })
+})
+
+describe('Sea water system', () => {
+  test('Aux pump runs on emergency bus with a suction valve open = aux pump has content', () => {
+    const { PowerSys: { EmergencyGen, EmergencyBus } } = simulator
+    const { CoolantSys: { SeaChests, AuxPump } } = simulator
+    EmergencyGen.Start()
+    simulator.Thick()
+    expect(EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
+
+    SeaChests.LowSuctionIntakeValve.Open()
+    AuxPump.Start()
+    simulator.Thick()
+    expect(AuxPump.isRunning).toBeTruthy()
+    expect(AuxPump.Providers).toBe(CStCoolantSys.SeaChest)
+    expect(AuxPump.Content()).toBe(CStCoolantSys.AuxSuctionPump)
   })
 })
