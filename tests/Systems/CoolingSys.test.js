@@ -1,111 +1,117 @@
 const { CStCoolantSys } = require('../../src/Cst')
-const SwCoolingSys = require('../../src/Systems/SeaWaterCoolingSys')
+const CoolingSys = require('../../src/Systems/CoolingSys')
 
 const dummyEmergencyBus = { Voltage: 440 }
 const dummyMainBus = { Voltage: 440 }
-let coolantSys
+let coolingSys
 beforeEach(() => {
-  coolantSys = new SwCoolingSys(dummyMainBus, dummyEmergencyBus)
+  coolingSys = new CoolingSys(dummyMainBus, dummyEmergencyBus)
 })
 
 describe('Init', () => {
   test('Sea chest intake valves are closed', () => {
-    const { SeaChestLowSuctionIntakeValve, SeaChestHighSuctionIntakeValve } = coolantSys
+    const { SeaChestLowSuctionIntakeValve, SeaChestHighSuctionIntakeValve } = coolingSys
     expect(SeaChestLowSuctionIntakeValve.isOpen).toBeFalsy()
     expect(SeaChestHighSuctionIntakeValve.isOpen).toBeFalsy()
     expect(SeaChestLowSuctionIntakeValve.Content()).toBe(0)
     expect(SeaChestHighSuctionIntakeValve.Content()).toBe(0)
   })
   test('Over board dump valve is closed', () => {
-    expect(coolantSys.OverboardDumpValve.isOpen).toBeFalsy()
+    expect(coolingSys.OverboardDumpValve.isOpen).toBeFalsy()
   })
   test('no sea water available', () => {
-    expect(coolantSys.SwAvailable).toBe(0)
+    expect(coolingSys.SwAvailable).toBe(0)
   })
   test('Aux pump not running, nothing provided', () => {
-    expect(coolantSys.AuxPump.isRunning).toBeFalsy()
-    expect(coolantSys.AuxPump.Content()).toBe(0)
+    expect(coolingSys.AuxPump.isRunning).toBeFalsy()
+    expect(coolingSys.AuxPump.Content()).toBe(0)
   })
   test('Suction pump 1 not running, nothing provided', () => {
-    expect(coolantSys.SuctionPump1.isRunning).toBeFalsy()
-    expect(coolantSys.SuctionPump1.Content()).toBe(0)
+    expect(coolingSys.SuctionPump1.isRunning).toBeFalsy()
+    expect(coolingSys.SuctionPump1.Content()).toBe(0)
   })
   test('Suction pump 2 not running, nothing provided', () => {
-    expect(coolantSys.SuctionPump2.isRunning).toBeFalsy()
-    expect(coolantSys.SuctionPump2.Content()).toBe(0)
+    expect(coolingSys.SuctionPump2.isRunning).toBeFalsy()
+    expect(coolingSys.SuctionPump2.Content()).toBe(0)
   })
   test('FW cooler diesel generator 1, not cooling', () => {
-    const { FwCoolerDsGen1 } = coolantSys
+    const { FwCoolerDsGen1 } = coolingSys
     expect(FwCoolerDsGen1.CoolingInputRate).toBe(CStCoolantSys.FwCoolerDsGen2.coolingRate)
     expect(FwCoolerDsGen1.CoolingProviders).toBe(0)
     expect(FwCoolerDsGen1.hasCooling).toBeFalsy()
     expect(FwCoolerDsGen1.isCooling).toBeFalsy()
   })
+  test('FW expand tank is empty', () => {
+    expect(coolingSys.FwExpandTank.Content()).toBe(0)
+  })
+  test('Fw expand tank intake valve is closed', () => {
+    expect(coolingSys.FwIntakeValve.isOpen).toBeFalsy()
+  })
 })
 
 describe('Sea chests', () => {
   test('Low suction intake valve open = content', () => {
-    const { SeaChestLowSuctionIntakeValve } = coolantSys
+    const { SeaChestLowSuctionIntakeValve } = coolingSys
     SeaChestLowSuctionIntakeValve.Open()
     expect(SeaChestLowSuctionIntakeValve.isOpen).toBeTruthy()
     expect(SeaChestLowSuctionIntakeValve.Content()).toBe(CStCoolantSys.SeaChest)
   })
   test('High suction intake valve open = content', () => {
-    const { SeaChestHighSuctionIntakeValve } = coolantSys
+    const { SeaChestHighSuctionIntakeValve } = coolingSys
     SeaChestHighSuctionIntakeValve.Open()
     expect(SeaChestHighSuctionIntakeValve.Content()).toBe(CStCoolantSys.SeaChest)
   })
 })
 describe('Suction pumps', () => {
   test('Aux pump with low suction valve open = output is rated', () => {
-    const { AuxPump } = coolantSys
-    coolantSys.SeaChestLowSuctionIntakeValve.Open()
+    const { AuxPump } = coolingSys
+    coolingSys.SeaChestLowSuctionIntakeValve.Open()
     AuxPump.Start()
-    coolantSys.Thick()
+    coolingSys.Thick()
     expect(AuxPump.isRunning).toBeTruthy()
     expect(AuxPump.Providers).toBe(CStCoolantSys.SeaChest)
     expect(AuxPump.Content()).toBe(CStCoolantSys.AuxSuctionPump)
-    expect(coolantSys.SwAvailable).toBe(CStCoolantSys.AuxSuctionPump)
+    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.AuxSuctionPump)
   })
   test('Suction pump 1 with low suction valve open = output is rated', () => {
-    const { SuctionPump1 } = coolantSys
-    coolantSys.SeaChestLowSuctionIntakeValve.Open()
+    const { SuctionPump1 } = coolingSys
+    coolingSys.SeaChestLowSuctionIntakeValve.Open()
     SuctionPump1.Start()
-    coolantSys.Thick()
+    coolingSys.Thick()
     expect(SuctionPump1.isRunning).toBeTruthy()
     expect(SuctionPump1.Providers).toBe(CStCoolantSys.SeaChest)
     expect(SuctionPump1.Content()).toBe(CStCoolantSys.SuctionPumps)
-    expect(coolantSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
+    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
   })
   test('Suction pump 2 with high suction valve open = output is rated', () => {
-    const { SuctionPump2 } = coolantSys
-    coolantSys.SeaChestHighSuctionIntakeValve.Open()
+    const { SuctionPump2 } = coolingSys
+    coolingSys.SeaChestHighSuctionIntakeValve.Open()
     SuctionPump2.Start()
-    coolantSys.Thick()
+    coolingSys.Thick()
     expect(SuctionPump2.isRunning).toBeTruthy()
     expect(SuctionPump2.Providers).toBe(CStCoolantSys.SeaChest)
     expect(SuctionPump2.Content()).toBe(CStCoolantSys.SuctionPumps)
-    expect(coolantSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
+    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
   })
   test('Running Suction pump 2, close suction valve  = output zero', () => {
-    const { SuctionPump2 } = coolantSys
-    coolantSys.SeaChestHighSuctionIntakeValve.Open()
+    const { SuctionPump2 } = coolingSys
+    coolingSys.SeaChestHighSuctionIntakeValve.Open()
     SuctionPump2.Start()
-    coolantSys.Thick()
-    coolantSys.SeaChestHighSuctionIntakeValve.Close()
-    coolantSys.Thick()
+    coolingSys.Thick()
+    coolingSys.SeaChestHighSuctionIntakeValve.Close()
+    coolingSys.Thick()
     expect(SuctionPump2.isRunning).toBeTruthy()
     expect(SuctionPump2.Providers).toBe(0)
     expect(SuctionPump2.Content()).toBe(0)
-    expect(coolantSys.SwAvailable).toBe(0)
+    expect(coolingSys.SwAvailable).toBe(0)
   })
   test('Suction pump 1 & aux pump running  = output is aux + suction', () => {
-    const { SuctionPump1, AuxPump } = coolantSys
-    coolantSys.SeaChestLowSuctionIntakeValve.Open()
+    const { SuctionPump1, AuxPump } = coolingSys
+    coolingSys.SeaChestLowSuctionIntakeValve.Open()
     SuctionPump1.Start()
     AuxPump.Start()
-    coolantSys.Thick()
-    expect(coolantSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps + CStCoolantSys.AuxSuctionPump)
+    coolingSys.Thick()
+    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps + CStCoolantSys.AuxSuctionPump)
   })
 })
 describe('Coolers', () => {
@@ -113,12 +119,12 @@ describe('Coolers', () => {
     test('Aux pump running, low sea suction valve open but over board valve is closed = no cooling', () => {
       const {
         AuxPump, FwCoolerDsGen1, FwCoolerDsGen2, OverboardDumpValve, SteamCondensor
-      } = coolantSys
+      } = coolingSys
 
-      coolantSys.SeaChestLowSuctionIntakeValve.Open()
+      coolingSys.SeaChestLowSuctionIntakeValve.Open()
       AuxPump.Start()
       OverboardDumpValve.Close()
-      coolantSys.Thick()
+      coolingSys.Thick()
       expect(OverboardDumpValve.isOpen).toBeFalsy()
 
       expect(FwCoolerDsGen1.hasCooling).toBeFalsy()
@@ -128,14 +134,14 @@ describe('Coolers', () => {
     test('had cooling via high sea chest, SuctionPump1 but closed overboard valve = stop cooling', () => {
       const {
         SuctionPump1, FwCoolerDsGen1, FwCoolerDsGen2, OverboardDumpValve, SteamCondensor
-      } = coolantSys
+      } = coolingSys
 
-      coolantSys.SeaChestLowSuctionIntakeValve.Open()
+      coolingSys.SeaChestLowSuctionIntakeValve.Open()
       SuctionPump1.Start()
       OverboardDumpValve.Open()
-      coolantSys.Thick()
+      coolingSys.Thick()
       OverboardDumpValve.Close()
-      coolantSys.Thick()
+      coolingSys.Thick()
       expect(FwCoolerDsGen1.hasCooling).toBeFalsy()
       expect(FwCoolerDsGen2.hasCooling).toBeFalsy()
       expect(SteamCondensor.hasCooling).toBeFalsy()
@@ -143,13 +149,13 @@ describe('Coolers', () => {
     test('Aux pump providing cooling for FW dsgen, not to steam condensor', () => {
       const {
         AuxPump, FwCoolerDsGen1, FwCoolerDsGen2, OverboardDumpValve, SteamCondensor
-      } = coolantSys
+      } = coolingSys
 
-      coolantSys.SeaChestLowSuctionIntakeValve.Open()
+      coolingSys.SeaChestLowSuctionIntakeValve.Open()
       AuxPump.Start()
       OverboardDumpValve.Open()
-      coolantSys.Thick()
-      expect(coolantSys.SwAvailable).toBe(CStCoolantSys.AuxSuctionPump)
+      coolingSys.Thick()
+      expect(coolingSys.SwAvailable).toBe(CStCoolantSys.AuxSuctionPump)
 
       expect(FwCoolerDsGen1.CoolingCircuitComplete).toBeTruthy()
       expect(FwCoolerDsGen1.CoolingProviders).toBe(CStCoolantSys.AuxSuctionPump)
@@ -164,18 +170,67 @@ describe('Coolers', () => {
     test('suction pump 1 providing cooling for FW dsgen AND to steam condensor', () => {
       const {
         SuctionPump1, FwCoolerDsGen1, FwCoolerDsGen2, OverboardDumpValve, SteamCondensor
-      } = coolantSys
+      } = coolingSys
 
-      coolantSys.SeaChestHighSuctionIntakeValve.Open()
+      coolingSys.SeaChestHighSuctionIntakeValve.Open()
       SuctionPump1.Start()
       OverboardDumpValve.Open()
-      coolantSys.Thick()
-      expect(coolantSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
+      coolingSys.Thick()
+      expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
 
       expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
       expect(FwCoolerDsGen2.hasCooling).toBeTruthy()
       // suction pump has enough flow for the stream condensor
       expect(SteamCondensor.hasCooling).toBeTruthy()
     })
+  })
+})
+describe('Fresh water expand tank', () => {
+  test('fill expand tank by open the intake valve', () => {
+    coolingSys.FwIntakeValve.Open()
+    coolingSys.Thick()
+    expect(coolingSys.FwExpandTank.Content()).toBe(CStCoolantSys.FwExpandTank.TankAddStep)
+  })
+  test('closing intake valve, stop filling expand tank', () => {
+    coolingSys.FwIntakeValve.Open()
+    coolingSys.Thick()
+    expect(coolingSys.FwExpandTank.Content()).toBe(CStCoolantSys.FwExpandTank.TankAddStep)
+    coolingSys.FwIntakeValve.Close()
+    coolingSys.Thick()
+    expect(coolingSys.FwExpandTank.Content()).toBe(CStCoolantSys.FwExpandTank.TankAddStep)
+  })
+})
+
+describe('Diesel lub cooler', () => {
+  test('Fresh water available = hs cooling', () => {
+    const { DsGenLubCooler } = coolingSys
+    const FwContent = 50
+    coolingSys.FwExpandTank.Inside = FwContent
+    coolingSys.Thick()
+    expect(DsGenLubCooler.CoolingProviders).toBe(FwContent)
+    expect(DsGenLubCooler.CheckCoolingRate()).toBeTruthy()
+    expect(DsGenLubCooler.CoolingCircuitComplete).toBeTruthy()
+    expect(DsGenLubCooler.hasCooling).toBeTruthy()
+  })
+  test('has cooling +  Fw cooler is cooling', () => {
+    const {
+      AuxPump, FwCoolerDsGen1, OverboardDumpValve, DsGenLubCooler
+    } = coolingSys
+    // setup Fw cooler
+    coolingSys.SeaChestLowSuctionIntakeValve.Open()
+    AuxPump.Start()
+    OverboardDumpValve.Open()
+    coolingSys.Thick()
+    expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
+    // setup Lub cooler
+    const FwContent = 50
+    coolingSys.FwExpandTank.Inside = FwContent
+    coolingSys.Thick()
+    expect(DsGenLubCooler.hasCooling).toBeTruthy()
+
+    coolingSys.Thick()
+    expect(FwCoolerDsGen1.HotCircuitComplete).toBeTruthy()
+    expect(FwCoolerDsGen1.isCooling).toBeTruthy()
+    expect(DsGenLubCooler.isCooling).toBeTruthy()
   })
 })

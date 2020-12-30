@@ -1,5 +1,4 @@
 const { makeAutoObservable } = require('mobx')
-const { CheckCircuit } = require('../Common')
 
 module.exports = class Cooler {
   constructor(name, coolingInputRate) {

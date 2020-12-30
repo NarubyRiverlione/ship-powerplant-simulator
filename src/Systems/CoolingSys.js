@@ -2,12 +2,14 @@ const { makeAutoObservable } = require('mobx')
 const { CStCoolantSys, CstTxt } = require('../Cst')
 const { CoolantSysTxt } = CstTxt
 
+const Tank = require('../Components/Tank')
 const Valve = require('../Components/Valve')
 const Pump = require('../Components/ElectricPump')
 const Cooler = require('../Components/Cooler')
 const SeaChest = { Content: () => CStCoolantSys.SeaChest }
+const FwMakeUp = { Content: () => CStCoolantSys.FwMakeUp }
 
-module.exports = class SeaWaterCoolingSys {
+module.exports = class CoolingSys {
   constructor(mainBus, emergencyBus) {
     this.SwAvailable = 0
 
@@ -36,6 +38,22 @@ module.exports = class SeaWaterCoolingSys {
       this.SteamCondensor.CoolingCircuitComplete = false
     }
 
+    this.FwExpandTank = new Tank(CoolantSysTxt.FwExpandTank, CStCoolantSys.FwExpandTank.TankVolume)
+    this.FwExpandTank.AddEachStep = CStCoolantSys.FwExpandTank.TankAddStep
+
+    this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve)
+    this.FwIntakeValve.Source = FwMakeUp
+    this.FwIntakeValve.cbNowOpen = () => {
+      this.FwExpandTank.Adding = true
+    }
+    this.FwIntakeValve.cbNowClosed = () => {
+      this.FwExpandTank.Adding = false
+    }
+
+    this.DsGenLubCooler = new Cooler(CoolantSysTxt.DsGenLubCooler, CStCoolantSys.DsGenLubCooler.coolingRate)
+    this.DsGenLubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
+    // TODO set (via Simulator Thick?): if DsGen 1 slump has lub,circulation valve is open, (filter  is selected)
+    this.DsGenLubCooler.HotCircuitComplete = true
     makeAutoObservable(this)
   }
 
@@ -57,10 +75,19 @@ module.exports = class SeaWaterCoolingSys {
       + this.SuctionPump2.Content()
 
     this.FwCoolerDsGen1.CoolingProviders = this.SwAvailable
+    this.FwCoolerDsGen1.HotCircuitComplete = this.DsGenLubCooler.hasCooling
     this.FwCoolerDsGen1.Thick()
     this.FwCoolerDsGen2.CoolingProviders = this.SwAvailable
     this.FwCoolerDsGen2.Thick()
     this.SteamCondensor.CoolingProviders = this.SwAvailable
     this.SteamCondensor.Thick()
+
+    this.FwExpandTank.Thick()
+
+    this.DsGenLubCooler.CoolingProviders = this.FwExpandTank.Content()
+
+    // hot side of Fw DsGen 1 cooler is complete  if Lub cooler has cooling (has fresh water)
+    this.DsGenLubCooler.isCooling = this.DsGenLubCooler.isCooling && this.FwCoolerDsGen1.hasCooling
+    this.DsGenLubCooler.Thick()
   }
 }

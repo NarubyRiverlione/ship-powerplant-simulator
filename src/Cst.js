@@ -36,7 +36,10 @@ const CstTxt = {
     SuctionPump2: 'Sea water Suction pump 2',
     FwCoolerDsGen1: 'Fresh water cooler diesel generator 1',
     FwCoolerDsGen2: 'Fresh water cooler diesel generator 2',
-    SteamCondensor: 'Steam condensor'
+    SteamCondensor: 'Steam condensor',
+    FwIntakeValve: 'Fresh water expand tank intake valve',
+    FwExpandTank: 'Fresh water expand tank',
+    DsGenLubCooler: 'Diesel generator 1 lubrication cooler'
   }
 }
 
@@ -96,7 +99,14 @@ const CStCoolantSys = {
   SuctionPumps: 10000,
   FwCoolerDsGen1: { coolingRate: 1000 },
   FwCoolerDsGen2: { coolingRate: 1000 },
-  SteamCondensor: { coolingRate: 5000 }
+  SteamCondensor: { coolingRate: 5000 },
+  FwMakeUp: 1e6,
+  FwExpandTank: {
+    TankVolume: 100,
+    TankAddStep: 10,
+    DrainStep: 10
+  },
+  DsGenLubCooler: { coolingRate: 10 }
 
 }
 
