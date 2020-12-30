@@ -228,12 +228,12 @@ describe('Diesel generator', () => {
 describe('Sea water system', () => {
   test('Aux pump runs on emergency bus with a suction valve open = aux pump has content', () => {
     const { PowerSys: { EmergencyGen, EmergencyBus } } = simulator
-    const { CoolantSys: { SeaChests, AuxPump } } = simulator
+    const { SeaWaterCoolingSys: { SeaChestLowSuctionIntakeValve, AuxPump } } = simulator
     EmergencyGen.Start()
     simulator.Thick()
     expect(EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
 
-    SeaChests.LowSuctionIntakeValve.Open()
+    SeaChestLowSuctionIntakeValve.Open()
     AuxPump.Start()
     simulator.Thick()
     expect(AuxPump.isRunning).toBeTruthy()

@@ -30,9 +30,13 @@ const CstTxt = {
   CoolantSysTxt: {
     LowSuctionIntakeValve: 'Low suction Sea Chest intake valve ',
     HighSuctionIntakeValve: 'High suction Sea Chest intake valve ',
+    OverboardDumpValve: 'Over board dump valve',
     AuxSuctionPump: 'Sea water Auxiliary suction pump',
     SuctionPump1: 'Sea water Suction pump 1',
-    SuctionPump2: 'Sea water Suction pump 2'
+    SuctionPump2: 'Sea water Suction pump 2',
+    FwCoolerDsGen1: 'Fresh water cooler diesel generator 1',
+    FwCoolerDsGen2: 'Fresh water cooler diesel generator 2',
+    SteamCondensor: 'Steam condensor'
   }
 }
 
@@ -86,11 +90,14 @@ const CstAirSys = {
   },
   DieselGenerator: { MinPressure: 2 }
 }
-
 const CStCoolantSys = {
   SeaChest: 1e6,
-  AuxSuctionPump: 1e3,
-  SuctionPumps: 1e4
+  AuxSuctionPump: 1200,
+  SuctionPumps: 10000,
+  FwCoolerDsGen1: { coolingRate: 1000 },
+  FwCoolerDsGen2: { coolingRate: 1000 },
+  SteamCondensor: { coolingRate: 5000 }
+
 }
 
 module.exports = {

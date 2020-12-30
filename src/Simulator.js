@@ -4,7 +4,7 @@ const { CstChanges } = require('./Cst')
 const PowerSystem = require('./Systems/PowerSystem')
 const FuelSystem = require('./Systems/FuelSystem')
 const AirSystem = require('./Systems/AirSystem')
-const CoolantSys = require('./Systems/CoolantSys')
+const SeaWaterCoolingSystem = require('./Systems/SeaWaterCoolingSys')
 const LubricationSystem = require('./Systems/LubricationSystem')
 
 module.exports = class Simulator {
@@ -25,7 +25,7 @@ module.exports = class Simulator {
       this.AirSys.EmergencyReceiver.OutletValve
     )
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
-    this.CoolantSys = new CoolantSys(this.PowerSys.MainBus1, this.PowerSys.EmergencyBus)
+    this.SeaWaterCoolingSys = new SeaWaterCoolingSystem(this.PowerSys.MainBus1, this.PowerSys.EmergencyBus)
   }
 
   Thick() {
@@ -33,7 +33,7 @@ module.exports = class Simulator {
     this.FuelSys.Thick()
     this.LubSys.Thick()
     this.AirSys.Thick()
-    this.CoolantSys.Thick()
+    this.SeaWaterCoolingSys.Thick()
   }
 
   Start() {
