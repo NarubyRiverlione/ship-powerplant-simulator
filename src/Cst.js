@@ -22,10 +22,11 @@ const CstTxt = {
     LubStorageOutletValve: 'Lubrication storage outlet valve'
   },
   AirSysTxt: {
-    AirReceiver1: 'Start air receiver 1',
-    AirReceiver2: 'Start air receiver 1',
+    StartAirReceiver1: 'Start air receiver 1',
+    StartAirReceiver2: 'Start air receiver 2',
     EmergencyReceiver: 'Emergency  start air receiver',
-    EmergencyCompressor: 'Emergency compressor'
+    EmergencyCompressor: 'Emergency compressor',
+    Compressor1: 'Start air compressor 1'
   },
   CoolantSysTxt: {
     LowSuctionIntakeValve: 'Low suction Sea Chest intake valve ',
@@ -79,14 +80,14 @@ const CstFuelSys = {
   DieselGenerator: { Consumption: 1 }
 }
 const CstAirSys = {
-  Compressor1: {
-    AddStep: 10
+  StartAirCompressor1: {
+    AddStep: 1
   },
   EmergencyCompressor: {
     AddStep: 10
   },
   StartAirReceiver1: {
-    TankPressure: 5
+    TankPressure: 100
   },
   EmergencyReceiver: {
     TankPressure: 100

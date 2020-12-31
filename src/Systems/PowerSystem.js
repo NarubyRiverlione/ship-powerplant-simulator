@@ -11,9 +11,9 @@ const PowerBus = require('../Components/PowerBus')
                                   |         ShoreBreaker <-- Shore
                                   |                |       |-<--- Emergency generator
 ==== PROVIDERS  ============================================
-                        |
-                   MainBreaker1
-                        |
+                        |                     | (switch)
+                   MainBreaker1               |
+                        |                   Emergency Bus
                         |
                     MainBus1
                         |

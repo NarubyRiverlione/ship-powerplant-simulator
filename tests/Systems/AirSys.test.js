@@ -9,6 +9,20 @@ beforeEach(() => {
 })
 
 describe('Init', () => {
+  test('Compressor 1 air receiver is empty', () => {
+    expect(airSys.StartAirReceiver1.Tank.Content()).toBe(0)
+    expect(airSys.StartAirReceiver1.IntakeValve.isOpen).toBeFalsy()
+    expect(airSys.StartAirReceiver1.OutletValve.isOpen).toBeFalsy()
+    expect(airSys.StartAirReceiver1.Tank.Volume).toBe(CstAirSys.StartAirReceiver1.TankPressure)
+  })
+  test('Compressor 1 compressor not running', () => {
+    expect(airSys.StartAirCompressor1.isRunning).toBeFalsy()
+    expect(airSys.StartAirCompressor1.Content()).toBe(0)
+  })
+  test('Compressor 1 outlet valve closed, source set as emergency compressor', () => {
+    expect(airSys.StartCompressor1OutletValve.isOpen).toBeFalsy()
+    expect(airSys.StartCompressor1OutletValve.Source).toEqual(airSys.StartAirCompressor1)
+  })
   test('Emergency air receiver is empty', () => {
     expect(airSys.EmergencyReceiver.Tank.Content()).toBe(0)
     expect(airSys.EmergencyReceiver.IntakeValve.isOpen).toBeFalsy()
@@ -17,6 +31,7 @@ describe('Init', () => {
   })
   test('Emergency compressor not running', () => {
     expect(airSys.EmergencyCompressor.isRunning).toBeFalsy()
+    expect(airSys.EmergencyCompressor.Content()).toBe(0)
   })
   test('Emergency outlet valve closed, source set as emergency compressor', () => {
     expect(airSys.EmergencyOutletValve.isOpen).toBeFalsy()
@@ -55,5 +70,39 @@ describe('Emergency compressor', () => {
     expect(airSys.EmergencyReceiver.Tank.AddEachStep).toBe(CstAirSys.EmergencyCompressor.AddStep)
 
     expect(airSys.EmergencyReceiver.Tank.Content()).toBe(CstAirSys.EmergencyCompressor.AddStep)
+  })
+})
+
+describe('Start air  compressor 1', () => {
+  test('Open outlet valve & running = fill receiver', () => {
+    airSys.StartAirCompressor1.Start()
+    airSys.Thick()
+    expect(airSys.StartAirCompressor1.isRunning).toBeTruthy()
+    expect(airSys.StartAirCompressor1.RatedFor).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirCompressor1.Output).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirCompressor1.Content()).toBe(CstAirSys.StartAirCompressor1.AddStep)
+
+    airSys.StartCompressor1OutletValve.Open()
+    airSys.Thick()
+    expect(airSys.StartCompressor1OutletValve.Content()).toBe(CstAirSys.StartAirCompressor1.AddStep)
+
+    airSys.StartAirReceiver1.IntakeValve.Open()
+    airSys.Thick()
+    expect(airSys.StartAirReceiver1.IntakeValve.Content()).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirReceiver1.Tank.Adding).toBeTruthy()
+    expect(airSys.StartAirReceiver1.Tank.AddEachStep).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirReceiver1.Tank.Content()).toBe(CstAirSys.StartAirCompressor1.AddStep)
+  })
+  test('first open inlet receiver, then outlet compressor = fill receiver', () => {
+    airSys.StartAirReceiver1.IntakeValve.Open()
+    airSys.StartCompressor1OutletValve.Open()
+    airSys.StartAirCompressor1.Start()
+    airSys.Thick()
+
+    expect(airSys.StartAirCompressor1.isRunning).toBeTruthy()
+    expect(airSys.StartAirReceiver1.Tank.Adding).toBeTruthy()
+    expect(airSys.StartAirReceiver1.Tank.AddEachStep).toBe(CstAirSys.StartAirCompressor1.AddStep)
+
+    expect(airSys.StartAirReceiver1.Tank.Content()).toBe(CstAirSys.StartAirCompressor1.AddStep)
   })
 })

@@ -5,18 +5,30 @@ const Compressor = require('../Components/Compressor')
 const { CstTxt, CstAirSys } = require('../Cst')
 
 const { AirSysTxt } = CstTxt
+/*
+Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (outlet valve)
+                                                              (drain)
+*/
 
 module.exports = class AirSys {
   constructor(mainBus, emergencyBus) {
     // #region  Compressor 1
-    // this.Compressor1 = new Compressor(AirSysTxt.Compressor1,
-    //   mainBus, CstAirSys.Compressor1.AddStep)
+    this.StartAirCompressor1 = new Compressor(AirSysTxt.Compressor1,
+      mainBus, CstAirSys.StartAirCompressor1.AddStep)
 
-    // this.Compressor1OutletValve = new Valve()
-    // this.Compressor1OutletValve.Source = this.Compressor1
+    this.StartCompressor1OutletValve = new Valve()
+    this.StartCompressor1OutletValve.Source = this.StartAirCompressor1
+    this.StartCompressor1OutletValve.cbNowOpen = () => {
+      if (this.StartAirReceiver1.IntakeValve.isOpen) {
+        this.StartAirReceiver1.Tank.Adding = true
+      }
+    }
 
-    // this.Receiver1 = new TankWithValves(AirSysTxt.AirReceiver1,
-    //   CstAirSys.StartAirReceiver1.TankPressure, 0, this.Compressor1OutletValve)
+    this.StartAirReceiver1 = new TankWithValves(AirSysTxt.StartAirReceiver1,
+      CstAirSys.StartAirReceiver1.TankPressure, 0,
+      this.StartCompressor1OutletValve)
+
+    this.StartAirReceiver1.Tank.AddEachStep = CstAirSys.StartAirCompressor1.AddStep
     // #endregion
 
     // #region Emergency compressor
@@ -41,6 +53,9 @@ module.exports = class AirSys {
   }
 
   Thick() {
+    this.StartAirCompressor1.Thick()
+    this.StartAirReceiver1.Thick()
+
     this.EmergencyCompressor.Thick()
     this.EmergencyReceiver.Thick()
   }

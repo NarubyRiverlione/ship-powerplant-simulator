@@ -4,7 +4,9 @@ const Valve = require('../Components/Valve')
 const { CstTxt, CstLubSys } = require('../Cst')
 
 const { LubSysTxt } = CstTxt
-
+/*
+Shore Valve --> (intake valve) DsStorage (outlet valve)
+*/
 module.exports = class LubSys {
   constructor() {
     makeObservable(this, { Thick: action })
