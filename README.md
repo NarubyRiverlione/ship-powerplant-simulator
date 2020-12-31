@@ -32,20 +32,29 @@ Diesel generator 1 -->  Breaker Diesel Gen 1
 
 ### Diesel oil
 ```
-Shore Valve --> (intake valve) DsStorage (outlet valve) --> (intake valve) DsService (outlet valve)
+Shore Valve -->-- (intake valve) DsStorage (outlet valve) -->-- (intake valve) DsService (outlet valve)
                                 (drain)                                     (drain)
 ```
+(todo: purifier)
 
 ### Todo Heavy Fuel
+
+
+## Lubrication system
+```
+Shore Valve --->-- (intake valve) DsStorage (outlet valve)
+                                  (drain)                            
+```
+(todo: purifier)
 
 
 ## Compressed Air system
 ### Start Air
 ```
-Start air compressor 1 - outlet valve  ------ (intake valve) Start air receiver 1 (outlet valve)
+Start air compressor 1 - outlet valve  --->--- (intake valve) Start air receiver 1 (outlet valve)
                                                               (drain)
                                                               
-Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (outlet valve)
+Emergency compressor - outlet valve  --->--- (intake valve) Emergence receiver (outlet valve)
                                                               (drain)
 ```
 
@@ -55,10 +64,10 @@ Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (o
 ## Cooling systems
 ### Sea water cooling circuit 
 ```
-                                         |- Suction pump 1 (main bus) --|     |- Fresh water cooler Diesel generator 1 (aux capable) ->-|
-Sea chest high  - suction Valve ->-|     |- Suction pump 2 (main bus) --|==>==|- Fresh water cooler Diesel generator 2 (aux capable) ->-|==>== over board dump valve
-                                   |==>==|- Aux pump (emergency bus)----|     |- Steam condenser (cannot work not on aux pump) ------->-|
-Sea chest low  - suction valve -> -|
+                                         |- Suction pump 1 (main bus) ->-|     |- Fresh water cooler Diesel generator 1 (aux capable)->-|
+Sea chest high  - suction Valve ->-|     |- Suction pump 2 (main bus) ->-|==>==|- Fresh water cooler Diesel generator 2 (aux capable)->-|=>= over board dump valve
+                                   |==>==|- Aux pump (emergency bus)--->-|     |- Steam condenser (cannot work not on aux pump) ------>-|
+Sea chest low   - suction valve ->-|
 ```
 
 ### Fresh water cooling circuits
@@ -66,7 +75,7 @@ Sea chest low  - suction valve -> -|
                                                     |
       |->- Fresh water cooler Diesel generator 1 ->-|
       |                                             |
-      |-<- Lubrication cooler diesel generator 1 -<
+      |-<- Lubrication cooler diesel generator 1 -<-|
 ```
 
 
