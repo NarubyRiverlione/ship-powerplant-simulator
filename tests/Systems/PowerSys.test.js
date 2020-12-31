@@ -25,7 +25,9 @@ beforeEach(() => {
   const dummyAirValve = { Source: airSource, isOpen: true }
   dummyAirValve.Content = () => airSource.Content()
 
-  powerSys = new PowerSystem(dummyFuelValve, dummyLubValve, dummyAirValve)
+  const dummyLubCooler = { isCooling: true }
+
+  powerSys = new PowerSystem(dummyFuelValve, dummyLubValve, dummyAirValve, dummyLubCooler)
   //  workaround to give DsGen1  cooling
   powerSys.DsGen1.HasCooling = true
 

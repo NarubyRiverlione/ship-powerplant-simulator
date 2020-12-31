@@ -4,10 +4,10 @@ module.exports = class Cooler {
   constructor(name, coolingInputRate) {
     this.Name = name
     this.isCooling = false // cooling circuit & rate is ok
-    this.HasCooling = false // isCooling && hot circuit is ok
+    this.hasCooling = false // isCooling && hot circuit is ok
     this.CoolingInputRate = coolingInputRate
     this.CoolingProviders = 0
-    // this.CoolCircuit = []
+
     this.CoolingCircuitComplete = false
     this.HotCircuitComplete = false
 

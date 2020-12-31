@@ -6,11 +6,14 @@ module.exports = class Generator {
     this.RatedFor = rate
     this.isRunning = false
     this.Output = 0
+
     this.HasFuel = false
     this.HasCooling = false
     this.HasLubrication = false
+
     this.FuelProvider = null
     this.FuelConsumption = 0
+
     makeObservable(this, {
       isRunning: observable,
       Output: observable,

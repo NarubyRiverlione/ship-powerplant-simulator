@@ -23,13 +23,12 @@ beforeEach(() => {
   const dummyAirValve = { Source: airSource, isOpen: true }
   dummyAirValve.Content = () => airSource.Content()
 
+  const dummyLubCooler = { isCooling: true }
+
   dsgen = new DieselGenerator('test diesel generator', Rated,
-    dummyFuelValve, dummyLubValve, dummyAirValve)
+    dummyFuelValve, dummyLubValve, dummyAirValve, dummyLubCooler)
 
   dsgen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
-  //  workaround to give DsGen1  cooling
-  //  Don't test Generator here, test powerSys
-  dsgen.HasCooling = true
 })
 
 describe('init', () => {
@@ -37,7 +36,7 @@ describe('init', () => {
     expect(dsgen.RatedFor).toBe(Rated)
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasFuel).toBeFalsy()
-    // expect(dsgen.HasCooling).toBeFalsy()
+    expect(dsgen.HasCooling).toBeFalsy()
     expect(dsgen.HasLubrication).toBeFalsy()
   })
   test('Fuel intake valve closed at start', () => {
@@ -50,12 +49,12 @@ describe('init', () => {
   test('Lubrication intake valve closed at start', () => {
     expect(dsgen.LubIntakeValve.Source.Content()).toBe(startLubAmount)
     expect(dsgen.LubIntakeValve.isOpen).toBeFalsy()
-    expect(dsgen.LubProvider).toEqual(lubSource)
+    // expect(dsgen.LubProvider).toEqual(lubSource)
   })
   test('Air intake valve closed at start', () => {
     expect(dsgen.AirIntakeValve.Source.Content()).toBe(startAirAmount)
     expect(dsgen.AirIntakeValve.isOpen).toBeFalsy()
-    expect(dsgen.AirProvider).toEqual(airSource)
+    // expect(dsgen.AirProvider).toEqual(airSource)
   })
 })
 describe('Start', () => {
@@ -108,6 +107,24 @@ describe('Start', () => {
     expect(dsgen.isRunning).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
     // cannot test fuelSource.content, dummy source hasn't the remove logic
+  })
+  test('running and no fuel  = stop', () => {
+    dsgen.FuelIntakeValve.Open()
+    dsgen.LubIntakeValve.Open()
+    dsgen.AirIntakeValve.Open()
+    dsgen.Start()
+    dsgen.Thick()
+    expect(dsgen.isRunning).toBeTruthy()
+
+    const emptyFuelSource = { Content: () => 0 }
+    const emptyFuelValve = { Source: emptyFuelSource, isOpen: true }
+    emptyFuelValve.Content = () => emptyFuelSource.Content()
+
+    dsgen.FuelIntakeValve = emptyFuelValve
+    dsgen.Thick()
+    expect(dsgen.isRunning).toBeFalsy()
+    expect(dsgen.HasFuel).toBeFalsy()
+    expect(fuelSource.RemoveEachStep).toBe(0)
   })
   test('running and open fuel valve = stop', () => {
     dsgen.FuelIntakeValve.Open()
@@ -165,5 +182,21 @@ describe('Start', () => {
     dsgen.Thick()
     expect(dsgen.isRunning).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
+  })
+  test('without cooling = cannot start', () => {
+    dsgen.LubCooler = { isCooling: false }
+    dsgen.Start()
+    expect(dsgen.isRunning).toBeFalsy()
+  })
+  test('running and stop cooling = stop generator', () => {
+    dsgen.FuelIntakeValve.Open()
+    dsgen.AirIntakeValve.Open()
+    dsgen.LubIntakeValve.Open()
+    dsgen.Start()
+    expect(dsgen.isRunning).toBeTruthy()
+
+    dsgen.LubCooler = { isCooling: false }
+    dsgen.Thick()
+    expect(dsgen.isRunning).toBeFalsy()
   })
 })

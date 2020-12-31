@@ -134,51 +134,6 @@ describe('Diesel generator', () => {
       simulator.Thick()
       expect(DsGen1.HasFuel).toBeFalsy()
     })
-    test('Running generator consumes fuel from service tank', () => {
-      const { PowerSys: { DsGen1 } } = simulator
-      const { FuelSys: { DsService } } = simulator
-      const { LubSys: { Storage: LubStorage } } = simulator
-      const { AirSys: { EmergencyReceiver } } = simulator
-
-      DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
-      DsService.OutletValve.Open()
-      DsGen1.FuelIntakeValve.Open()
-      simulator.Thick()
-      expect(DsGen1.HasFuel).toBeTruthy()
-
-      LubStorage.Tank.Inside = CstLubSys.StorageTank.TankVolume
-      LubStorage.OutletValve.Open()
-      DsGen1.LubIntakeValve.Open()
-      simulator.Thick()
-      expect(DsGen1.HasLubrication).toBeTruthy()
-
-      EmergencyReceiver.Tank.Inside = CstAirSys.EmergencyReceiver.TankPressure
-      EmergencyReceiver.OutletValve.Open()
-      DsGen1.AirIntakeValve.Open()
-      simulator.Thick()
-
-      DsGen1.Start()
-      simulator.Thick()
-      expect(DsGen1.isRunning).toBeTruthy()
-
-      expect(DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
-
-      expect(DsGen1.FuelProvider).toEqual(DsService.Tank)
-      expect(DsGen1.FuelProvider.Removing).toBeTruthy()
-      expect(DsService.Tank.Removing).toBeTruthy()
-      expect(DsService.Tank.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
-
-      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
-        - CstFuelSys.DieselGenerator.Consumption)
-
-      simulator.Thick()
-      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
-        - CstFuelSys.DieselGenerator.Consumption * 2)
-
-      simulator.Thick()
-      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
-        - CstFuelSys.DieselGenerator.Consumption * 3)
-    })
   })
   describe('full startup diesel generator, startup power via emergency generator', () => {
     test('with full diesel service tank and lubrication storage tank', () => {
@@ -186,6 +141,12 @@ describe('Diesel generator', () => {
       const { FuelSys: { DsService } } = simulator
       const { LubSys: { Storage: LubStorage } } = simulator
       const { AirSys: { EmergencyReceiver, EmergencyCompressor, EmergencyOutletValve } } = simulator
+      const {
+        CoolingSys: {
+          SeaChestLowSuctionIntakeValve, AuxPump, FwCoolerDsGen1, OverboardDumpValve,
+          FwExpandTank, DsGenLubCooler
+        }
+      } = simulator
       // Fuel (fake full diesel service tank)
       DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
       DsService.OutletValve.Open()
@@ -217,10 +178,42 @@ describe('Diesel generator', () => {
       DsGen1.AirIntakeValve.Open()
       simulator.Thick()
 
+      // Sea water cooling via low suction valve and Aux pump
+      SeaChestLowSuctionIntakeValve.Open()
+      AuxPump.Start()
+      OverboardDumpValve.Open()
+      simulator.Thick()
+      expect(AuxPump.isRunning).toBeTruthy()
+      expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
+      // fresh water cooling lub dsgen 1 (fake 50% expand tank)
+      FwExpandTank.Inside = 50
+      simulator.Thick()
+      expect(DsGenLubCooler.hasCooling).toBeTruthy()
+      expect(DsGenLubCooler.isCooling).toBeTruthy()
+
       // startup diesel generator 1
       DsGen1.Start()
       simulator.Thick()
       expect(DsGen1.isRunning).toBeTruthy()
+
+      // running DsGen takes fuel from DsService tank
+      expect(DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
+
+      expect(DsGen1.FuelProvider).toEqual(DsService.Tank)
+      expect(DsGen1.FuelProvider.Removing).toBeTruthy()
+      expect(DsService.Tank.Removing).toBeTruthy()
+      expect(DsService.Tank.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
+
+      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+        - CstFuelSys.DieselGenerator.Consumption)
+
+      simulator.Thick()
+      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+        - CstFuelSys.DieselGenerator.Consumption * 2)
+
+      simulator.Thick()
+      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+        - CstFuelSys.DieselGenerator.Consumption * 3)
     })
   })
 })

@@ -4,13 +4,14 @@ simulation of a ship engine power plant
 
 | Statements                  | Branches                | Functions                 | Lines                |
 | --------------------------- | ----------------------- | ------------------------- | -------------------- |
-| ![Statements](https://img.shields.io/badge/Coverage-99.77%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-98.88%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)    |
+| ![Statements](https://img.shields.io/badge/Coverage-99.78%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-98.9%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)    |
 
 ## Power systems
-  Diesel generator 1 -->  Breaker DsGen 1
-                                  |         ShoreBreaker <-- Shore
-                                  |                |       |-<--- Emergency generator
-==== PROVIDERS  ============================================
+### Switchboard
+Diesel generator 1 -->  Breaker Diesel Gen 1
+                                  |               ShoreBreaker --<-- Shore
+                                  |                |                          |-<--- Emergency generator
+==== PROVIDERS  ===============================================================
                         |                     | (switch)
                    MainBreaker1               |
                         |                   Emergency Bus
@@ -18,7 +19,10 @@ simulation of a ship engine power plant
                     MainBus1
                         |
 
-
+### Diesel generator 1
+-- (Diesel service tank) ----------->-- Diesel oil intake valve
+-- (Emergency start air receiver) -->-- Start air intake valve
+-- (Lubrication service tank) ------>-- Lubrication intake valve
 ## Fuel system
 
 ### Diesel oil
