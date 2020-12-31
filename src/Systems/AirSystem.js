@@ -6,6 +6,9 @@ const { CstTxt, CstAirSys } = require('../Cst')
 
 const { AirSysTxt } = CstTxt
 /*
+Start air compressor 1 - outlet valve  ------ (intake valve) Start air receiver 1 (outlet valve)
+                                                              (drain)
+
 Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (outlet valve)
                                                               (drain)
 */

@@ -9,6 +9,21 @@ const Cooler = require('../Components/Cooler')
 const SeaChest = { Content: () => CStCoolantSys.SeaChest }
 const FwMakeUp = { Content: () => CStCoolantSys.FwMakeUp }
 
+/*
+** Sea water cooling circuit **
+                                         |- Suction pump 1 (main bus) --|     |- Fresh water cooler Diesel generator 1 (aux capable) ->-|
+Sea chest high  - suction Valve ->-|     |- Suction pump 2 (main bus) --|==>==|- Fresh water cooler Diesel generator 2 (aux capable) ->-|==>== over board dump valve
+                                   |==>==|- Aux pump (emergency bus)----|     |- Steam condensor (cannot work not on aux pump) ------->-|
+Sea chest low  - suction valve -> -|
+
+** Fresh water cooling circuits**
+                                                    Fresh water Expand tank
+                                                    |
+      |->- Fresh water cooler Diesel generator 1 ->-|
+      |                                             |
+      |-<- Lubrication cooler diesel generator 1 -<-|
+
+*/
 module.exports = class CoolingSys {
   constructor(mainBus, emergencyBus) {
     this.SwAvailable = 0
