@@ -144,7 +144,7 @@ describe('Diesel generator', () => {
       const {
         CoolingSys: {
           SeaChestLowSuctionIntakeValve, AuxPump, FwCoolerDsGen1, OverboardDumpValve,
-          FwExpandTank, DsGenLubCooler
+          FwExpandTank, DsGen1LubCooler
         }
       } = simulator
       // Fuel (fake full diesel service tank)
@@ -188,8 +188,8 @@ describe('Diesel generator', () => {
       // fresh water cooling lub dsgen 1 (fake 50% expand tank)
       FwExpandTank.Inside = 50
       simulator.Thick()
-      expect(DsGenLubCooler.hasCooling).toBeTruthy()
-      expect(DsGenLubCooler.isCooling).toBeTruthy()
+      expect(DsGen1LubCooler.hasCooling).toBeTruthy()
+      expect(DsGen1LubCooler.isCooling).toBeTruthy()
 
       // startup diesel generator 1
       DsGen1.Start()

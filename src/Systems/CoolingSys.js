@@ -65,10 +65,10 @@ module.exports = class CoolingSys {
       this.FwExpandTank.Adding = false
     }
 
-    this.DsGenLubCooler = new Cooler(CoolantSysTxt.DsGenLubCooler, CStCoolantSys.DsGenLubCooler.coolingRate)
-    this.DsGenLubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
+    this.DsGen1LubCooler = new Cooler(CoolantSysTxt.DsGenLubCooler, CStCoolantSys.DsGenLubCooler.coolingRate)
+    this.DsGen1LubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
     // TODO set (via Simulator Thick?): if DsGen 1 slump has lub,circulation valve is open, (filter  is selected)
-    this.DsGenLubCooler.HotCircuitComplete = true
+    this.DsGen1LubCooler.HotCircuitComplete = true
     makeAutoObservable(this)
   }
 
@@ -90,19 +90,21 @@ module.exports = class CoolingSys {
       + this.SuctionPump2.Content()
 
     this.FwCoolerDsGen1.CoolingProviders = this.SwAvailable
-    this.FwCoolerDsGen1.HotCircuitComplete = this.DsGenLubCooler.hasCooling
+    this.FwCoolerDsGen1.HotCircuitComplete = this.DsGen1LubCooler.hasCooling
     this.FwCoolerDsGen1.Thick()
+
     this.FwCoolerDsGen2.CoolingProviders = this.SwAvailable
     this.FwCoolerDsGen2.Thick()
+
     this.SteamCondensor.CoolingProviders = this.SwAvailable
     this.SteamCondensor.Thick()
 
     this.FwExpandTank.Thick()
 
-    this.DsGenLubCooler.CoolingProviders = this.FwExpandTank.Content()
+    this.DsGen1LubCooler.CoolingProviders = this.FwExpandTank.Content()
 
     // hot side of Fw DsGen 1 cooler is complete  if Lub cooler has cooling (has fresh water)
-    this.DsGenLubCooler.isCooling = this.DsGenLubCooler.isCooling && this.FwCoolerDsGen1.hasCooling
-    this.DsGenLubCooler.Thick()
+    this.DsGen1LubCooler.isCooling = this.DsGen1LubCooler.isCooling && this.FwCoolerDsGen1.hasCooling
+    this.DsGen1LubCooler.Thick()
   }
 }

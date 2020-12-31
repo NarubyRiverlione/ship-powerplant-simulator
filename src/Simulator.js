@@ -26,7 +26,7 @@ module.exports = class Simulator {
     )
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
     this.CoolingSys = new CoolingSystem(this.PowerSys.MainBus1, this.PowerSys.EmergencyBus)
-    this.PowerSys.DsGen1.LubCooler = this.CoolingSys.DsGenLubCooler
+    this.PowerSys.DsGen1.LubCooler = this.CoolingSys.DsGen1LubCooler
   }
 
   Thick() {
