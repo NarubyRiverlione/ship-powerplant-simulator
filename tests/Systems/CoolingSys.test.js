@@ -282,3 +282,36 @@ describe('Diesel gen 1 lubrication cooler', () => {
     expect(DsGen1LubCooler.isCooling).toBeTruthy()
   })
 })
+describe('Diesel gen 2 lubrication cooler', () => {
+  test('Fresh water available = hs cooling', () => {
+    const { DsGen2LubCooler } = coolingSys
+    const FwContent = 50
+    coolingSys.FwExpandTank.Inside = FwContent
+    coolingSys.Thick()
+    expect(DsGen2LubCooler.CoolingProviders).toBe(FwContent)
+    expect(DsGen2LubCooler.CheckCoolingRate()).toBeTruthy()
+    expect(DsGen2LubCooler.CoolingCircuitComplete).toBeTruthy()
+    expect(DsGen2LubCooler.hasCooling).toBeTruthy()
+  })
+  test('has cooling +  Fw cooler is cooling', () => {
+    const {
+      AuxPump, FwCoolerDsGen2, OverboardDumpValve, DsGen2LubCooler
+    } = coolingSys
+    // setup Fw cooler
+    coolingSys.SeaChestLowSuctionIntakeValve.Open()
+    AuxPump.Start()
+    OverboardDumpValve.Open()
+    coolingSys.Thick()
+    expect(FwCoolerDsGen2.hasCooling).toBeTruthy()
+    // setup Lub cooler
+    const FwContent = 50
+    coolingSys.FwExpandTank.Inside = FwContent
+    coolingSys.Thick()
+    expect(DsGen2LubCooler.hasCooling).toBeTruthy()
+
+    coolingSys.Thick()
+    expect(FwCoolerDsGen2.HotCircuitComplete).toBeTruthy()
+    expect(FwCoolerDsGen2.isCooling).toBeTruthy()
+    expect(DsGen2LubCooler.isCooling).toBeTruthy()
+  })
+})

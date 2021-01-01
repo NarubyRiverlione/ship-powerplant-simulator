@@ -41,7 +41,8 @@ const CstTxt = {
     FwIntakeValve: 'Fresh water expand tank intake valve',
     FwDrainValve: 'Fresh water expand tank drain valve',
     FwExpandTank: 'Fresh water expand tank',
-    DsGenLubCooler: 'Diesel generator 1 lubrication cooler'
+    DsGen1LubCooler: 'Diesel generator 1 lubrication cooler',
+    DsGen2LubCooler: 'Diesel generator 2 lubrication cooler'
   }
 }
 

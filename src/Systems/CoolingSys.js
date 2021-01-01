@@ -81,10 +81,16 @@ module.exports = class CoolingSys {
     }
     // #endregion
     // #region DsGen 1 Lubrication cooler (secundaire FW circuit)
-    this.DsGen1LubCooler = new Cooler(CoolantSysTxt.DsGenLubCooler, CstCoolantSys.DsGenLubCooler.coolingRate)
+    this.DsGen1LubCooler = new Cooler(CoolantSysTxt.DsGen1LubCooler, CstCoolantSys.DsGenLubCooler.coolingRate)
     this.DsGen1LubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
     // TODO set (via Simulator Thick?): if DsGen 1 slump has lub,circulation valve is open, (filter  is selected)
     this.DsGen1LubCooler.HotCircuitComplete = true
+    // #endregion
+    // #region DsGen 2 Lubrication cooler (secundaire FW circuit)
+    this.DsGen2LubCooler = new Cooler(CoolantSysTxt.DsGen2LubCooler, CstCoolantSys.DsGenLubCooler.coolingRate)
+    this.DsGen2LubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
+    // TODO set (via Simulator Thick?): if DsGen 1 slump has lub,circulation valve is open, (filter  is selected)
+    this.DsGen2LubCooler.HotCircuitComplete = true
     // #endregion
     makeAutoObservable(this)
   }
@@ -111,6 +117,7 @@ module.exports = class CoolingSys {
     this.FwCoolerDsGen1.Thick()
 
     this.FwCoolerDsGen2.CoolingProviders = this.SwAvailable
+    this.FwCoolerDsGen2.HotCircuitComplete = this.DsGen2LubCooler.hasCooling
     this.FwCoolerDsGen2.Thick()
 
     this.SteamCondensor.CoolingProviders = this.SwAvailable
@@ -118,10 +125,14 @@ module.exports = class CoolingSys {
 
     this.FwExpandTank.Thick()
 
-    this.DsGen1LubCooler.CoolingProviders = this.FwExpandTank.Content()
-
     // hot side of Fw DsGen 1 cooler is complete  if Lub cooler has cooling (has fresh water)
+    this.DsGen1LubCooler.CoolingProviders = this.FwExpandTank.Content()
     this.DsGen1LubCooler.isCooling = this.DsGen1LubCooler.isCooling && this.FwCoolerDsGen1.hasCooling
     this.DsGen1LubCooler.Thick()
+
+    // hot side of Fw DsGen 2 cooler is complete  if Lub cooler has cooling (has fresh water)
+    this.DsGen2LubCooler.CoolingProviders = this.FwExpandTank.Content()
+    this.DsGen2LubCooler.isCooling = this.DsGen2LubCooler.isCooling && this.FwCoolerDsGen2.hasCooling
+    this.DsGen2LubCooler.Thick()
   }
 }
