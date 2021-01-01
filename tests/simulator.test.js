@@ -1,6 +1,6 @@
 const Simulator = require('../src/Simulator')
 const {
-  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys, CStCoolantSys
+  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys, CstCoolantSys
 } = require('../src/Cst')
 let simulator
 beforeEach(() => {
@@ -230,7 +230,7 @@ describe('Sea water system', () => {
     AuxPump.Start()
     simulator.Thick()
     expect(AuxPump.isRunning).toBeTruthy()
-    expect(AuxPump.Providers).toBe(CStCoolantSys.SeaChest)
-    expect(AuxPump.Content()).toBe(CStCoolantSys.AuxSuctionPump)
+    expect(AuxPump.Providers).toBe(CstCoolantSys.SeaChest)
+    expect(AuxPump.Content()).toBe(CstCoolantSys.AuxSuctionPump)
   })
 })

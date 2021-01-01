@@ -13,6 +13,8 @@ module.exports = class ElectricPump extends Appliance {
   Content() { return this.Output }
 
   Thick() {
+    // pump cannot run dry without providers
+    if (this.Providers === 0) super.Stop()
     super.Thick()
     if (!this.isRunning) {
       this.Output = 0

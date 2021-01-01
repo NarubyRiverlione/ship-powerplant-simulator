@@ -25,13 +25,13 @@ describe('output', () => {
     expect(pump.Output).toBe(0)
     expect(pump.Content()).toBe(0)
   })
-  test('running pump without provides = zero output', () => {
+  test('running pump without provides = not running, zero output', () => {
     const ratedFor = 16381
     const testBus = { Voltage: 158 }
     const pump = new Pump('test bus', testBus, ratedFor)
     pump.Start()
     pump.Thick()
-    expect(pump.isRunning).toBeTruthy()
+    expect(pump.isRunning).toBeFalsy()
     expect(pump.Output).toBe(0)
     expect(pump.Content()).toBe(0)
   })

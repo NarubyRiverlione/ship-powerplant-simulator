@@ -1,4 +1,4 @@
-const { CStCoolantSys } = require('../../src/Cst')
+const { CstCoolantSys, CstChanges } = require('../../src/Cst')
 const CoolingSys = require('../../src/Systems/CoolingSys')
 
 const dummyEmergencyBus = { Voltage: 440 }
@@ -36,21 +36,21 @@ describe('Init', () => {
   })
   test('FW cooler diesel generator 2, not cooling', () => {
     const { FwCoolerDsGen2 } = coolingSys
-    expect(FwCoolerDsGen2.CoolingInputRate).toBe(CStCoolantSys.FwCoolerDsGen2.coolingRate)
+    expect(FwCoolerDsGen2.CoolingInputRate).toBe(CstCoolantSys.FwCoolerDsGen2.coolingRate)
     expect(FwCoolerDsGen2.CoolingProviders).toBe(0)
     expect(FwCoolerDsGen2.hasCooling).toBeFalsy()
     expect(FwCoolerDsGen2.isCooling).toBeFalsy()
   })
   test('Steam conderser, not cooling', () => {
     const { SteamCondensor } = coolingSys
-    expect(SteamCondensor.CoolingInputRate).toBe(CStCoolantSys.SteamCondensor.coolingRate)
+    expect(SteamCondensor.CoolingInputRate).toBe(CstCoolantSys.SteamCondensor.coolingRate)
     expect(SteamCondensor.CoolingProviders).toBe(0)
     expect(SteamCondensor.hasCooling).toBeFalsy()
     expect(SteamCondensor.isCooling).toBeFalsy()
   })
   test('FW cooler diesel generator 1, not cooling', () => {
     const { FwCoolerDsGen1 } = coolingSys
-    expect(FwCoolerDsGen1.CoolingInputRate).toBe(CStCoolantSys.FwCoolerDsGen2.coolingRate)
+    expect(FwCoolerDsGen1.CoolingInputRate).toBe(CstCoolantSys.FwCoolerDsGen2.coolingRate)
     expect(FwCoolerDsGen1.CoolingProviders).toBe(0)
     expect(FwCoolerDsGen1.hasCooling).toBeFalsy()
     expect(FwCoolerDsGen1.isCooling).toBeFalsy()
@@ -61,6 +61,9 @@ describe('Init', () => {
   test('Fw expand tank intake valve is closed', () => {
     expect(coolingSys.FwIntakeValve.isOpen).toBeFalsy()
   })
+  test('Fw expand tank drain valve  is closed', () => {
+    expect(coolingSys.FwDrainValve.isOpen).toBeFalsy()
+  })
 })
 
 describe('Sea chests', () => {
@@ -68,12 +71,12 @@ describe('Sea chests', () => {
     const { SeaChestLowSuctionIntakeValve } = coolingSys
     SeaChestLowSuctionIntakeValve.Open()
     expect(SeaChestLowSuctionIntakeValve.isOpen).toBeTruthy()
-    expect(SeaChestLowSuctionIntakeValve.Content()).toBe(CStCoolantSys.SeaChest)
+    expect(SeaChestLowSuctionIntakeValve.Content()).toBe(CstCoolantSys.SeaChest)
   })
   test('High suction intake valve open = content', () => {
     const { SeaChestHighSuctionIntakeValve } = coolingSys
     SeaChestHighSuctionIntakeValve.Open()
-    expect(SeaChestHighSuctionIntakeValve.Content()).toBe(CStCoolantSys.SeaChest)
+    expect(SeaChestHighSuctionIntakeValve.Content()).toBe(CstCoolantSys.SeaChest)
   })
 })
 describe('Suction pumps', () => {
@@ -83,9 +86,9 @@ describe('Suction pumps', () => {
     AuxPump.Start()
     coolingSys.Thick()
     expect(AuxPump.isRunning).toBeTruthy()
-    expect(AuxPump.Providers).toBe(CStCoolantSys.SeaChest)
-    expect(AuxPump.Content()).toBe(CStCoolantSys.AuxSuctionPump)
-    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.AuxSuctionPump)
+    expect(AuxPump.Providers).toBe(CstCoolantSys.SeaChest)
+    expect(AuxPump.Content()).toBe(CstCoolantSys.AuxSuctionPump)
+    expect(coolingSys.SwAvailable).toBe(CstCoolantSys.AuxSuctionPump)
   })
   test('Suction pump 1 with low suction valve open = output is rated', () => {
     const { SuctionPump1 } = coolingSys
@@ -93,9 +96,9 @@ describe('Suction pumps', () => {
     SuctionPump1.Start()
     coolingSys.Thick()
     expect(SuctionPump1.isRunning).toBeTruthy()
-    expect(SuctionPump1.Providers).toBe(CStCoolantSys.SeaChest)
-    expect(SuctionPump1.Content()).toBe(CStCoolantSys.SuctionPumps)
-    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
+    expect(SuctionPump1.Providers).toBe(CstCoolantSys.SeaChest)
+    expect(SuctionPump1.Content()).toBe(CstCoolantSys.SuctionPumps)
+    expect(coolingSys.SwAvailable).toBe(CstCoolantSys.SuctionPumps)
   })
   test('Suction pump 2 with high suction valve open = output is rated', () => {
     const { SuctionPump2 } = coolingSys
@@ -103,18 +106,18 @@ describe('Suction pumps', () => {
     SuctionPump2.Start()
     coolingSys.Thick()
     expect(SuctionPump2.isRunning).toBeTruthy()
-    expect(SuctionPump2.Providers).toBe(CStCoolantSys.SeaChest)
-    expect(SuctionPump2.Content()).toBe(CStCoolantSys.SuctionPumps)
-    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
+    expect(SuctionPump2.Providers).toBe(CstCoolantSys.SeaChest)
+    expect(SuctionPump2.Content()).toBe(CstCoolantSys.SuctionPumps)
+    expect(coolingSys.SwAvailable).toBe(CstCoolantSys.SuctionPumps)
   })
-  test('Running Suction pump 2, close suction valve  = output zero', () => {
+  test('Running Suction pump 2, close suction valve  = stop running, output zero', () => {
     const { SuctionPump2 } = coolingSys
     coolingSys.SeaChestHighSuctionIntakeValve.Open()
     SuctionPump2.Start()
     coolingSys.Thick()
     coolingSys.SeaChestHighSuctionIntakeValve.Close()
     coolingSys.Thick()
-    expect(SuctionPump2.isRunning).toBeTruthy()
+    expect(SuctionPump2.isRunning).toBeFalsy()
     expect(SuctionPump2.Providers).toBe(0)
     expect(SuctionPump2.Content()).toBe(0)
     expect(coolingSys.SwAvailable).toBe(0)
@@ -125,7 +128,7 @@ describe('Suction pumps', () => {
     SuctionPump1.Start()
     AuxPump.Start()
     coolingSys.Thick()
-    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps + CStCoolantSys.AuxSuctionPump)
+    expect(coolingSys.SwAvailable).toBe(CstCoolantSys.SuctionPumps + CstCoolantSys.AuxSuctionPump)
   })
 })
 
@@ -171,10 +174,10 @@ describe('Aux pump', () => {
     AuxPump.Start()
     OverboardDumpValve.Open()
     coolingSys.Thick()
-    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.AuxSuctionPump)
+    expect(coolingSys.SwAvailable).toBe(CstCoolantSys.AuxSuctionPump)
 
     expect(FwCoolerDsGen1.CoolingCircuitComplete).toBeTruthy()
-    expect(FwCoolerDsGen1.CoolingProviders).toBe(CStCoolantSys.AuxSuctionPump)
+    expect(FwCoolerDsGen1.CoolingProviders).toBe(CstCoolantSys.AuxSuctionPump)
     expect(FwCoolerDsGen1.CheckCoolingRate()).toBeTruthy()
     expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
 
@@ -194,14 +197,13 @@ describe('Suction pumps ', () => {
     SuctionPump1.Start()
     OverboardDumpValve.Open()
     coolingSys.Thick()
-    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
+    expect(coolingSys.SwAvailable).toBe(CstCoolantSys.SuctionPumps)
 
     expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
     expect(FwCoolerDsGen2.hasCooling).toBeTruthy()
     // suction pump has enough flow for the stream condensor
     expect(SteamCondensor.hasCooling).toBeTruthy()
   })
-
   test('Suction pump 2 providing cooling for FW dsgen AND to steam condensor', () => {
     const {
       SuctionPump2, FwCoolerDsGen1, FwCoolerDsGen2, OverboardDumpValve, SteamCondensor
@@ -211,7 +213,7 @@ describe('Suction pumps ', () => {
     SuctionPump2.Start()
     OverboardDumpValve.Open()
     coolingSys.Thick()
-    expect(coolingSys.SwAvailable).toBe(CStCoolantSys.SuctionPumps)
+    expect(coolingSys.SwAvailable).toBe(CstCoolantSys.SuctionPumps)
 
     expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
     expect(FwCoolerDsGen2.hasCooling).toBeTruthy()
@@ -224,15 +226,26 @@ describe('Fresh water expand tank', () => {
   test('fill expand tank by open the intake valve', () => {
     coolingSys.FwIntakeValve.Open()
     coolingSys.Thick()
-    expect(coolingSys.FwExpandTank.Content()).toBe(CStCoolantSys.FwExpandTank.TankAddStep)
+    expect(coolingSys.FwExpandTank.Content()).toBe(CstCoolantSys.FwExpandTank.TankAddStep)
   })
   test('closing intake valve, stop filling expand tank', () => {
     coolingSys.FwIntakeValve.Open()
     coolingSys.Thick()
-    expect(coolingSys.FwExpandTank.Content()).toBe(CStCoolantSys.FwExpandTank.TankAddStep)
+    expect(coolingSys.FwExpandTank.Content()).toBe(CstCoolantSys.FwExpandTank.TankAddStep)
     coolingSys.FwIntakeValve.Close()
     coolingSys.Thick()
-    expect(coolingSys.FwExpandTank.Content()).toBe(CStCoolantSys.FwExpandTank.TankAddStep)
+    expect(coolingSys.FwExpandTank.Content()).toBe(CstCoolantSys.FwExpandTank.TankAddStep)
+  })
+  test('Drain expand tank', () => {
+    const startContent = 60
+    coolingSys.FwExpandTank.Inside = startContent
+    coolingSys.FwDrainValve.Open()
+    coolingSys.Thick()
+    expect(coolingSys.FwExpandTank.Content()).toBe(startContent - CstChanges.DrainStep)
+
+    coolingSys.FwDrainValve.Close()
+    coolingSys.Thick()
+    expect(coolingSys.FwExpandTank.Content()).toBe(startContent - CstChanges.DrainStep)
   })
 })
 

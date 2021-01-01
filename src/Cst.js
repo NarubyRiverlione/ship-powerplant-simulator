@@ -39,6 +39,7 @@ const CstTxt = {
     FwCoolerDsGen2: 'Fresh water cooler diesel generator 2',
     SteamCondensor: 'Steam condensor',
     FwIntakeValve: 'Fresh water expand tank intake valve',
+    FwDrainValve: 'Fresh water expand tank drain valve',
     FwExpandTank: 'Fresh water expand tank',
     DsGenLubCooler: 'Diesel generator 1 lubrication cooler'
   }
@@ -94,7 +95,7 @@ const CstAirSys = {
   },
   DieselGenerator: { MinPressure: 2 }
 }
-const CStCoolantSys = {
+const CstCoolantSys = {
   SeaChest: 1e6,
   AuxSuctionPump: 1200,
   SuctionPumps: 10000,
@@ -118,5 +119,5 @@ module.exports = {
   CstFuelSys,
   CstLubSys,
   CstAirSys,
-  CStCoolantSys
+  CstCoolantSys
 }
