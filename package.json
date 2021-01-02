@@ -1,6 +1,6 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Simulator logic for ship powerplant",
   "main": "src/Simulator.js",
   "type": "module",
@@ -50,6 +50,7 @@
       "sourceType": "module"
     },
     "rules": {
+      "no-mixed-operators": "off",
       "class-methods-use-this": "warn",
       "max-len": [
         "warn",

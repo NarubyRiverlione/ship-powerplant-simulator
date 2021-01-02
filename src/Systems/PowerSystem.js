@@ -21,8 +21,8 @@ Diesel generator 1 -->  Breaker DsGen 1
 
 ** Diesel generator 1 **
 -- (Diesel service tank) ----------->-- Diesel oil intake valve
--- (Emergency start air receiver) -->-- Start air intake valve
--- (Lubrication service tank) ------>-- Lubrication intake valve
+-- (Emergency start air receiver) -->-- Start air intake valve (mim start up)
+-- (Lubrication service tank) ------>-- Lubrication intake valve -->-- Slump (min level)
 -- (Lubrication cooler DsGen 1) ---->--
 */
 module.exports = class PowerSystem {

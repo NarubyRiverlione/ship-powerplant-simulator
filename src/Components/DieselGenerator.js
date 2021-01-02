@@ -5,7 +5,7 @@ const Generator = require('./Generator')
 const Valve = require('./Valve')
 const Tank = require('./Tank')
 const {
-  CstAirSys, CstTxt, CstPowerSys
+  CstAirSys, CstTxt, CstPowerSys, CstFuelSys
 } = require('../Cst')
 const { DieselGeneratorTxt } = CstTxt
 
@@ -21,12 +21,12 @@ module.exports = class DieselGenerator extends Generator {
     this.LubProvider = lubValve.Source
     this.LubIntakeValve.cbNowOpen = () => {
       this.LubSlump.Adding = true
-      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep
+      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump
       this.LubProvider.Removing = true
     }
     this.LubIntakeValve.cbNowClosed = () => {
       this.LubSlump.Adding = false
-      this.LubProvider.RemoveEachStep -= CstPowerSys.DsGen1.Slump.TankAddStep
+      this.LubProvider.RemoveEachStep = CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump
       this.LubProvider.Removing = false
     }
 

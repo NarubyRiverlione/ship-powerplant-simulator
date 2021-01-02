@@ -50,7 +50,8 @@ module.exports = class FuelSystem {
       this.DsStorage.Tank.RemoveEachStep = 0 // -= CstFuelSys.DsServiceTank.TankAddStep
     }
     this.DsService.Tank.cbAdded = (added) => {
-      this.DsStorage.Tank.RemoveEachStep = added
+      // storage tank is Ratio bigger then service tank
+      this.DsStorage.Tank.RemoveEachStep = added / CstFuelSys.RatioStorageServiceTanks
     }
 
     // as both outlet valves and service intake valve needs to be closed to transfer

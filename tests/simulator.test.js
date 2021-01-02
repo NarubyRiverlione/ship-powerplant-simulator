@@ -208,15 +208,15 @@ describe('Diesel generator', () => {
       expect(DsService.Tank.Removing).toBeTruthy()
       expect(DsService.Tank.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
 
-      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+      expect(DsService.Tank.Content()).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume
         - CstFuelSys.DieselGenerator.Consumption)
 
       simulator.Thick()
-      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+      expect(DsService.Tank.Content()).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume
         - CstFuelSys.DieselGenerator.Consumption * 2)
 
       simulator.Thick()
-      expect(DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
+      expect(DsService.Tank.Content()).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume
         - CstFuelSys.DieselGenerator.Consumption * 3)
     })
   })

@@ -2,9 +2,9 @@ const DieselGenerator = require('../../src/Components/DieselGenerator')
 const { CstFuelSys, CstAirSys, CstPowerSys } = require('../../src/Cst')
 
 const Rated = 30000
-const startFuelAmount = 10000
-const startLubAmount = 2000
-const startAirAmount = 5
+const startFuelAmount = 10000.0
+const startLubAmount = 2000.0
+const startAirAmount = CstAirSys.DieselGenerator.MinPressure
 
 let dsgen
 let fuelSource
@@ -66,15 +66,18 @@ describe('Slump', () => {
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
     expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
-    expect(lubSource.RemoveEachStep).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+    expect(lubSource.RemoveEachStep)
+      .toBe(CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump)
   })
   test('Re-close lub intake = slump stop adding', () => {
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
+    expect(lubSource.RemoveEachStep)
+      .toBe(CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump)
     dsgen.LubIntakeValve.Close()
     dsgen.Thick()
     expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
-    expect(lubSource.RemoveEachStep).toBe(0)
+    // expect(lubSource.RemoveEachStep.toFixed(0)).toBe(0)
   })
   test('slump above minimum = has lubrication', () => {
     dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
