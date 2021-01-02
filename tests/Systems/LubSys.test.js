@@ -1,5 +1,6 @@
 const LubSys = require('../../src/Systems/LubricationSystem')
 const { CstLubSys } = require('../../src/Cst')
+const { AlarmCode, AlarmLevel } = require('../../src/CstAlarms')
 
 let lubSys
 beforeEach(() => {
@@ -104,5 +105,34 @@ describe('Storage tank: fill from shore', () => {
     do {
       lubSys.Thick()
     } while (!fullFlag)
+  })
+})
+describe('Alarms', () => {
+  test('Low diesel service tanks', () => {
+    let raisedAlarmCode = 0
+    const dummyAlarmSys = { AddAlarm: (raise) => { raisedAlarmCode = raise } }
+    lubSys.AlarmSys = dummyAlarmSys
+    // at alarm level = no alarm yet, must be below
+    lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.StorageLow
+    lubSys.Thick()
+    expect(raisedAlarmCode).toBe(0)
+
+    lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.StorageLow - 0.1
+    lubSys.Thick()
+    expect(raisedAlarmCode).toBe(AlarmCode.LowLubStorageTank)
+  })
+  test('Empty diesel storage tanks', () => {
+    let raisedAlarmCodes = new Set()
+    const dummyAlarmSys = { AddAlarm: (raise) => { raisedAlarmCodes.add(raise) } }
+    lubSys.AlarmSys = dummyAlarmSys
+
+    // at alarm level = no alarm yet, must be below
+    lubSys.Storage.Tank.Inside = 1
+    lubSys.Thick()
+    expect(raisedAlarmCodes.has(AlarmCode.EmptyDsStorageTank)).toBeFalsy()
+
+    lubSys.Storage.Tank.Inside = 0
+    lubSys.Thick()
+    expect(raisedAlarmCodes.has(AlarmCode.EmptyLubStorageTank)).toBeTruthy()
   })
 })

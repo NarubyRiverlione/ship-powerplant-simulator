@@ -5,8 +5,9 @@ const Generator = require('./Generator')
 const Valve = require('./Valve')
 const Tank = require('./Tank')
 const {
-  CstAirSys, CstTxt, CstPowerSys, CstFuelSys
+  CstAirSys, CstPowerSys, CstFuelSys
 } = require('../Cst')
+const CstTxt = require('../CstTxt')
 const { DieselGeneratorTxt } = CstTxt
 
 module.exports = class DieselGenerator extends Generator {

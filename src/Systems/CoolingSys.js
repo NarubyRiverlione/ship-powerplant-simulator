@@ -1,5 +1,6 @@
 const { makeAutoObservable } = require('mobx')
-const { CstCoolantSys, CstTxt, CstChanges } = require('../Cst')
+const { CstCoolantSys, CstChanges } = require('../Cst')
+const CstTxt = require('../CstTxt')
 const { CoolantSysTxt } = CstTxt
 
 const Tank = require('../Components/Tank')

@@ -2,7 +2,10 @@ const { makeObservable, action } = require('mobx')
 const TankWithValves = require('../Components/TankWithValves')
 const Valve = require('../Components/Valve')
 
-const { CstFuelSys, CstTxt } = require('../Cst')
+const { CstFuelSys } = require('../Cst')
+const { AlarmCode, AlarmLevel } = require('../CstAlarms')
+
+const CstTxt = require('../CstTxt')
 const { FuelSysTxt } = CstTxt
 /*
 Shore Valve --> (intake valve) DsStorage (outlet valve) --> (intake valve) DsService (outlet valve)
@@ -10,7 +13,6 @@ Shore Valve --> (intake valve) DsStorage (outlet valve) --> (intake valve) DsSer
 */
 module.exports = class FuelSystem {
   constructor() {
-    makeObservable(this, { Thick: action })
     // #region Intake valve from shore to diesel storage tank
     this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve)
     this.DsShoreValve.Source = { Content: () => CstFuelSys.ShoreVolume }
@@ -61,6 +63,26 @@ module.exports = class FuelSystem {
       this.DsService.Tank.Adding = false
     }
     // #endregion
+    this.AlarmSys = null
+    makeObservable(this, { Thick: action })
+  }
+
+  CheckAlarms() {
+    if (!this.AlarmSys) return
+
+    if (this.DsStorage.Tank.Content() < AlarmLevel.FuelSys.DsStorageLow) {
+      this.AlarmSys.AddAlarm(AlarmCode.LowDsStorageTank)
+    }
+    if (this.DsStorage.Tank.Content() === 0) {
+      this.AlarmSys.AddAlarm(AlarmCode.EmptyDsStorageTank)
+    }
+
+    if (this.DsService.Tank.Content() < AlarmLevel.FuelSys.DsServiceLow) {
+      this.AlarmSys.AddAlarm(AlarmCode.LowDsServiceTank)
+    }
+    if (this.DsService.Tank.Content() === 0) {
+      this.AlarmSys.AddAlarm(AlarmCode.EmptyDsServiceTank)
+    }
   }
 
   Thick() {
@@ -76,5 +98,6 @@ module.exports = class FuelSystem {
     // -> stop from removing from storage
     this.DsService.Thick()
     this.DsStorage.Thick()
+    this.CheckAlarms()
   }
 }

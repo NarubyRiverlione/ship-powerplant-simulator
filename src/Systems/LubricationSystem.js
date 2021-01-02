@@ -1,9 +1,11 @@
 const { makeObservable, action } = require('mobx')
 const TankWithValves = require('../Components/TankWithValves')
 const Valve = require('../Components/Valve')
-const { CstTxt, CstLubSys } = require('../Cst')
-
+const { CstLubSys } = require('../Cst')
+const CstTxt = require('../CstTxt')
 const { LubSysTxt } = CstTxt
+const { AlarmCode, AlarmLevel } = require('../CstAlarms')
+
 /*
 Shore Valve --> (intake valve) DsStorage (outlet valve)
 */
@@ -26,7 +28,19 @@ module.exports = class LubSys {
     this.Storage.Tank.AddEachStep = CstLubSys.StorageTank.TankAddStep
   }
 
+  CheckAlarms() {
+    if (!this.AlarmSys) return
+
+    if (this.Storage.Tank.Content() < AlarmLevel.LubSys.StorageLow) {
+      this.AlarmSys.AddAlarm(AlarmCode.LowLubStorageTank)
+    }
+    if (this.Storage.Tank.Content() === 0) {
+      this.AlarmSys.AddAlarm(AlarmCode.EmptyLubStorageTank)
+    }
+  }
+
   Thick() {
     this.Storage.Tank.Thick()
+    this.CheckAlarms()
   }
 }

@@ -2,8 +2,8 @@ const { makeAutoObservable } = require('mobx')
 const TankWithValves = require('../Components/TankWithValves')
 const Valve = require('../Components/Valve')
 const Compressor = require('../Components/Compressor')
-const { CstTxt, CstAirSys } = require('../Cst')
-
+const { CstAirSys } = require('../Cst')
+const CstTxt = require('../CstTxt')
 const { AirSysTxt } = CstTxt
 /*
 Start air compressor 1 - outlet valve  ------ (intake valve) Start air receiver 1 (outlet valve)
