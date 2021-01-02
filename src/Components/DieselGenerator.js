@@ -18,11 +18,16 @@ module.exports = class DieselGenerator extends Generator {
 
     this.LubIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.LubIntakeValve}`)
     this.LubIntakeValve.Source = lubValve
+    this.LubProvider = lubValve.Source
     this.LubIntakeValve.cbNowOpen = () => {
       this.LubSlump.Adding = true
+      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep
+      this.LubProvider.Removing = true
     }
     this.LubIntakeValve.cbNowClosed = () => {
       this.LubSlump.Adding = false
+      this.LubProvider.RemoveEachStep -= CstPowerSys.DsGen1.Slump.TankAddStep
+      this.LubProvider.Removing = false
     }
 
     this.LubSlump = new Tank(DieselGeneratorTxt.LubSlump, CstPowerSys.DsGen1.Slump.TankVolume)

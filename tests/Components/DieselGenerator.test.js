@@ -8,15 +8,15 @@ const startAirAmount = 5
 
 let dsgen
 let fuelSource
-const lubSource = { Content: () => startLubAmount }
+let lubSource
 const airSource = { Content: () => startAirAmount }
 
 beforeEach(() => {
   fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
-
   const dummyFuelOutletValve = { Source: fuelSource, isOpen: true }
   dummyFuelOutletValve.Content = () => fuelSource.Content()
 
+  lubSource = { Content: () => startLubAmount, RemoveEachStep: 0 }
   const dummyLubOutletValve = { Source: lubSource, isOpen: true }
   dummyLubOutletValve.Content = () => lubSource.Content()
 
@@ -62,10 +62,11 @@ describe('init', () => {
   })
 })
 describe('Slump', () => {
-  test('Open lub intake = slump adding', () => {
+  test('Open lub intake = slump adding, remove from Lub provider', () => {
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
     expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+    expect(lubSource.RemoveEachStep).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
   })
   test('Re-close lub intake = slump stop adding', () => {
     dsgen.LubIntakeValve.Open()
@@ -73,6 +74,7 @@ describe('Slump', () => {
     dsgen.LubIntakeValve.Close()
     dsgen.Thick()
     expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+    expect(lubSource.RemoveEachStep).toBe(0)
   })
   test('slump above minimum = has lubrication', () => {
     dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
