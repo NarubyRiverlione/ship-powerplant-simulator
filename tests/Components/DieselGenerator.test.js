@@ -1,5 +1,5 @@
 const DieselGenerator = require('../../src/Components/DieselGenerator')
-const { CstFuelSys, CstAirSys } = require('../../src/Cst')
+const { CstFuelSys, CstAirSys, CstPowerSys } = require('../../src/Cst')
 
 const Rated = 30000
 const startFuelAmount = 10000
@@ -14,26 +14,27 @@ const airSource = { Content: () => startAirAmount }
 beforeEach(() => {
   fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
 
-  const dummyFuelValve = { Source: fuelSource, isOpen: true }
-  dummyFuelValve.Content = () => fuelSource.Content()
+  const dummyFuelOutletValve = { Source: fuelSource, isOpen: true }
+  dummyFuelOutletValve.Content = () => fuelSource.Content()
 
-  const dummyLubValve = { Source: lubSource, isOpen: true }
-  dummyLubValve.Content = () => lubSource.Content()
+  const dummyLubOutletValve = { Source: lubSource, isOpen: true }
+  dummyLubOutletValve.Content = () => lubSource.Content()
 
-  const dummyAirValve = { Source: airSource, isOpen: true }
-  dummyAirValve.Content = () => airSource.Content()
+  const dummyAirOutletValve = { Source: airSource, isOpen: true }
+  dummyAirOutletValve.Content = () => airSource.Content()
 
   const dummyLubCooler = { isCooling: true }
 
   dsgen = new DieselGenerator('test diesel generator', Rated,
-    dummyFuelValve, dummyLubValve, dummyAirValve, dummyLubCooler)
+    dummyFuelOutletValve, dummyLubOutletValve, dummyAirOutletValve, dummyLubCooler)
 
   dsgen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
 })
 
 describe('init', () => {
-  test('generator not running', () => {
+  test('generator not running, requisites are not met', () => {
     expect(dsgen.RatedFor).toBe(Rated)
+    expect(dsgen.Output).toBe(0)
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasFuel).toBeFalsy()
     expect(dsgen.HasCooling).toBeFalsy()
@@ -56,25 +57,45 @@ describe('init', () => {
     expect(dsgen.AirIntakeValve.isOpen).toBeFalsy()
     // expect(dsgen.AirProvider).toEqual(airSource)
   })
+  test('Empty slump', () => {
+    expect(dsgen.LubSlump.Content()).toBe(0)
+  })
+})
+describe('Slump', () => {
+  test('Open lub intake = slump adding', () => {
+    dsgen.LubIntakeValve.Open()
+    dsgen.Thick()
+    expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+  })
+  test('Re-close lub intake = slump stop adding', () => {
+    dsgen.LubIntakeValve.Open()
+    dsgen.Thick()
+    dsgen.LubIntakeValve.Close()
+    dsgen.Thick()
+    expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+  })
+  test('slump above minimum = has lubrication', () => {
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
+    dsgen.Thick()
+    expect(dsgen.HasLubrication).toBeTruthy()
+  })
 })
 describe('Start', () => {
   test('closed fuel & lubrication valves & no air = cannot start', () => {
     expect(dsgen.FuelIntakeValve.isOpen).toBeFalsy()
-    expect(dsgen.LubIntakeValve.isOpen).toBeFalsy()
-
     dsgen.Start()
     dsgen.Thick()
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasFuel).toBeFalsy()
     expect(dsgen.HasLubrication).toBeFalsy()
+    // expect(dsgen.HasCooling).toBeFalsy()
   })
-  test('closed fuel intake, open lubrication valve & no air  = cannot start', () => {
-    dsgen.LubIntakeValve.Open()
-    dsgen.Thick()
-    expect(dsgen.LubIntakeValve.Content()).toBe(startLubAmount)
-    expect(dsgen.HasLubrication).toBeTruthy()
+  test('closed fuel intake, has lubrication valve & no air  = cannot start', () => {
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.Start()
     dsgen.Thick()
+    expect(dsgen.HasLubrication).toBeTruthy()
+    // expect(dsgen.HasCooling).toBeFalsy()
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasFuel).toBeFalsy()
   })
@@ -89,7 +110,8 @@ describe('Start', () => {
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasLubrication).toBeFalsy()
   })
-  test('open fuel valve & open lubrication & min air  = can start = consumes fuel', () => {
+  test('open fuel valve & has lubrication & min air  = can start = consumes fuel', () => {
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.FuelIntakeValve.Open()
     dsgen.Thick()
     expect(dsgen.FuelIntakeValve.isOpen).toBeTruthy()
@@ -109,6 +131,7 @@ describe('Start', () => {
     // cannot test fuelSource.content, dummy source hasn't the remove logic
   })
   test('running and no fuel  = stop', () => {
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.FuelIntakeValve.Open()
     dsgen.LubIntakeValve.Open()
     dsgen.AirIntakeValve.Open()
@@ -127,8 +150,8 @@ describe('Start', () => {
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
   test('running and open fuel valve = stop', () => {
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.FuelIntakeValve.Open()
-    dsgen.LubIntakeValve.Open()
     dsgen.AirIntakeValve.Open()
     dsgen.Start()
     dsgen.Thick()
@@ -141,24 +164,26 @@ describe('Start', () => {
     expect(dsgen.HasFuel).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
-  test('running and open lubrication valve = stop', () => {
+  test('running and not enough lubrication valve = stop', () => {
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.FuelIntakeValve.Open()
-    dsgen.LubIntakeValve.Open()
     dsgen.AirIntakeValve.Open()
     dsgen.Start()
     dsgen.Thick()
+    expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.MinForLubrication)
     expect(dsgen.isRunning).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
 
-    dsgen.LubIntakeValve.Close()
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication - 1
     dsgen.Thick()
+    expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.MinForLubrication - 1)
     expect(dsgen.isRunning).toBeFalsy()
     expect(dsgen.HasLubrication).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
   test('running no air = keep running as air is only needed to start', () => {
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.FuelIntakeValve.Open()
-    dsgen.LubIntakeValve.Open()
     dsgen.AirIntakeValve.Open()
     dsgen.Start()
     dsgen.Thick()
@@ -172,12 +197,9 @@ describe('Start', () => {
   })
   test('fuel & lubrication but to less air = cannot start', () => {
     dsgen.FuelIntakeValve.Open()
-    dsgen.LubIntakeValve.Open()
-
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.AirIntakeValve.Source = { Content: () => CstAirSys.DieselGenerator.MinPressure - 0.1 }
     dsgen.AirIntakeValve.Open()
-    dsgen.Thick()
-
     dsgen.Start()
     dsgen.Thick()
     expect(dsgen.isRunning).toBeFalsy()
@@ -191,7 +213,7 @@ describe('Start', () => {
   test('running and stop cooling = stop generator', () => {
     dsgen.FuelIntakeValve.Open()
     dsgen.AirIntakeValve.Open()
-    dsgen.LubIntakeValve.Open()
+    dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.Start()
     expect(dsgen.isRunning).toBeTruthy()
 

@@ -157,8 +157,12 @@ describe('Diesel generator', () => {
       LubStorage.Tank.Inside = CstLubSys.StorageTank.TankVolume
       LubStorage.OutletValve.Open()
       DsGen1.LubIntakeValve.Open()
-      simulator.Thick()
+      // wait until slump is at minmum level
+      do {
+        simulator.Thick()
+      } while (DsGen1.LubSlump.Content() < CstPowerSys.DsGen1.Slump.MinForLubrication)
       expect(DsGen1.HasLubrication).toBeTruthy()
+      DsGen1.LubIntakeValve.Close()
       // startup emergency generator
       EmergencyGen.Start()
       simulator.Thick()

@@ -1,10 +1,9 @@
 const PowerSystem = require('../../src/Systems/PowerSystem')
 const { CstPowerSys, CstFuelSys, CstAirSys } = require('../../src/Cst')
 
-// fake fuel source, testing diesel generator only here, not the complete system (that's simulator test)
-// const fuelSource = { Content: () => fuelAmount, RemoveEachStep: 0 }
-
 let powerSys
+// fake fuel, air & lub sources,
+// testing diesel generator only here, not the complete system (that's simulator test)
 const startFuelAmount = 10000
 const startLubAmount = 2000
 const startAirAmount = CstAirSys.DieselGenerator.MinPressure
@@ -16,23 +15,21 @@ const airSource = { Content: () => startAirAmount }
 beforeEach(() => {
   fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
 
-  const dummyFuelValve = { Source: fuelSource, isOpen: true }
-  dummyFuelValve.Content = () => fuelSource.Content()
+  const dummyFuelOutletValve = { Source: fuelSource, isOpen: true }
+  dummyFuelOutletValve.Content = () => fuelSource.Content()
 
-  const dummyLubValve = { Source: lubSource, isOpen: true }
-  dummyLubValve.Content = () => lubSource.Content()
+  const dummyLubOutletValve = { Source: lubSource, isOpen: true }
+  dummyLubOutletValve.Content = () => lubSource.Content()
 
-  const dummyAirValve = { Source: airSource, isOpen: true }
-  dummyAirValve.Content = () => airSource.Content()
+  const dummyAirOutletValve = { Source: airSource, isOpen: true }
+  dummyAirOutletValve.Content = () => airSource.Content()
 
   const dummyLubCooler = { isCooling: true }
 
-  powerSys = new PowerSystem(dummyFuelValve, dummyLubValve, dummyAirValve, dummyLubCooler)
-  //  workaround to give DsGen1  cooling
-  powerSys.DsGen1.HasCooling = true
+  powerSys = new PowerSystem(dummyFuelOutletValve, dummyLubOutletValve, dummyAirOutletValve, dummyLubCooler)
 
   powerSys.DsGen1.FuelIntakeValve.Open()
-  powerSys.DsGen1.LubIntakeValve.Open()
+  powerSys.DsGen1.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
   powerSys.DsGen1.AirIntakeValve.Open()
 })
 

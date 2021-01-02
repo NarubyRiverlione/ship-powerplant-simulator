@@ -43,17 +43,28 @@ const CstTxt = {
     FwExpandTank: 'Fresh water expand tank',
     DsGen1LubCooler: 'Diesel generator 1 lubrication cooler',
     DsGen2LubCooler: 'Diesel generator 2 lubrication cooler'
+  },
+  DieselGeneratorTxt: {
+    FuelIntakeValve: ' - fuel intake valve',
+    LubIntakeValve: ' - lubrication intake valve',
+    AirIntakeValve: ' - Air intake valve',
+    LubSlump: 'slump'
   }
 }
 
 const CstPowerSys = {
   Voltage: 440,
-  Shore: 1000, // 1 kW
+  Shore: 1000, // 10 kW
   EmergencyGen: {
-    RatedFor: 200 // 200 W
+    RatedFor: 1 // 1 kW
   },
   DsGen1: {
-    RatedFor: 1000 // 1 kW
+    RatedFor: 1000, // 10 kW
+    Slump: {
+      TankVolume: 100,
+      TankAddStep: 10,
+      MinForLubrication: 40
+    }
   }
 }
 

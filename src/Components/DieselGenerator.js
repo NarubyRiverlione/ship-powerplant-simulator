@@ -3,27 +3,37 @@ const {
 } = require('mobx')
 const Generator = require('./Generator')
 const Valve = require('./Valve')
-const { CstAirSys } = require('../Cst')
+const Tank = require('./Tank')
+const {
+  CstAirSys, CstTxt, CstPowerSys
+} = require('../Cst')
+const { DieselGeneratorTxt } = CstTxt
 
 module.exports = class DieselGenerator extends Generator {
   constructor(name, rate, dieselValve, lubValve, airValve, lubCooler) {
     super(name, rate)
-    this.FuelIntakeValve = new Valve(name + ' - fuel intake valve')
+    this.FuelIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.FuelIntakeValve}`)
     this.FuelIntakeValve.Source = dieselValve
     this.FuelProvider = dieselValve.Source
 
-    this.LubIntakeValve = new Valve(name + ' - lubrication intake valve')
+    this.LubIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.LubIntakeValve}`)
     this.LubIntakeValve.Source = lubValve
-    // this.LubProvider = lubValve.Source
+    this.LubIntakeValve.cbNowOpen = () => {
+      this.LubSlump.Adding = true
+    }
+    this.LubIntakeValve.cbNowClosed = () => {
+      this.LubSlump.Adding = false
+    }
 
-    this.AirIntakeValve = new Valve(name + ' - Air intake valve')
+    this.LubSlump = new Tank(DieselGeneratorTxt.LubSlump, CstPowerSys.DsGen1.Slump.TankVolume)
+    this.LubSlump.Source = this.LubIntakeValve
+    this.LubSlump.AddEachStep = CstPowerSys.DsGen1.Slump.TankAddStep
+    this.LubSlump.RemoveEachStep = CstPowerSys.DsGen1.Slump.TankAddStep
+
+    this.AirIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.AirIntakeValve}`)
     this.AirIntakeValve.Source = airValve
-    // this.AirProvider = airValve.Source
 
     this.LubCooler = lubCooler
-    // this.CoolingIntakeValve = new Valve(name + ' - Cooling intake valve')
-    // this.CoolingIntakeValve.Source = LubCooler
-    // this.CoolingProvider = LubCooler.Source
 
     makeObservable(this, {
       CheckAir: computed,
@@ -38,7 +48,7 @@ module.exports = class DieselGenerator extends Generator {
   }
 
   CheckLubrication() {
-    this.HasLubrication = this.LubIntakeValve.Content() !== 0
+    this.HasLubrication = this.LubSlump.Content() >= CstPowerSys.DsGen1.Slump.MinForLubrication
   }
 
   CheckCooling() {
@@ -50,13 +60,12 @@ module.exports = class DieselGenerator extends Generator {
   }
 
   Start() {
-    this.CheckFuel()
-    this.CheckLubrication()
-    this.CheckCooling()
+    this.Thick()
     if (this.CheckAir) super.Start()
   }
 
   Thick() {
+    this.LubSlump.Thick()
     this.CheckFuel()
     this.CheckLubrication()
     this.CheckCooling()

@@ -18,7 +18,7 @@
       "args": [
         "--runInBand",
         //"Simulator.test.js"
-        "CoolantSys.test.js"
+        "DieselGenerator.test.js"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
