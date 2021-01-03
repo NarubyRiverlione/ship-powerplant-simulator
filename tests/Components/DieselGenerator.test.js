@@ -1,5 +1,7 @@
 const DieselGenerator = require('../../src/Components/DieselGenerator')
-const { CstFuelSys, CstAirSys, CstPowerSys } = require('../../src/Cst')
+const {
+  CstFuelSys, CstAirSys, CstPowerSys, CstLubSys
+} = require('../../src/Cst')
 
 const Rated = 30000
 const startFuelAmount = 10000.0
@@ -67,18 +69,36 @@ describe('Slump', () => {
     dsgen.Thick()
     expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
     expect(lubSource.RemoveEachStep)
-      .toBe(CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump)
+      .toBe(CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump)
   })
   test('Re-close lub intake = slump stop adding', () => {
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
     expect(lubSource.RemoveEachStep)
-      .toBe(CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump)
+      .toBe(CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump)
     dsgen.LubIntakeValve.Close()
     dsgen.Thick()
     expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
     // expect(lubSource.RemoveEachStep.toFixed(0)).toBe(0)
   })
+  test('Lub source is empty, stop adding slump', () => {
+    dsgen.LubIntakeValve.Source = { Content: () => CstPowerSys.DsGen1.Slump.TankAddStep }
+    dsgen.LubIntakeValve.Open()
+    dsgen.Thick()
+    expect(dsgen.LubSlump.AddEachStep).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+    expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+    // dummy test source  hasn't logic to remove content, set manual to 0
+    dsgen.LubIntakeValve.Source = { Content: () => 0 }
+    expect(dsgen.LubIntakeValve.Source.Content()).toBe(0)
+
+    dsgen.Thick()
+    expect(dsgen.LubSlump.AddEachStep).toBe(0)
+    expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+    dsgen.Thick()
+    expect(dsgen.LubSlump.AddEachStep).toBe(0)
+    expect(dsgen.LubSlump.Content()).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
+  })
+
   test('slump above minimum = has lubrication', () => {
     dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
     dsgen.Thick()

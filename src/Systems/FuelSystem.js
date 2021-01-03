@@ -76,12 +76,28 @@ module.exports = class FuelSystem {
     if (this.DsStorage.Tank.Content() === 0) {
       this.AlarmSys.AddAlarm(AlarmCode.EmptyDsStorageTank)
     }
+    if (this.AlarmSys.AlarmExist(AlarmCode.LowDsStorageTank)
+      && this.DsStorage.Tank.Content() >= AlarmLevel.FuelSys.DsStorageLow) {
+      this.AlarmSys.RemoveAlarm(AlarmCode.LowDsStorageTank)
+    }
+    if (this.AlarmSys.AlarmExist(AlarmCode.EmptyDsStorageTank)
+      && this.DsStorage.Tank.Content() !== 0) {
+      this.AlarmSys.RemoveAlarm(AlarmCode.EmptyDsStorageTank)
+    }
 
     if (this.DsService.Tank.Content() < AlarmLevel.FuelSys.DsServiceLow) {
       this.AlarmSys.AddAlarm(AlarmCode.LowDsServiceTank)
     }
     if (this.DsService.Tank.Content() === 0) {
       this.AlarmSys.AddAlarm(AlarmCode.EmptyDsServiceTank)
+    }
+    if (this.AlarmSys.AlarmExist(AlarmCode.LowDsServiceTank)
+      && this.DsService.Tank.Content() >= AlarmLevel.FuelSys.DsServiceLow) {
+      this.AlarmSys.RemoveAlarm(AlarmCode.LowDsServiceTank)
+    }
+    if (this.AlarmSys.AlarmExist(AlarmCode.EmptyDsServiceTank)
+      && this.DsService.Tank.Content() !== 0) {
+      this.AlarmSys.RemoveAlarm(AlarmCode.EmptyDsServiceTank)
     }
   }
 

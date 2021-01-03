@@ -21,7 +21,7 @@ describe('add', () => {
 
     alarmSys.AddAlarm(testAlarm)
     expect(alarmSys.AlarmList.size).toBe(1)
-    expect(alarmSys.AlarmList.has(testAlarm)).toBeTruthy()
+    expect(alarmSys.AlarmExist(testAlarm)).toBeTruthy()
     expect(cbFlag).toBeTruthy()
   })
   test('Add an already raised alarm, no cbAlarmAdded', () => {
@@ -35,7 +35,7 @@ describe('add', () => {
     alarmSys.AddAlarm(testAlarm)
 
     expect(alarmSys.AlarmList.size).toBe(1)
-    expect(alarmSys.AlarmList.has(testAlarm)).toBeTruthy()
+    expect(alarmSys.AlarmExist(testAlarm)).toBeTruthy()
     expect(cbNumberCalled).toBe(1)
   })
 })
@@ -44,13 +44,15 @@ describe('Remove alarm', () => {
   test('remove', () => {
     const testAlarm = 15
     let cbNumberCalled = 0
-    const testCb = () => { cbNumberCalled += 1 }
+    let alarmRemoved = 0
+    const testCb = (removed) => { cbNumberCalled += 1; alarmRemoved = removed }
     alarmSys.cbAlarmRemoved = testCb
 
     alarmSys.AddAlarm(testAlarm)
     alarmSys.RemoveAlarm(testAlarm)
     expect(alarmSys.AlarmList.size).toBe(0)
-    expect(alarmSys.AlarmList.has(testAlarm)).toBeFalsy()
+    expect(alarmSys.AlarmExist(testAlarm)).toBeFalsy()
     expect(cbNumberCalled).toBe(1)
+    expect(alarmRemoved).toBe(testAlarm)
   })
 })

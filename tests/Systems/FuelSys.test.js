@@ -12,7 +12,8 @@ beforeEach(() => {
   fuelSys = new FuelSystem()
   dummyAlarmSys = {
     AddAlarm: (raise) => { raisedAlarmCode.add(raise) },
-    RemoveAlarm: (kill) => { raisedAlarmCode.delete(kill) }
+    RemoveAlarm: (kill) => { raisedAlarmCode.delete(kill) },
+    AlarmExist: (code) => raisedAlarmCode.has(code)
   }
 })
 
@@ -324,7 +325,7 @@ describe('Diesel service tank', () => {
 })
 
 describe('Alarms', () => {
-  test('Low diesel storage tanks', () => {
+  test('Raise Low diesel storage tanks', () => {
     fuelSys.AlarmSys = dummyAlarmSys
     // full service tank to prevent low service alarm
     fuelSys.DsService.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
@@ -337,7 +338,21 @@ describe('Alarms', () => {
     fuelSys.Thick()
     expect(raisedAlarmCode.has(AlarmCode.LowDsStorageTank)).toBeTruthy()
   })
-  test('Low diesel service tanks', () => {
+  test('Cancel Low diesel storage tanks', () => {
+    fuelSys.AlarmSys = dummyAlarmSys
+    // full service tank to prevent low service alarm
+    fuelSys.DsService.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
+    // at alarm level = no alarm yet, must be below
+    fuelSys.DsStorage.Tank.Inside = AlarmLevel.FuelSys.DsStorageLow - 5
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.LowDsStorageTank)).toBeTruthy()
+    // above low level = cancel alarm
+    fuelSys.DsStorage.Tank.Inside = AlarmLevel.FuelSys.DsStorageLow
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.LowDsStorageTank)).toBeFalsy()
+  })
+
+  test('Raise Low diesel service tanks', () => {
     fuelSys.AlarmSys = dummyAlarmSys
     // full storage tank to prevent low storage alarm
     fuelSys.DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
@@ -350,7 +365,21 @@ describe('Alarms', () => {
     fuelSys.Thick()
     expect(raisedAlarmCode.has(AlarmCode.LowDsServiceTank)).toBeTruthy()
   })
-  test('Empty diesel storage tanks', () => {
+  test('Cancel Low diesel service tanks', () => {
+    fuelSys.AlarmSys = dummyAlarmSys
+    // full service tank to prevent low service alarm
+    fuelSys.DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
+    // raise alarm
+    fuelSys.DsService.Tank.Inside = AlarmLevel.FuelSys.DsServiceLow - 5
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.LowDsServiceTank)).toBeTruthy()
+    // above low level = cancel alarm
+    fuelSys.DsService.Tank.Inside = AlarmLevel.FuelSys.DsServiceLow
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.LowDsServiceTank)).toBeFalsy()
+  })
+
+  test('Raise Empty diesel storage tanks', () => {
     fuelSys.AlarmSys = dummyAlarmSys
     // full service tank to prevent low service alarm
     fuelSys.DsService.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
@@ -363,7 +392,21 @@ describe('Alarms', () => {
     fuelSys.Thick()
     expect(raisedAlarmCode.has(AlarmCode.EmptyDsStorageTank)).toBeTruthy()
   })
-  test('Empty diesel service tanks', () => {
+  test('Cancel Empty diesel storage tanks', () => {
+    fuelSys.AlarmSys = dummyAlarmSys
+    // full service tank to prevent low service alarm
+    fuelSys.DsService.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
+    // raise alarm
+    fuelSys.DsStorage.Tank.Inside = 0
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.EmptyDsStorageTank)).toBeTruthy()
+    // no longer empty = cancel alarm
+    fuelSys.DsStorage.Tank.Inside = 0.1
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.EmptyDsStorageTank)).toBeFalsy()
+  })
+
+  test('Raise Empty diesel service tanks', () => {
     fuelSys.AlarmSys = dummyAlarmSys
     // full storage tank to prevent low storage alarm
     fuelSys.DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
@@ -375,5 +418,18 @@ describe('Alarms', () => {
     fuelSys.DsService.Tank.Inside = 0
     fuelSys.Thick()
     expect(raisedAlarmCode.has(AlarmCode.EmptyDsServiceTank)).toBeTruthy()
+  })
+  test('Cancel Empty diesel service tanks', () => {
+    fuelSys.AlarmSys = dummyAlarmSys
+    // full storage tank to prevent low storage alarm
+    fuelSys.DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
+    // raise
+    fuelSys.DsService.Tank.Inside = 0
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.EmptyDsServiceTank)).toBeTruthy()
+    // cancel
+    fuelSys.DsService.Tank.Inside = 5
+    fuelSys.Thick()
+    expect(raisedAlarmCode.has(AlarmCode.EmptyDsServiceTank)).toBeFalsy()
   })
 })

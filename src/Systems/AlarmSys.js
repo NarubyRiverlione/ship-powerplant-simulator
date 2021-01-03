@@ -15,4 +15,8 @@ module.exports = class AlarmSys {
     this.AlarmList.delete(alarmCode)
     this.cbAlarmRemoved(alarmCode)
   }
+
+  AlarmExist(alarmCode) {
+    return this.AlarmList.has(alarmCode)
+  }
 }

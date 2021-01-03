@@ -5,7 +5,7 @@ const Generator = require('./Generator')
 const Valve = require('./Valve')
 const Tank = require('./Tank')
 const {
-  CstAirSys, CstPowerSys, CstFuelSys
+  CstAirSys, CstPowerSys, CstLubSys
 } = require('../Cst')
 const CstTxt = require('../CstTxt')
 const { DieselGeneratorTxt } = CstTxt
@@ -22,12 +22,12 @@ module.exports = class DieselGenerator extends Generator {
     this.LubProvider = lubValve.Source
     this.LubIntakeValve.cbNowOpen = () => {
       this.LubSlump.Adding = true
-      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump
+      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
       this.LubProvider.Removing = true
     }
     this.LubIntakeValve.cbNowClosed = () => {
       this.LubSlump.Adding = false
-      this.LubProvider.RemoveEachStep = CstPowerSys.DsGen1.Slump.TankAddStep / CstFuelSys.RatioStorageDsGenSlump
+      this.LubProvider.RemoveEachStep = CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
       this.LubProvider.Removing = false
     }
 
@@ -71,6 +71,11 @@ module.exports = class DieselGenerator extends Generator {
   }
 
   Thick() {
+    this.LubSlump.AddEachStep = this.LubIntakeValve.Source.Content() === 0
+      // stop filling slump tank if lub source is empty
+      ? 0
+      // restart filling slump if lub source isn't empty
+      : CstPowerSys.DsGen1.Slump.TankAddStep
     this.LubSlump.Thick()
     this.CheckFuel()
     this.CheckLubrication()
