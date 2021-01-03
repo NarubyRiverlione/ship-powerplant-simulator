@@ -173,7 +173,7 @@ describe('Diesel service tank', () => {
     expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep)
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.Content())
-      .toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * 2)
+      .toBeCloseTo(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * 2)
     expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
   })
   test('First open storage outlet, then close diesel service intake valve = transfer', () => {
@@ -194,7 +194,7 @@ describe('Diesel service tank', () => {
       .toBe(CstFuelSys.DsServiceTank.TankAddStep)
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.Content())
-      .toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * 2)
+      .toBeCloseTo(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * 2)
     expect(fuelSys.DsService.Tank.Content())
       .toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
   })
@@ -266,8 +266,8 @@ describe('Diesel service tank', () => {
     // FIXME: stop removing 1 step to soon, the Thick  tank is full still needs to remove last time
     const expectContentStorageTank = CstFuelSys.DsStorageTank.TankVolume
       - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * (fillSteps - 1)
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(expectContentStorageTank)
-    expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
+    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(expectContentStorageTank)
+    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume)
   })
   test('restart filling the service tank after it was full', () => {
     // fill storage tank full
@@ -287,22 +287,22 @@ describe('Diesel service tank', () => {
     // FIXME: stop removing 1 step to soon, the Thick  tank is full still needs to remove last time
     const expectContentStorageTank = CstFuelSys.DsStorageTank.TankVolume
       - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * (fillSteps - 1)
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(expectContentStorageTank)
-    expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume)
+    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(expectContentStorageTank)
+    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume)
 
     // drain service tanks so filling needs  to continue
     fuelSys.DsService.Tank.Inside -= CstFuelSys.DsServiceTank.TankAddStep * 2
     fuelSys.Thick()
-    expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankVolume
-      - CstFuelSys.DsServiceTank.TankAddStep)
+    expect(fuelSys.DsService.Tank.Content())
+      .toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DsServiceTank.TankAddStep)
 
     expect(fuelSys.DsStorage.Tank.RemoveEachStep)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(CstFuelSys.DsStorageTank.TankVolume
+    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(CstFuelSys.DsStorageTank.TankVolume
       - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * (fillSteps))
   })
   test('storage tank empty, stop adding service tank', () => {
-    const contentDsTank = 2
+    const contentDsTank = 0.4
     fuelSys.DsStorage.Tank.Inside = contentDsTank
     fuelSys.DsStorage.OutletValve.Open()
     fuelSys.DsService.IntakeValve.Open()
@@ -310,16 +310,16 @@ describe('Diesel service tank', () => {
     fuelSys.Thick()
     fuelSys.Thick()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(0)
-    expect(fuelSys.DsService.Tank.Content()).toBe(contentDsTank * CstFuelSys.RatioStorageServiceTanks)
+    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(0)
+    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(contentDsTank * CstFuelSys.RatioStorageServiceTanks)
     // add DS in storage tank --> continue filling service tank until dieseltank is empty again
     fuelSys.DsStorage.Tank.Inside = contentDsTank
     fuelSys.Thick()
     fuelSys.Thick()
     fuelSys.Thick()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(0)
-    expect(fuelSys.DsService.Tank.Content()).toBe(contentDsTank * CstFuelSys.RatioStorageServiceTanks * 2)
+    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(0)
+    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(contentDsTank * CstFuelSys.RatioStorageServiceTanks * 2)
   })
 })
 

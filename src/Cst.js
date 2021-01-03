@@ -16,7 +16,7 @@ const CstPowerSys = {
 
 const CstChanges = {
   Interval: 1000,
-  DrainStep: 1
+  DrainStep: 2
 }
 const CstLubSys = {
   ShoreVolume: 1e6,
@@ -24,7 +24,7 @@ const CstLubSys = {
   RatioStorageDsGenSlump: 5,
   StorageTank: {
     TankVolume: 100,
-    TankAddStep: 10
+    TankAddStep: 1
   }
 }
 const CstFuelSys = {
@@ -33,12 +33,11 @@ const CstFuelSys = {
   RatioStorageServiceTanks: 10,
   DsStorageTank: {
     TankVolume: 100,
-    TankAddStep: 10,
-    DrainStep: 10
+    TankAddStep: 1
   },
   DsServiceTank: {
     TankVolume: 100,
-    TankAddStep: 10
+    TankAddStep: 1
   },
   DieselGenerator: { Consumption: 0.05 }
 }
@@ -67,8 +66,7 @@ const CstCoolantSys = {
   FwMakeUp: 1e6,
   FwExpandTank: {
     TankVolume: 100,
-    TankAddStep: 1,
-    DrainStep: 1
+    TankAddStep: 1
   },
   DsGenLubCooler: { coolingRate: 10 }
 
