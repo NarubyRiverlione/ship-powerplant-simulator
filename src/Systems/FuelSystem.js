@@ -12,7 +12,7 @@ Shore Valve --> (intake valve) DsStorage (outlet valve) --> (intake valve) DsSer
                                 (drain)                                     (drain)
 */
 module.exports = class FuelSystem {
-  constructor() {
+  constructor(alarmSys) {
     // #region Intake valve from shore to diesel storage tank
     this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve)
     this.DsShoreValve.Source = { Content: () => CstFuelSys.ShoreVolume }
@@ -41,6 +41,12 @@ module.exports = class FuelSystem {
         this.DsService.Tank.Adding = true
       }
     }
+    // Alarms
+    this.DsStorage.Tank.AlarmSystem = alarmSys
+    this.DsStorage.Tank.LowLevelAlarmCode = AlarmCode.LowDsStorageTank
+    this.DsStorage.Tank.EmptyAlarmCode = AlarmCode.EmptyDsStorageTank
+    this.DsStorage.Tank.LowLevelAlarm = AlarmLevel.FuelSys.LowDsStorage
+
     // #endregion
 
     // #region Diesel service tank,
@@ -62,43 +68,14 @@ module.exports = class FuelSystem {
       this.DsStorage.Tank.Removing = false
       this.DsService.Tank.Adding = false
     }
+    // Alarms
+    this.DsService.Tank.AlarmSystem = alarmSys
+    this.DsService.Tank.LowLevelAlarmCode = AlarmCode.LowDsServiceTank
+    this.DsService.Tank.EmptyAlarmCode = AlarmCode.EmptyDsServiceTank
+    this.DsService.Tank.LowLevelAlarm = AlarmLevel.FuelSys.LowDsService
     // #endregion
-    this.AlarmSys = null
+
     makeObservable(this, { Thick: action })
-  }
-
-  CheckAlarms() {
-    if (!this.AlarmSys) return
-
-    if (this.DsStorage.Tank.Content() < AlarmLevel.FuelSys.DsStorageLow) {
-      this.AlarmSys.AddAlarm(AlarmCode.LowDsStorageTank)
-    }
-    if (this.DsStorage.Tank.Content() === 0) {
-      this.AlarmSys.AddAlarm(AlarmCode.EmptyDsStorageTank)
-    }
-    if (this.AlarmSys.AlarmExist(AlarmCode.LowDsStorageTank)
-      && this.DsStorage.Tank.Content() >= AlarmLevel.FuelSys.DsStorageLow) {
-      this.AlarmSys.RemoveAlarm(AlarmCode.LowDsStorageTank)
-    }
-    if (this.AlarmSys.AlarmExist(AlarmCode.EmptyDsStorageTank)
-      && this.DsStorage.Tank.Content() !== 0) {
-      this.AlarmSys.RemoveAlarm(AlarmCode.EmptyDsStorageTank)
-    }
-
-    if (this.DsService.Tank.Content() < AlarmLevel.FuelSys.DsServiceLow) {
-      this.AlarmSys.AddAlarm(AlarmCode.LowDsServiceTank)
-    }
-    if (this.DsService.Tank.Content() === 0) {
-      this.AlarmSys.AddAlarm(AlarmCode.EmptyDsServiceTank)
-    }
-    if (this.AlarmSys.AlarmExist(AlarmCode.LowDsServiceTank)
-      && this.DsService.Tank.Content() >= AlarmLevel.FuelSys.DsServiceLow) {
-      this.AlarmSys.RemoveAlarm(AlarmCode.LowDsServiceTank)
-    }
-    if (this.AlarmSys.AlarmExist(AlarmCode.EmptyDsServiceTank)
-      && this.DsService.Tank.Content() !== 0) {
-      this.AlarmSys.RemoveAlarm(AlarmCode.EmptyDsServiceTank)
-    }
   }
 
   Thick() {
@@ -114,6 +91,5 @@ module.exports = class FuelSystem {
     // -> stop from removing from storage
     this.DsService.Thick()
     this.DsStorage.Thick()
-    this.CheckAlarms()
   }
 }

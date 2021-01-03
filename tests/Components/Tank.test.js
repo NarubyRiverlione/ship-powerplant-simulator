@@ -218,3 +218,80 @@ describe('Tank remove over time', () => {
     expect(tank.Removing).toBeTruthy()
   })
 })
+
+describe('Alarms', () => {
+  let alarmTank
+  let dummyAlarmSys
+  const raisedAlarmCode = new Set()
+
+  const AlarmCodeLow = 10
+  const AlarmCodeEmpty = 60
+  const LowLevelAlarm = 25
+  beforeEach(() => {
+    dummyAlarmSys = {
+      AddAlarm: (raise) => { raisedAlarmCode.add(raise) },
+      RemoveAlarm: (kill) => { raisedAlarmCode.delete(kill) },
+      AlarmExist: (code) => raisedAlarmCode.has(code)
+    }
+    alarmTank = new Tank('test alarm tank', 250)
+    alarmTank.AlarmSystem = dummyAlarmSys
+    alarmTank.LowLevelAlarm = LowLevelAlarm
+    alarmTank.LowLevelAlarmCode = AlarmCodeLow
+    alarmTank.EmptyAlarmCode = AlarmCodeEmpty
+  })
+  test('no low alarm code provided = no alarm raised', () => {
+    alarmTank.LowLevelAlarmCode = 0
+    // try raise alarm
+    alarmTank.Inside = LowLevelAlarm - 0.1
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeLow)).toBeFalsy()
+  })
+  test('Raise Low level', () => {
+    // at alarm level = no alarm yet, must be below
+    alarmTank.Inside = LowLevelAlarm
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeLow)).toBeFalsy()
+    // raise alarm
+    alarmTank.Inside = LowLevelAlarm - 0.1
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeLow)).toBeTruthy()
+  })
+  test('Cancel Low level', () => {
+    alarmTank.AlarmSys = dummyAlarmSys
+    // at alarm level = no alarm yet, must be below
+    alarmTank.Inside = LowLevelAlarm - 5
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeLow)).toBeTruthy()
+    // above low level = cancel alarm
+    alarmTank.Inside = LowLevelAlarm
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeLow)).toBeFalsy()
+  })
+  test('no empty alarm code provided = no alarm raised', () => {
+    alarmTank.EmptyAlarmCode = 0
+    // try raise alarm
+    alarmTank.Inside = 0
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeEmpty)).toBeFalsy()
+  })
+  test('Raise Empty alarm', () => {
+    // not empty = no alarm
+    alarmTank.Inside = 1
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeEmpty)).toBeFalsy()
+    // raise alarm
+    alarmTank.Inside = 0
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeEmpty)).toBeTruthy()
+  })
+  test('Cancel Empty alarm', () => {
+    // raise alarm
+    alarmTank.Inside = 0
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeEmpty)).toBeTruthy()
+    // cancel alarm
+    alarmTank.Inside = 0.1
+    alarmTank.Thick()
+    expect(raisedAlarmCode.has(AlarmCodeEmpty)).toBeFalsy()
+  })
+})

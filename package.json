@@ -1,12 +1,12 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Simulator logic for ship powerplant",
   "main": "src/Simulator.js",
   "type": "module",
   "scripts": {
     "lint": "eslint . --fix",
-    "test:coverage": "npm test -- --coverage  --runInBand",
+    "test:coverage": "npm test -- --coverage",
     "test:badges": "npm run test:coverage  && istanbul-badges-readme",
     "test": "jest  --runInBand"
   },

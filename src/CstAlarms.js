@@ -18,11 +18,11 @@ const AlarmDescription = {
 
 const AlarmLevel = {
   FuelSys: {
-    DsStorageLow: 25,
-    DsServiceLow: 25
+    LowDsStorage: 25,
+    LowDsService: 25
   },
   LubSys: {
-    StorageLow: 25
+    LowStorage: 25
   }
 }
 module.exports = { AlarmCode, AlarmDescription, AlarmLevel }

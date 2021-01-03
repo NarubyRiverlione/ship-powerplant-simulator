@@ -17,8 +17,8 @@
       "request": "launch",
       "args": [
         "--runInBand",
-        "simulator.test.js"
-        // "DieselGenerator.test.js"
+        // "simulator.test.js"
+        "FuelSys.test.js"
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",

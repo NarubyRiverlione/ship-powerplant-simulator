@@ -10,7 +10,7 @@ const { AlarmCode, AlarmLevel } = require('../CstAlarms')
 Shore Valve --> (intake valve) DsStorage (outlet valve)
 */
 module.exports = class LubSys {
-  constructor() {
+  constructor(alarmSys) {
     makeObservable(this, { Thick: action })
     this.ShoreValve = new Valve(LubSysTxt.LubShoreFillValve)
     this.ShoreValve.Source = { Content: () => LubSysTxt.ShoreVolume }
@@ -26,21 +26,15 @@ module.exports = class LubSys {
       CstLubSys.StorageTank.TankVolume, 0, this.ShoreValve)
 
     this.Storage.Tank.AddEachStep = CstLubSys.StorageTank.TankAddStep
-  }
 
-  CheckAlarms() {
-    if (!this.AlarmSys) return
-
-    if (this.Storage.Tank.Content() < AlarmLevel.LubSys.StorageLow) {
-      this.AlarmSys.AddAlarm(AlarmCode.LowLubStorageTank)
-    }
-    if (this.Storage.Tank.Content() === 0) {
-      this.AlarmSys.AddAlarm(AlarmCode.EmptyLubStorageTank)
-    }
+    // Alarms
+    this.Storage.Tank.AlarmSystem = alarmSys
+    this.Storage.Tank.LowLevelAlarmCode = AlarmCode.LowLubStorageTank
+    this.Storage.Tank.EmptyAlarmCode = AlarmCode.EmptyLubStorageTank
+    this.Storage.Tank.LowLevelAlarm = AlarmLevel.LubSys.LowStorage
   }
 
   Thick() {
     this.Storage.Tank.Thick()
-    this.CheckAlarms()
   }
 }
