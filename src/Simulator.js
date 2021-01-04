@@ -25,6 +25,7 @@ module.exports = class Simulator {
       this.AirSys.EmergencyReceiver.OutletValve
     )
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
+    this.AirSys.StartAirCompressor1.Bus = this.PowerSys.MainBus1
     this.CoolingSys = new CoolingSystem(this.PowerSys.MainBus1, this.PowerSys.EmergencyBus)
     this.PowerSys.DsGen1.LubCooler = this.CoolingSys.DsGen1LubCooler
   }

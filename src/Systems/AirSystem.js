@@ -26,6 +26,9 @@ module.exports = class AirSys {
         this.StartAirReceiver1.Tank.Adding = true
       }
     }
+    this.StartCompressor1OutletValve.cbNowClosed = () => {
+      this.StartAirReceiver1.Tank.Adding = false
+    }
 
     this.StartAirReceiver1 = new TankWithValves(AirSysTxt.StartAirReceiver1,
       CstAirSys.StartAirReceiver1.TankPressure, 0,
@@ -45,13 +48,17 @@ module.exports = class AirSys {
         this.EmergencyReceiver.Tank.Adding = true
       }
     }
+    this.EmergencyOutletValve.cbNowClosed = () => {
+      this.EmergencyReceiver.Tank.Adding = false
+    }
 
     this.EmergencyReceiver = new TankWithValves(AirSysTxt.EmergencyReceiver,
       CstAirSys.EmergencyReceiver.TankPressure, 0,
       this.EmergencyOutletValve)
 
-    this.EmergencyReceiver.Tank.AddEachStep = CstAirSys.EmergencyCompressor.AddStep
     // #endregion
+    this.EmergencyReceiver.Tank.AddEachStep = CstAirSys.EmergencyCompressor.AddStep
+
     makeAutoObservable(this)
   }
 
