@@ -159,7 +159,7 @@ describe('Diesel generator- full startup diesel generator, startup power via eme
     const { PowerSys: { DsGen1, EmergencyGen, EmergencyBus } } = simulator
     const { FuelSys: { DsService } } = simulator
     const { LubSys: { Storage: LubStorage } } = simulator
-    const { AirSys: { EmergencyReceiver, EmergencyCompressor, EmergencyOutletValve } } = simulator
+    const { AirSys: { EmergencyReceiver, EmergencyCompressor } } = simulator
     const {
       CoolingSys: {
         SeaChestLowSuctionIntakeValve, AuxPump, FwCoolerDsGen1, OverboardDumpValve,
@@ -187,7 +187,7 @@ describe('Diesel generator- full startup diesel generator, startup power via eme
     simulator.Thick()
     expect(EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
     // startup emergency start air compressor
-    EmergencyOutletValve.Open()
+    EmergencyCompressor.OutletValve.Open()
     EmergencyReceiver.IntakeValve.Open()
     EmergencyCompressor.Start()
     simulator.Thick()

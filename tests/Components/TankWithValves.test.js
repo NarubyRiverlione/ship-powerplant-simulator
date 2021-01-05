@@ -80,7 +80,31 @@ describe('Intake valve', () => {
   })
   */
 })
-
+describe('Outlet valve', () => {
+  test('full tank and open outlet = valve has tank content', () => {
+    tankV.Tank.Inside = StartContent
+    tankV.OutletValve.Open()
+    tankV.Thick()
+    expect(tankV.OutletValve.Content()).toBe(StartContent)
+  })
+  test('full tank and re-close  outlet = valve has no content', () => {
+    tankV.Tank.Inside = StartContent
+    tankV.OutletValve.Open()
+    tankV.Thick()
+    tankV.OutletValve.Close()
+    tankV.Thick()
+    expect(tankV.OutletValve.Content()).toBe(0)
+  })
+  test('open outlet, empty tank, then add tank content = outlet has tank content', () => {
+    tankV.Tank.Inside = 0
+    tankV.OutletValve.Open()
+    tankV.Thick()
+    expect(tankV.OutletValve.Content()).toBe(0)
+    tankV.Tank.Inside = StartContent
+    tankV.Thick()
+    expect(tankV.OutletValve.Content()).toBe(StartContent)
+  })
+})
 describe('Drain valve', () => {
   test('open drain valve = remove from tank', () => {
     const startContent = 1435
