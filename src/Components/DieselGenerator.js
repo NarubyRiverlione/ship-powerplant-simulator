@@ -50,11 +50,11 @@ module.exports = class DieselGenerator extends Generator {
   }
 
   CheckFuel() {
-    this.HasFuel = this.FuelIntakeValve.Content() !== 0
+    this.HasFuel = this.FuelIntakeValve.Content !== 0
   }
 
   CheckLubrication() {
-    this.HasLubrication = this.LubSlump.Content() >= CstPowerSys.DsGen1.Slump.MinForLubrication
+    this.HasLubrication = this.LubSlump.Content >= CstPowerSys.DsGen1.Slump.MinForLubrication
   }
 
   CheckCooling() {
@@ -62,7 +62,7 @@ module.exports = class DieselGenerator extends Generator {
   }
 
   get CheckAir() {
-    return this.AirIntakeValve.Content() >= CstAirSys.DieselGenerator.MinPressure
+    return this.AirIntakeValve.Content >= CstAirSys.DieselGenerator.MinPressure
   }
 
   Start() {
@@ -71,7 +71,7 @@ module.exports = class DieselGenerator extends Generator {
   }
 
   Thick() {
-    this.LubSlump.AddEachStep = this.LubIntakeValve.Source.Content() === 0
+    this.LubSlump.AddEachStep = this.LubIntakeValve.Source.Content === 0
       // stop filling slump tank if lub source is empty
       ? 0
       // restart filling slump if lub source isn't empty

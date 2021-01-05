@@ -7,8 +7,8 @@ const Tank = require('../Components/Tank')
 const Valve = require('../Components/Valve')
 const Pump = require('../Components/ElectricPump')
 const Cooler = require('../Components/Cooler')
-const SeaChest = { Content: () => CstCoolantSys.SeaChest }
-// const FwMakeUp = { Content: () => CstCoolantSys.FwMakeUp }
+const SeaChest = { Content: CstCoolantSys.SeaChest }
+// const FwMakeUp = { Content: CstCoolantSys.FwMakeUp }
 /* eslint-disable max-len */
 /*
 ** Sea water cooling circuit **
@@ -97,21 +97,21 @@ module.exports = class CoolingSys {
   }
 
   Thick() {
-    this.AuxPump.Providers = this.SeaChestLowSuctionIntakeValve.Content()
-      + this.SeaChestHighSuctionIntakeValve.Content()
+    this.AuxPump.Providers = this.SeaChestLowSuctionIntakeValve.Content
+      + this.SeaChestHighSuctionIntakeValve.Content
     this.AuxPump.Thick()
 
-    this.SuctionPump1.Providers = this.SeaChestLowSuctionIntakeValve.Content()
-      + this.SeaChestHighSuctionIntakeValve.Content()
+    this.SuctionPump1.Providers = this.SeaChestLowSuctionIntakeValve.Content
+      + this.SeaChestHighSuctionIntakeValve.Content
     this.SuctionPump1.Thick()
 
-    this.SuctionPump2.Providers = this.SeaChestLowSuctionIntakeValve.Content()
-      + this.SeaChestHighSuctionIntakeValve.Content()
+    this.SuctionPump2.Providers = this.SeaChestLowSuctionIntakeValve.Content
+      + this.SeaChestHighSuctionIntakeValve.Content
     this.SuctionPump2.Thick()
 
-    this.SwAvailable = this.AuxPump.Content()
-      + this.SuctionPump1.Content()
-      + this.SuctionPump2.Content()
+    this.SwAvailable = this.AuxPump.Content
+      + this.SuctionPump1.Content
+      + this.SuctionPump2.Content
 
     this.FwCoolerDsGen1.CoolingProviders = this.SwAvailable
     this.FwCoolerDsGen1.HotCircuitComplete = this.DsGen1LubCooler.hasCooling
@@ -127,12 +127,12 @@ module.exports = class CoolingSys {
     this.FwExpandTank.Thick()
 
     // hot side of Fw DsGen 1 cooler is complete  if Lub cooler has cooling (has fresh water)
-    this.DsGen1LubCooler.CoolingProviders = this.FwExpandTank.Content()
+    this.DsGen1LubCooler.CoolingProviders = this.FwExpandTank.Content
     this.DsGen1LubCooler.isCooling = this.DsGen1LubCooler.isCooling && this.FwCoolerDsGen1.hasCooling
     this.DsGen1LubCooler.Thick()
 
     // hot side of Fw DsGen 2 cooler is complete  if Lub cooler has cooling (has fresh water)
-    this.DsGen2LubCooler.CoolingProviders = this.FwExpandTank.Content()
+    this.DsGen2LubCooler.CoolingProviders = this.FwExpandTank.Content
     this.DsGen2LubCooler.isCooling = this.DsGen2LubCooler.isCooling && this.FwCoolerDsGen2.hasCooling
     this.DsGen2LubCooler.Thick()
   }

@@ -25,7 +25,7 @@ module.exports = class Tank {
     makeAutoObservable(this)
   }
 
-  Content() {
+  get Content() {
     return this.Inside
   }
 
@@ -55,11 +55,11 @@ module.exports = class Tank {
     // Low Level alarm
     if (this.LowLevelAlarmCode !== 0) {
       // Raise if content below LowLevelAlarm
-      if (this.Content() < this.LowLevelAlarm) {
+      if (this.Content < this.LowLevelAlarm) {
         this.AlarmSystem.AddAlarm(this.LowLevelAlarmCode)
       }
       // cancel alarm is previous raised and now above LowLevelAlarm
-      if (this.AlarmSystem.AlarmExist(this.LowLevelAlarmCode) && this.Content() >= this.LowLevelAlarm) {
+      if (this.AlarmSystem.AlarmExist(this.LowLevelAlarmCode) && this.Content >= this.LowLevelAlarm) {
         this.AlarmSystem.RemoveAlarm(this.LowLevelAlarmCode)
       }
     }
@@ -67,11 +67,11 @@ module.exports = class Tank {
     // Empty alarm
     if (this.EmptyAlarmCode !== 0) {
       // Raise if tank is empty
-      if (this.Content() === 0) {
+      if (this.Content === 0) {
         this.AlarmSystem.AddAlarm(this.EmptyAlarmCode)
       }
       // cancel alarm is previous raised and tank is no longer empty
-      if (this.AlarmSystem.AlarmExist(this.EmptyAlarmCode) && this.Content() !== 0) {
+      if (this.AlarmSystem.AlarmExist(this.EmptyAlarmCode) && this.Content !== 0) {
         this.AlarmSystem.RemoveAlarm(this.EmptyAlarmCode)
       }
     }

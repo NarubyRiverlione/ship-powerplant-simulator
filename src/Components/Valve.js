@@ -20,8 +20,8 @@ module.exports = class Valve {
     if (this.cbNowClosed) this.cbNowClosed()
   }
 
-  Content() {
-    const input = this.Source ? this.Source.Content() : null
+  get Content() {
+    const input = this.Source ? this.Source.Content : null
     return this.isOpen ? input : 0
   }
 

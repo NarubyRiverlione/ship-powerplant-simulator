@@ -5,13 +5,13 @@ describe('Valve init', () => {
     const name = 'Test valve'
     const valve = new Valve(name)
     expect(valve.isOpen).toBeFalsy()
-    expect(valve.Content()).toBe(0)
+    expect(valve.Content).toBe(0)
     expect(valve.Name).toBe(name)
   })
   test('Valve with input starts closed, without output', () => {
     const valveWithInput = new Valve()
     expect(valveWithInput.isOpen).toBeFalsy()
-    expect(valveWithInput.Content()).toBe(0)
+    expect(valveWithInput.Content).toBe(0)
   })
 })
 
@@ -19,10 +19,10 @@ describe('Valve open', () => {
   test('Open valve has content', () => {
     const sourceContent = 12345.6
     const testValve = new Valve()
-    testValve.Source = { Content: () => sourceContent }
+    testValve.Source = { Content: sourceContent }
 
     testValve.Open()
-    expect(testValve.Content()).toBe(sourceContent)
+    expect(testValve.Content).toBe(sourceContent)
     expect(testValve.isOpen).toBeTruthy()
   })
   test('Open valve has output and delivers feedback', () => {
@@ -36,10 +36,10 @@ describe('Valve open', () => {
 
     const testValve = new Valve()
     testValve.cbNowOpen = cbOpening(answer)
-    testValve.Source = { Content: () => sourceContent }
+    testValve.Source = { Content: sourceContent }
 
     testValve.Open()
-    expect(testValve.Content()).toBe(sourceContent)
+    expect(testValve.Content).toBe(sourceContent)
     expect(cbFlag).toBeTruthy()
   })
 })
@@ -48,10 +48,10 @@ describe('Valve closed after was open', () => {
   test('Closed a previous opened valve = no output', () => {
     const input = 7892
     const testValve = new Valve()
-    testValve.Source = { Content: () => input }
+    testValve.Source = { Content: input }
     testValve.Open()
     testValve.Close()
-    expect(testValve.Content()).toBe(0)
+    expect(testValve.Content).toBe(0)
   })
   test('Closed a previous opened valve  = output and provides feedback', () => {
     const input = 7892
@@ -64,11 +64,11 @@ describe('Valve closed after was open', () => {
     }
 
     const testValve = new Valve()
-    testValve.Source = { Content: () => input }
+    testValve.Source = { Content: input }
     testValve.cbNowOpen = cbOpening(answer)
     testValve.Open()
     testValve.Close()
-    expect(testValve.Content()).toBe(0)
+    expect(testValve.Content).toBe(0)
     expect(cbFlag).toBeTruthy()
   })
 })

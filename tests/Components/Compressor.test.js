@@ -11,14 +11,14 @@ describe('Init', () => {
     const testBus = { Voltage: 158 }
     const comp = new Compressor('test bus', testBus, ratedFor)
     expect(comp.Output).toBe(0)
-    expect(comp.Content()).toBe(0)
+    expect(comp.Content).toBe(0)
   })
   test('outlet valve is closed', () => {
     const ratedFor = 13568
     const testBus = { Voltage: 158 }
     const comp = new Compressor('test bus', testBus, ratedFor)
     expect(comp.OutletValve.isOpen).toBeFalsy()
-    expect(comp.OutletValve.Content()).toBe(0)
+    expect(comp.OutletValve.Content).toBe(0)
   })
 })
 
@@ -31,7 +31,7 @@ describe('running', () => {
     expect(comp.isRunning).toBeTruthy()
     comp.Thick()
     expect(comp.Output).toBe(ratedFor)
-    expect(comp.Content()).toBe(ratedFor)
+    expect(comp.Content).toBe(ratedFor)
   })
   test('stop a running compressor = no output', () => {
     const ratedFor = 13568
@@ -43,7 +43,7 @@ describe('running', () => {
     comp.Stop()
     comp.Thick()
     expect(comp.Output).toBe(0)
-    expect(comp.Content()).toBe(0)
+    expect(comp.Content).toBe(0)
   })
   test('running compressor lost power =no output', () => {
     const ratedFor = 13568
@@ -56,7 +56,7 @@ describe('running', () => {
     comp.Thick()
     expect(comp.isRunning).toBeFalsy()
     expect(comp.Output).toBe(0)
-    expect(comp.Content()).toBe(0)
+    expect(comp.Content).toBe(0)
   })
 })
 
@@ -68,7 +68,7 @@ describe('output via outlet valve', () => {
     comp.Start()
     expect(comp.isRunning).toBeTruthy()
     comp.Thick()
-    expect(comp.OutletValve.Content()).toBe(0)
+    expect(comp.OutletValve.Content).toBe(0)
   })
   test('running + open outlet = valve has  content', () => {
     const ratedFor = 13568
@@ -78,7 +78,7 @@ describe('output via outlet valve', () => {
     expect(comp.isRunning).toBeTruthy()
     comp.OutletValve.Open()
     comp.Thick()
-    expect(comp.OutletValve.Content()).toBe(ratedFor)
+    expect(comp.OutletValve.Content).toBe(ratedFor)
   })
   test('not running + open outlet, then running = valve has  content', () => {
     const ratedFor = 13568
@@ -89,6 +89,6 @@ describe('output via outlet valve', () => {
     comp.Start()
     comp.Thick()
     expect(comp.isRunning).toBeTruthy()
-    expect(comp.OutletValve.Content()).toBe(ratedFor)
+    expect(comp.OutletValve.Content).toBe(ratedFor)
   })
 })

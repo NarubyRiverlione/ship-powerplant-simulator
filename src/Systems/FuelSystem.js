@@ -15,7 +15,7 @@ module.exports = class FuelSystem {
   constructor(alarmSys) {
     // #region Intake valve from shore to diesel storage tank
     this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve)
-    this.DsShoreValve.Source = { Content: () => CstFuelSys.ShoreVolume }
+    this.DsShoreValve.Source = { Content: CstFuelSys.ShoreVolume }
     // if both shore and storage intake valves are open --> filling
     this.DsShoreValve.cbNowOpen = () => {
       if (this.DsStorage.IntakeValve.isOpen) this.DsStorage.Tank.Adding = true
@@ -81,7 +81,7 @@ module.exports = class FuelSystem {
   Thick() {
     this.DsStorage.Tank.RemoveEachStep = 0
 
-    this.DsService.Tank.AddEachStep = (this.DsStorage.Tank.Content() === 0)
+    this.DsService.Tank.AddEachStep = (this.DsStorage.Tank.Content === 0)
       // stop filling service tank if storage is empty
       ? 0
       // restart filling service  tank if storage isn't empty

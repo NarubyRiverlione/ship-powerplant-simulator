@@ -1,4 +1,6 @@
-const { makeObservable, observable, action } = require('mobx')
+const {
+  makeObservable, observable, action, computed
+} = require('mobx')
 const Appliance = require('./Appliance')
 const Valve = require('./Valve')
 
@@ -9,10 +11,10 @@ module.exports = class Compressor extends Appliance {
     this.RatedFor = rate
     this.OutletValve = new Valve(name + ' - outlet valve')
     this.OutletValve.Source = this
-    makeObservable(this, { Output: observable, Thick: action, Content: action })
+    makeObservable(this, { Output: observable, Thick: action, Content: computed })
   }
 
-  Content() { return this.Output }
+  get Content() { return this.Output }
 
   Thick() {
     super.Thick()

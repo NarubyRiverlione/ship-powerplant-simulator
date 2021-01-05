@@ -5,7 +5,7 @@ describe('Tank init', () => {
     const name = 'test tank'
     const tank = new Tank(name, 250)
     expect(tank.Volume).toBe(250)
-    expect(tank.Content()).toBe(0)
+    expect(tank.Content).toBe(0)
     expect(tank.Name).toBe(name)
     expect(tank.Adding).toBeFalsy()
     expect(tank.Removing).toBeFalsy()
@@ -14,7 +14,7 @@ describe('Tank init', () => {
     const name = 'tank with conent'
     const tank = new Tank(name, 3000, 100)
     expect(tank.Volume).toBe(3000)
-    expect(tank.Content()).toBe(100)
+    expect(tank.Content).toBe(100)
     expect(tank.Name).toBe(name)
     expect(tank.Adding).toBeFalsy()
     expect(tank.Removing).toBeFalsy()
@@ -27,7 +27,7 @@ describe('Tank add 1 step', () => {
     tank.AddEachStep = 100
     tank.Adding = true
     tank.Thick()
-    expect(tank.Content()).toBe(100)
+    expect(tank.Content).toBe(100)
     expect(tank.Adding).toBeTruthy()
     expect(tank.Removing).toBeFalsy()
   })
@@ -38,7 +38,7 @@ describe('Tank add 1 step', () => {
     tank.AddEachStep = addEachStep
     tank.Adding = true
     tank.Thick()
-    expect(tank.Content()).toBe(start + addEachStep)
+    expect(tank.Content).toBe(start + addEachStep)
     expect(tank.Adding).toBeTruthy()
     expect(tank.Removing).toBeFalsy()
   })
@@ -57,7 +57,7 @@ describe('Tank add 1 step', () => {
     tank.Adding = true
     tank.Thick()
 
-    expect(tank.Content()).toBe(volume)
+    expect(tank.Content).toBe(volume)
     expect(cbFullFlag).toBeTruthy()
     expect(tank.Adding).toBeTruthy()
     expect(tank.Removing).toBeFalsy()
@@ -70,7 +70,7 @@ describe('Tank add 1 step', () => {
     tank.AddEachStep = addEachStep
     tank.Adding = true
     tank.Thick()
-    expect(tank.Content()).toBe(volume)
+    expect(tank.Content).toBe(volume)
     expect(tank.Adding).toBeTruthy()
     expect(tank.Removing).toBeFalsy()
   })
@@ -86,7 +86,7 @@ describe('Tank remove 1 step', () => {
     tank.Removing = true
     tank.cbRemoved = () => { flagRemoved = true }
     tank.Thick()
-    expect(tank.Content()).toBe(start - removeEachStep)
+    expect(tank.Content).toBe(start - removeEachStep)
     expect(tank.Removing).toBeTruthy()
     expect(tank.Adding).toBeFalsy()
     expect(flagRemoved).toBeTruthy()
@@ -97,7 +97,7 @@ describe('Tank remove 1 step', () => {
     tank.RemoveEachStep = removeEachStep
     tank.Removing = true
     tank.Thick()
-    expect(tank.Content()).toBe(0)
+    expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
     expect(tank.Adding).toBeFalsy()
   })
@@ -107,7 +107,7 @@ describe('Tank remove 1 step', () => {
     tank.RemoveEachStep = removeEachStep
     tank.Removing = true
     tank.Thick()
-    expect(tank.Content()).toBe(0)
+    expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
     expect(tank.Adding).toBeFalsy()
   })
@@ -118,7 +118,7 @@ describe('Tank remove 1 step', () => {
     tank.RemoveEachStep = removeEachStep
     tank.Removing = true
     tank.Thick()
-    expect(tank.Content()).toBe(0)
+    expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
     expect(tank.Adding).toBeFalsy()
   })
@@ -134,16 +134,16 @@ describe('Tank add over time', () => {
     tank.Adding = true
 
     tank.Thick()
-    expect(tank.Content()).toBe(start + addEachStep)
+    expect(tank.Content).toBe(start + addEachStep)
     expect(tank.Adding).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(start + addEachStep * 2)
+    expect(tank.Content).toBe(start + addEachStep * 2)
     expect(tank.Adding).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(start + addEachStep * 3)
+    expect(tank.Content).toBe(start + addEachStep * 3)
     expect(tank.Adding).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(start + addEachStep * 4)
+    expect(tank.Content).toBe(start + addEachStep * 4)
     expect(tank.Adding).toBeTruthy()
   })
   test('Start filling until full', () => {
@@ -158,7 +158,7 @@ describe('Tank add over time', () => {
     let cbFullFlag = false
     const cbFull = () => {
       cbFullFlag = true
-      expect(tank.Content()).toBe(maxTank)
+      expect(tank.Content).toBe(maxTank)
       expect(steps).toBe(expectAmountOfSteps)
     }
 
@@ -184,16 +184,16 @@ describe('Tank remove over time', () => {
     tank.Removing = true
 
     tank.Thick()
-    expect(tank.Content()).toBe(start - removeEachStep)
+    expect(tank.Content).toBe(start - removeEachStep)
     expect(tank.Removing).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(start - removeEachStep * 2)
+    expect(tank.Content).toBe(start - removeEachStep * 2)
     expect(tank.Removing).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(start - removeEachStep * 3)
+    expect(tank.Content).toBe(start - removeEachStep * 3)
     expect(tank.Removing).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(start - removeEachStep * 4)
+    expect(tank.Content).toBe(start - removeEachStep * 4)
     expect(tank.Removing).toBeTruthy()
   })
   test('Remove in until empty ', () => {
@@ -205,16 +205,16 @@ describe('Tank remove over time', () => {
     tank.Removing = true
 
     tank.Thick()
-    expect(tank.Content()).toBe(start - removeEachStep)
+    expect(tank.Content).toBe(start - removeEachStep)
     expect(tank.Removing).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(start - removeEachStep * 2)
+    expect(tank.Content).toBe(start - removeEachStep * 2)
     expect(tank.Removing).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(0)
+    expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
     tank.Thick()
-    expect(tank.Content()).toBe(0)
+    expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
   })
 })

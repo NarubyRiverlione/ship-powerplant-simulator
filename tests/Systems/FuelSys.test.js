@@ -18,12 +18,12 @@ beforeEach(() => {
 
 describe('Fuel system init', () => {
   test('Empty diesel tank', () => {
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(0)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(0)
     expect(fuelSys.DsStorage.Tank.Volume).toBe(CstFuelSys.DsStorageTank.TankVolume)
     expect(fuelSys.DsStorage.Tank.Name).toBe(FuelSysTxt.DsStorageTank)
   })
   test('Empty diesel service tank', () => {
-    expect(fuelSys.DsService.Tank.Content()).toBe(0)
+    expect(fuelSys.DsService.Tank.Content).toBe(0)
     expect(fuelSys.DsService.Tank.Volume).toBe(CstFuelSys.DsServiceTank.TankVolume)
     expect(fuelSys.DsService.Tank.Name).toBe(FuelSysTxt.DsServiceTank)
   })
@@ -32,15 +32,15 @@ describe('Fuel system init', () => {
   })
   test('Diesel fuel storage outlet valve is closed', () => {
     expect(fuelSys.DsStorage.OutletValve.isOpen).toBeFalsy()
-    expect(fuelSys.DsStorage.OutletValve.Content()).toBe(0) // empty dieseltank = empty fuel line valve
+    expect(fuelSys.DsStorage.OutletValve.Content).toBe(0) // empty dieseltank = empty fuel line valve
   })
   test('Diesel fuel service intake valve is closed', () => {
     expect(fuelSys.DsService.IntakeValve.isOpen).toBeFalsy()
-    expect(fuelSys.DsService.IntakeValve.Content()).toBe(0) // empty dieseltank = empty fuel line valve
+    expect(fuelSys.DsService.IntakeValve.Content).toBe(0) // empty dieseltank = empty fuel line valve
   })
   test('Shore has fuel', () => {
     // valve only has content of opened, so test here source
-    expect(fuelSys.DsShoreValve.Source.Content()).toBe(CstFuelSys.ShoreVolume)
+    expect(fuelSys.DsShoreValve.Source.Content).toBe(CstFuelSys.ShoreVolume)
   })
 })
 
@@ -52,7 +52,7 @@ describe('Diesel storage tank: fill from shore', () => {
 
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.Adding).toBeFalsy()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(0)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(0)
   })
   test('Opening intake valve, shore fill valve stays closed --> no adding to diesel tank', () => {
     fuelSys.DsStorage.IntakeValve.Open()
@@ -61,7 +61,7 @@ describe('Diesel storage tank: fill from shore', () => {
 
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.Adding).toBeFalsy()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(0)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(0)
   })
   test('open first intake valve then shore fill --> filling', () => {
     fuelSys.DsStorage.IntakeValve.Open()
@@ -71,9 +71,9 @@ describe('Diesel storage tank: fill from shore', () => {
 
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.Adding).toBeTruthy()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(CstFuelSys.DsStorageTank.TankAddStep)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankAddStep)
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(CstFuelSys.DsStorageTank.TankAddStep * 2)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankAddStep * 2)
   })
   test('open first shore fill valve then intake --> filling', () => {
     fuelSys.DsShoreValve.Open()
@@ -83,9 +83,9 @@ describe('Diesel storage tank: fill from shore', () => {
 
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.Adding).toBeTruthy()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(CstFuelSys.DsStorageTank.TankAddStep)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankAddStep)
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(CstFuelSys.DsStorageTank.TankAddStep * 2)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankAddStep * 2)
   })
   test('Closing shore fill valve, both where open = stop filling', () => {
     fuelSys.DsStorage.IntakeValve.Open()
@@ -94,11 +94,11 @@ describe('Diesel storage tank: fill from shore', () => {
     fuelSys.Thick()
     fuelSys.Thick()
     // stop adding by open the intake valve
-    const contentBeforeReopeningIntakeValve = fuelSys.DsStorage.Tank.Content()
+    const contentBeforeReopeningIntakeValve = fuelSys.DsStorage.Tank.Content
     fuelSys.DsShoreValve.Close()
     // check nothing is added after valve is opened
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(contentBeforeReopeningIntakeValve)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(contentBeforeReopeningIntakeValve)
   })
   test('Closing intake valve, both where open = stop filling', () => {
     fuelSys.DsStorage.IntakeValve.Open()
@@ -107,11 +107,11 @@ describe('Diesel storage tank: fill from shore', () => {
     fuelSys.Thick()
     fuelSys.Thick()
     // stop adding by open the intake valve
-    const contentBeforeReopeningIntakeValve = fuelSys.DsStorage.Tank.Content()
+    const contentBeforeReopeningIntakeValve = fuelSys.DsStorage.Tank.Content
     fuelSys.DsStorage.IntakeValve.Close()
     // check nothing is added after valve is opened
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(contentBeforeReopeningIntakeValve)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(contentBeforeReopeningIntakeValve)
   })
   test('Fill storage tank until full', () => {
     let fullFlag = false
@@ -120,7 +120,7 @@ describe('Diesel storage tank: fill from shore', () => {
     const cbFull = () => {
       // console.debug('tank is full')
       fullFlag = true
-      expect(fuelSys.DsStorage.Tank.Content()).toBe(CstFuelSys.DsStorageTank.TankVolume)
+      expect(fuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankVolume)
       expect(steps).toBe(expectedSteps - 1)
     }
     fuelSys.DsStorage.Tank.cbFull = cbFull
@@ -141,22 +141,22 @@ describe('Diesel service tank', () => {
     fuelSys.DsStorage.Tank.Inside = contentTank
     fuelSys.DsStorage.OutletValve.Open()
     fuelSys.DsService.IntakeValve.Close()
-    expect(fuelSys.DsService.IntakeValve.Content()).toBe(0)
+    expect(fuelSys.DsService.IntakeValve.Content).toBe(0)
     expect(fuelSys.DsService.IntakeValve.isOpen).toBeFalsy()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(contentTank)
-    expect(fuelSys.DsService.Tank.Content()).toBe(0)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(contentTank)
+    expect(fuelSys.DsService.Tank.Content).toBe(0)
   })
   test('Closed diesel service intake valve + open storage outlet = no transfer', () => {
     const contentTank = 2000
     fuelSys.DsStorage.Tank.Inside = contentTank
     fuelSys.DsStorage.OutletValve.Close()
     fuelSys.DsService.IntakeValve.Open()
-    expect(fuelSys.DsService.IntakeValve.Content()).toBe(0)
+    expect(fuelSys.DsService.IntakeValve.Content).toBe(0)
     expect(fuelSys.DsService.IntakeValve.isOpen).toBeTruthy()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBe(contentTank)
-    expect(fuelSys.DsService.Tank.Content()).toBe(0)
+    expect(fuelSys.DsStorage.Tank.Content).toBe(contentTank)
+    expect(fuelSys.DsService.Tank.Content).toBe(0)
   })
 
   test('First open diesel service intake valve, then open storage outlet = transfer', () => {
@@ -168,13 +168,13 @@ describe('Diesel service tank', () => {
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.RemoveEachStep)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
-    expect(fuelSys.DsStorage.Tank.Content())
+    expect(fuelSys.DsStorage.Tank.Content)
       .toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
-    expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep)
+    expect(fuelSys.DsService.Tank.Content).toBe(CstFuelSys.DsServiceTank.TankAddStep)
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content())
+    expect(fuelSys.DsStorage.Tank.Content)
       .toBeCloseTo(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * 2)
-    expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
+    expect(fuelSys.DsService.Tank.Content).toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
   })
   test('First open storage outlet, then close diesel service intake valve = transfer', () => {
     const contentTank = 2000
@@ -188,14 +188,14 @@ describe('Diesel service tank', () => {
     expect(fuelSys.DsService.Tank.AddEachStep)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep)
 
-    expect(fuelSys.DsStorage.Tank.Content())
+    expect(fuelSys.DsStorage.Tank.Content)
       .toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
-    expect(fuelSys.DsService.Tank.Content())
+    expect(fuelSys.DsService.Tank.Content)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep)
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content())
+    expect(fuelSys.DsStorage.Tank.Content)
       .toBeCloseTo(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * 2)
-    expect(fuelSys.DsService.Tank.Content())
+    expect(fuelSys.DsService.Tank.Content)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
   })
 
@@ -208,9 +208,9 @@ describe('Diesel service tank', () => {
     fuelSys.Thick()
     fuelSys.DsService.IntakeValve.Close()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content())
+    expect(fuelSys.DsStorage.Tank.Content)
       .toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
-    expect(fuelSys.DsService.Tank.Content()).toBe(CstFuelSys.DsServiceTank.TankAddStep)
+    expect(fuelSys.DsService.Tank.Content).toBe(CstFuelSys.DsServiceTank.TankAddStep)
     expect(fuelSys.DsStorage.Tank.RemoveEachStep).toBe(0)
   })
   test('re-close diesel storage outlet valve after both where open = stoptransfer', () => {
@@ -222,9 +222,9 @@ describe('Diesel service tank', () => {
     fuelSys.Thick()
     fuelSys.DsStorage.OutletValve.Close()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content())
+    expect(fuelSys.DsStorage.Tank.Content)
       .toBe(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
-    expect(fuelSys.DsService.Tank.Content())
+    expect(fuelSys.DsService.Tank.Content)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep)
     expect(fuelSys.DsStorage.Tank.RemoveEachStep).toBe(0)
   })
@@ -266,8 +266,8 @@ describe('Diesel service tank', () => {
     // FIXME: stop removing 1 step to soon, the Thick  tank is full still needs to remove last time
     const expectContentStorageTank = CstFuelSys.DsStorageTank.TankVolume
       - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * (fillSteps - 1)
-    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(expectContentStorageTank)
-    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume)
+    expect(fuelSys.DsStorage.Tank.Content).toBeCloseTo(expectContentStorageTank)
+    expect(fuelSys.DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume)
   })
   test('restart filling the service tank after it was full', () => {
     // fill storage tank full
@@ -287,18 +287,18 @@ describe('Diesel service tank', () => {
     // FIXME: stop removing 1 step to soon, the Thick  tank is full still needs to remove last time
     const expectContentStorageTank = CstFuelSys.DsStorageTank.TankVolume
       - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * (fillSteps - 1)
-    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(expectContentStorageTank)
-    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume)
+    expect(fuelSys.DsStorage.Tank.Content).toBeCloseTo(expectContentStorageTank)
+    expect(fuelSys.DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume)
 
     // drain service tanks so filling needs  to continue
     fuelSys.DsService.Tank.Inside -= CstFuelSys.DsServiceTank.TankAddStep * 2
     fuelSys.Thick()
-    expect(fuelSys.DsService.Tank.Content())
+    expect(fuelSys.DsService.Tank.Content)
       .toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DsServiceTank.TankAddStep)
 
     expect(fuelSys.DsStorage.Tank.RemoveEachStep)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
-    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(CstFuelSys.DsStorageTank.TankVolume
+    expect(fuelSys.DsStorage.Tank.Content).toBeCloseTo(CstFuelSys.DsStorageTank.TankVolume
       - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * (fillSteps))
   })
   test('storage tank empty, stop adding service tank', () => {
@@ -310,16 +310,16 @@ describe('Diesel service tank', () => {
     fuelSys.Thick()
     fuelSys.Thick()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(0)
-    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(contentDsTank * CstFuelSys.RatioStorageServiceTanks)
+    expect(fuelSys.DsStorage.Tank.Content).toBeCloseTo(0)
+    expect(fuelSys.DsService.Tank.Content).toBeCloseTo(contentDsTank * CstFuelSys.RatioStorageServiceTanks)
     // add DS in storage tank --> continue filling service tank until dieseltank is empty again
     fuelSys.DsStorage.Tank.Inside = contentDsTank
     fuelSys.Thick()
     fuelSys.Thick()
     fuelSys.Thick()
     fuelSys.Thick()
-    expect(fuelSys.DsStorage.Tank.Content()).toBeCloseTo(0)
-    expect(fuelSys.DsService.Tank.Content()).toBeCloseTo(contentDsTank * CstFuelSys.RatioStorageServiceTanks * 2)
+    expect(fuelSys.DsStorage.Tank.Content).toBeCloseTo(0)
+    expect(fuelSys.DsService.Tank.Content).toBeCloseTo(contentDsTank * CstFuelSys.RatioStorageServiceTanks * 2)
   })
 })
 

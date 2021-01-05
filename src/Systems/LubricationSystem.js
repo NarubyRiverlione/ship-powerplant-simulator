@@ -13,7 +13,7 @@ module.exports = class LubSys {
   constructor(alarmSys) {
     makeObservable(this, { Thick: action })
     this.ShoreValve = new Valve(LubSysTxt.LubShoreFillValve)
-    this.ShoreValve.Source = { Content: () => LubSysTxt.ShoreVolume }
+    this.ShoreValve.Source = { Content: LubSysTxt.ShoreVolume }
     // if both shore and storage intake valves are open --> filling
     this.ShoreValve.cbNowOpen = () => {
       if (this.Storage.IntakeValve.isOpen) this.Storage.Tank.Adding = true

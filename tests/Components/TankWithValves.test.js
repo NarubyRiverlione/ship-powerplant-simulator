@@ -9,7 +9,7 @@ const dummySource = { Inside: 887, Removing: false }
 const dummySourceValve = {
   isOpen: false,
   Source: dummySource,
-  Content: () => this.Source.Inside
+  Content: dummySource.Inside
 }
 
 beforeEach(() => {
@@ -18,7 +18,7 @@ beforeEach(() => {
 
 describe('Init', () => {
   test('volume & start content', () => {
-    expect(tankV.Tank.Content()).toBe(StartContent)
+    expect(tankV.Tank.Content).toBe(StartContent)
     expect(tankV.Tank.Volume).toBe(Volume)
   })
   test('Intake & outlet valves are closed', () => {
@@ -27,11 +27,11 @@ describe('Init', () => {
   })
   // test('Intake source', () => {
   //   //  expect(tankV.IntakeValve.Source).toBe(dummySourceValve)
-  //   expect(tankV.IntakeValve.Content()).toBe(dummySource.Inside)
+  //   expect(tankV.IntakeValve.Content).toBe(dummySource.Inside)
   // })
   test('outlet source', () => {
     expect(tankV.OutletValve.Source).toEqual(tankV.Tank)
-    expect(tankV.OutletValve.Source.Content()).toBe(StartContent)
+    expect(tankV.OutletValve.Source.Content).toBe(StartContent)
   })
   test('Drain valve is closed', () => {
     expect(tankV.DrainValve.isOpen).toBeFalsy()
@@ -85,7 +85,7 @@ describe('Outlet valve', () => {
     tankV.Tank.Inside = StartContent
     tankV.OutletValve.Open()
     tankV.Thick()
-    expect(tankV.OutletValve.Content()).toBe(StartContent)
+    expect(tankV.OutletValve.Content).toBe(StartContent)
   })
   test('full tank and re-close  outlet = valve has no content', () => {
     tankV.Tank.Inside = StartContent
@@ -93,16 +93,16 @@ describe('Outlet valve', () => {
     tankV.Thick()
     tankV.OutletValve.Close()
     tankV.Thick()
-    expect(tankV.OutletValve.Content()).toBe(0)
+    expect(tankV.OutletValve.Content).toBe(0)
   })
   test('open outlet, empty tank, then add tank content = outlet has tank content', () => {
     tankV.Tank.Inside = 0
     tankV.OutletValve.Open()
     tankV.Thick()
-    expect(tankV.OutletValve.Content()).toBe(0)
+    expect(tankV.OutletValve.Content).toBe(0)
     tankV.Tank.Inside = StartContent
     tankV.Thick()
-    expect(tankV.OutletValve.Content()).toBe(StartContent)
+    expect(tankV.OutletValve.Content).toBe(StartContent)
   })
 })
 describe('Drain valve', () => {
@@ -113,7 +113,7 @@ describe('Drain valve', () => {
     tankV.DrainTarget = drainTarget
     tankV.DrainValve.Open()
     tankV.Thick()
-    expect(tankV.Tank.Content()).toBe(startContent - CstChanges.DrainStep)
+    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
     expect(drainTarget.AddEachStep).toBe(CstChanges.DrainStep)
     expect(drainTarget.Adding).toBeTruthy()
   })
@@ -123,6 +123,6 @@ describe('Drain valve', () => {
     tankV.DrainValve.Open()
     tankV.Thick()
     tankV.DrainValve.Close()
-    expect(tankV.Tank.Content()).toBe(startContent - CstChanges.DrainStep)
+    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
   })
 })

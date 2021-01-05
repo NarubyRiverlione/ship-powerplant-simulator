@@ -9,6 +9,8 @@ module.exports = class PowerBus {
     makeAutoObservable(this)
   }
 
+  get Content() { return this.Voltage }
+
   Thick() {
     this.Voltage = this.Providers > 0
       ? CstPowerSys.Voltage

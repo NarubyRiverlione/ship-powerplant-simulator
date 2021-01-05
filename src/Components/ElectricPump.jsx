@@ -1,4 +1,6 @@
-const { makeObservable, observable, action } = require('mobx')
+const {
+  makeObservable, observable, action, computed
+} = require('mobx')
 const Appliance = require('./Appliance')
 
 module.exports = class ElectricPump extends Appliance {
@@ -7,10 +9,10 @@ module.exports = class ElectricPump extends Appliance {
     this.RatedFor = rate
     this.Output = 0
     this.Providers = 0
-    makeObservable(this, { Output: observable, Thick: action, Content: action })
+    makeObservable(this, { Output: observable, Thick: action, Content: computed })
   }
 
-  Content() { return this.Output }
+  get Content() { return this.Output }
 
   Thick() {
     // pump cannot run dry without providers

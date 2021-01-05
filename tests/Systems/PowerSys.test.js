@@ -9,20 +9,20 @@ const startLubAmount = 2000
 const startAirAmount = CstAirSys.DieselGenerator.MinPressure
 
 let fuelSource
-const lubSource = { Content: () => startLubAmount }
-const airSource = { Content: () => startAirAmount }
+const lubSource = { Content: startLubAmount }
+const airSource = { Content: startAirAmount }
 
 beforeEach(() => {
-  fuelSource = { Content: () => startFuelAmount, RemoveEachStep: 0 }
+  fuelSource = { Content: startFuelAmount, RemoveEachStep: 0 }
 
   const dummyFuelOutletValve = { Source: fuelSource, isOpen: true }
-  dummyFuelOutletValve.Content = () => fuelSource.Content()
+  dummyFuelOutletValve.Content = fuelSource.Content
 
   const dummyLubOutletValve = { Source: lubSource, isOpen: true }
-  dummyLubOutletValve.Content = () => lubSource.Content()
+  dummyLubOutletValve.Content = lubSource.Content
 
   const dummyAirOutletValve = { Source: airSource, isOpen: true }
-  dummyAirOutletValve.Content = () => airSource.Content()
+  dummyAirOutletValve.Content = airSource.Content
 
   const dummyLubCooler = { isCooling: true }
 
@@ -56,7 +56,7 @@ describe('Init power', () => {
     // expect(powerSys.DsGen1.FuelProvider).toEqual(fuelSource)
     expect(powerSys.DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
     // valve only has content of opened, so test here source
-    expect(powerSys.DsGen1.FuelIntakeValve.Source.Content()).toBe(startFuelAmount)
+    expect(powerSys.DsGen1.FuelIntakeValve.Source.Content).toBe(startFuelAmount)
   })
 })
 describe('Shore power', () => {
