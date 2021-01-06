@@ -46,8 +46,8 @@ describe('Init power', () => {
   })
   test('No power in no busses at startup', () => {
     powerSys.Thick()
-    expect(powerSys.MainBus1.Voltage).toBe(0)
-    expect(powerSys.EmergencyBus.Voltage).toBe(0)
+    expect(powerSys.MainBus1.Content).toBe(0)
+    expect(powerSys.EmergencyBus.Content).toBe(0)
   })
   test('Diesel generator 1 not running, breaker open, fuel provider & consumption', () => {
     powerSys.Thick()
@@ -64,28 +64,28 @@ describe('Shore power', () => {
     powerSys.ConnectShore()
     powerSys.Thick()
     expect(powerSys.Providers).toBe(CstPowerSys.Shore)
-    expect(powerSys.EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
-    expect(powerSys.MainBus1.Voltage).toBe(0) // main breaker is open -> no voltage in main bus
+    expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
+    expect(powerSys.MainBus1.Content).toBe(0) // main breaker is open -> no Content in main bus
   })
   test('No power after disconnecting shore with no emergence generator running', () => {
     powerSys.ConnectShore()
     powerSys.DisconnectShore()
     expect(powerSys.Providers).toBe(0)
-    expect(powerSys.MainBus1.Voltage).toBe(0)
-    expect(powerSys.EmergencyBus.Voltage).toBe(0)
+    expect(powerSys.MainBus1.Content).toBe(0)
+    expect(powerSys.EmergencyBus.Content).toBe(0)
   })
 })
 describe('Main bus', () => {
-  test('Main breaker closed with shore power and no consumers --> main bus has voltage', () => {
+  test('Main breaker closed with shore power and no consumers --> main bus has Content', () => {
     powerSys.ConnectShore()
     powerSys.MainBreaker1.Close()
     powerSys.Thick()
     expect(powerSys.MainBreaker1.isOpen).toBeFalsy()
     expect(powerSys.MainBreaker1.Providers).toBe(CstPowerSys.Shore)
     expect(powerSys.MainBus1.Providers).toBe(CstPowerSys.Shore)
-    expect(powerSys.MainBus1.Voltage).toBe(CstPowerSys.Voltage)
+    expect(powerSys.MainBus1.Content).toBe(CstPowerSys.Voltage)
   })
-  test('Main breaker closed with shore power and to much consumers --> breaker open, main bus has no voltage', () => {
+  test('Main breaker closed with shore power and to much consumers --> breaker open, main bus has no Content', () => {
     powerSys.ConnectShore()
     powerSys.MainBreaker1.Close()
     powerSys.Thick()
@@ -93,7 +93,7 @@ describe('Main bus', () => {
     powerSys.Thick()
     expect(powerSys.MainBreaker1.isOpen).toBeTruthy()
     expect(powerSys.MainBus1.Providers).toBe(0)
-    expect(powerSys.MainBus1.Voltage).toBe(0)
+    expect(powerSys.MainBus1.Content).toBe(0)
   })
   test('Main breaker tripped because consumers > providers, manually close --> stay open', () => {
     powerSys.ConnectShore()
@@ -106,7 +106,7 @@ describe('Main bus', () => {
     powerSys.Thick()
     expect(powerSys.MainBreaker1.isOpen).toBeTruthy()
     expect(powerSys.MainBus1.Providers).toBe(0)
-    expect(powerSys.MainBus1.Voltage).toBe(0)
+    expect(powerSys.MainBus1.Content).toBe(0)
   })
 })
 describe('Emergency generator', () => {
@@ -115,8 +115,8 @@ describe('Emergency generator', () => {
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeTruthy()
     expect(powerSys.Providers).toBe(CstPowerSys.EmergencyGen.RatedFor)
-    expect(powerSys.EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
-    expect(powerSys.MainBus1.Voltage).toBe(0)
+    expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
+    expect(powerSys.MainBus1.Content).toBe(0)
   })
   test('After connecting shore emergency generator stops', () => {
     powerSys.EmergencyGen.Start()
@@ -125,7 +125,7 @@ describe('Emergency generator', () => {
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
     expect(powerSys.Providers).toBe(CstPowerSys.Shore)
-    expect(powerSys.EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
+    expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
   })
   test('already connected to shore & starting emergency generator --> trip = stops', () => {
     powerSys.ConnectShore()
@@ -134,7 +134,7 @@ describe('Emergency generator', () => {
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
     expect(powerSys.Providers).toBe(CstPowerSys.Shore)
-    expect(powerSys.EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
+    expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
   })
   test('already DsGen 1 running & starting emergency generator --> trip = stops', () => {
     powerSys.DsGen1.Start()
@@ -145,7 +145,7 @@ describe('Emergency generator', () => {
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
     expect(powerSys.Providers).toBe(CstPowerSys.DsGen1.RatedFor)
-    expect(powerSys.EmergencyBus.Voltage).toBe(CstPowerSys.Voltage)
+    expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
   })
 })
 describe('Diesel generator 1', () => {

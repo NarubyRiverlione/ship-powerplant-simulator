@@ -2,7 +2,7 @@ const { makeObservable, action } = require('mobx')
 const TankWithValves = require('../Components/TankWithValves')
 const Valve = require('../Components/Valve')
 
-const { CstFuelSys } = require('../Cst')
+const { CstFuelSys, CstChanges } = require('../Cst')
 const { AlarmCode, AlarmLevel } = require('../CstAlarms')
 
 const CstTxt = require('../CstTxt')
@@ -41,6 +41,17 @@ module.exports = class FuelSystem {
         this.DsService.Tank.Adding = true
       }
     }
+
+    // both storage outlet & service intake needs to be open for transfer
+    // may be still removin via drain valve
+    this.DsStorage.OutletValve.cbNowClosed = () => {
+      this.DsStorage.Tank.Removing = this.DsStorage.DrainValve.isOpen
+      this.DsService.Tank.Adding = false
+      // if (this.DsService.IntakeValve.isOpen) {
+      //   // was transfering, stop now. May be still removing via drain valve
+      //   this.DsStorage.Tank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
+      // }
+    }
     // Alarms
     this.DsStorage.Tank.AlarmSystem = alarmSys
     this.DsStorage.Tank.LowLevelAlarmCode = AlarmCode.LowDsStorageTank
@@ -53,21 +64,18 @@ module.exports = class FuelSystem {
     // filled from the storage outlet valve
     this.DsService = new TankWithValves(FuelSysTxt.DsServiceTank,
       CstFuelSys.DsServiceTank.TankVolume, 0, this.DsStorage.OutletValve)
+    // //  drain valve can also be open and continue removing
+    // this.DsService.Tank.cbFull = () => {
+    //   this.DsStorage.Tank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
+    // }
 
-    this.DsService.Tank.cbFull = () => {
-      this.DsStorage.Tank.RemoveEachStep = 0 // -= CstFuelSys.DsServiceTank.TankAddStep
-    }
-    this.DsService.Tank.cbAdded = (added) => {
-      // storage tank is Ratio bigger then service tank
-      this.DsStorage.Tank.RemoveEachStep = added / CstFuelSys.RatioStorageServiceTanks
+    // outlet valve closes,stop removing from service tank
+    // may be continue removing via drain valve
+    this.DsService.OutletValve.cbNowClosed = () => {
+      this.DsService.Tank.Removing = this.DsStorage.DrainValve.isOpen
+      // this.DsService.Tank.RemoveEachStep -= CstFuelSys.RatioStorageServiceTanks
     }
 
-    // as both outlet valves and service intake valve needs to be closed to transfer
-    // and this outlet  is now open --> stop transfer
-    this.DsStorage.OutletValve.cbNowClosed = () => {
-      this.DsStorage.Tank.Removing = false
-      this.DsService.Tank.Adding = false
-    }
     // Alarms
     this.DsService.Tank.AlarmSystem = alarmSys
     this.DsService.Tank.LowLevelAlarmCode = AlarmCode.LowDsServiceTank
@@ -79,13 +87,28 @@ module.exports = class FuelSystem {
   }
 
   Thick() {
+    // reevaluate DsStorage removing each Tick, to may possibilities to catch in callback functions
     this.DsStorage.Tank.RemoveEachStep = 0
+    // remove from storage tank, DsStorage is Ratio bigger then DsService tank
+    if (this.DsStorage.OutletValve.isOpen && this.DsService.IntakeValve.isOpen) {
+      this.DsStorage.Tank.RemoveEachStep = CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
+      // DsSerivice is full, no transfer this thick,
+      // don't stop stop tranfer may be next tick DsServic isn't full any more
 
-    this.DsService.Tank.AddEachStep = (this.DsStorage.Tank.Content === 0)
+      if (this.DsService.Tank.Content === CstFuelSys.DsServiceTank.TankVolume) {
+        this.DsStorage.Tank.RemoveEachStep = 0
+      }
+    }
+    // also draining ?
+    if (this.DsStorage.DrainValve.isOpen) {
+      this.DsStorage.Tank.RemoveEachStep += CstChanges.DrainStep
+    }
+
+    this.DsService.Tank.AddEachStep = (this.DsStorage.Tank.Content !== 0 && this.DsService.Tank.Adding)
+      //  filling service tank if storage isn't empty
+      ? CstFuelSys.DsServiceTank.TankAddStep
       // stop filling service tank if storage is empty
-      ? 0
-      // restart filling service  tank if storage isn't empty
-      : CstFuelSys.DsServiceTank.TankAddStep
+      : 0
 
     // service tank needs first to Thick to detect full
     // -> stop from removing from storage

@@ -48,6 +48,7 @@ module.exports = class CoolingSys {
     // #endregion
     // #region Over board dump valve
     this.OverboardDumpValve = new Valve(CoolantSysTxt.OverboardDumpValve)
+    this.OverboardDumpValve.Source = { Content: this.SwAvailable }
     this.OverboardDumpValve.cbNowOpen = () => {
       this.FwCoolerDsGen1.CoolingCircuitComplete = true
       this.FwCoolerDsGen2.CoolingCircuitComplete = true
@@ -112,6 +113,8 @@ module.exports = class CoolingSys {
     this.SwAvailable = this.AuxPump.Content
       + this.SuctionPump1.Content
       + this.SuctionPump2.Content
+
+    this.OverboardDumpValve.Source = { Content: this.SwAvailable }
 
     this.FwCoolerDsGen1.CoolingProviders = this.SwAvailable
     this.FwCoolerDsGen1.HotCircuitComplete = this.DsGen1LubCooler.hasCooling

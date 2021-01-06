@@ -84,13 +84,18 @@ module.exports = class Tank {
 
     /* istanbul ignore if  */
     if (this.RemoveEachStep < 0) {
-      console.warn(`Tank:${this.Name} had a negative RemoveEachStep `)
-      this.RemoveEachStep = 0
+      console.warn(`Tank:${this.Name} had a negative RemoveEachStep :${this.RemoveEachStep}`)
+      debugger
+    }
+    /* istanbul ignore if  */
+    if (this.RemoveEachStep === undefined || Number.isNaN(this.RemoveEachStep)) {
+      console.warn(`Tank:${this.Name} RemoveEachStep is not a number : ${this.RemoveEachStep}`)
+      //  this.RemoveEachStep = 0
     }
     /* istanbul ignore if  */
     if (this.AddEachStep < 0) {
-      console.warn(`Tank:${this.Name} had a negative AddEachStep `)
-      this.AddEachStep = 0
+      console.warn(`Tank:${this.Name} had a negative AddEachStep: ${this.AddEachStep} `)
+      //  this.AddEachStep = 0
     }
     /* istanbul ignore if  */
     if (this.Inside === undefined || Number.isNaN(this.Inside)) {

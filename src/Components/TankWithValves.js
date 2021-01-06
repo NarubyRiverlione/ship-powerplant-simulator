@@ -43,6 +43,8 @@ module.exports = class TankWithValves {
     }
     this.DrainValve.cbNowClosed = () => {
       this.Tank.RemoveEachStep -= CstChanges.DrainStep
+      // only stop removing is outlet valve is also closed
+      this.Tank.Removing = this.OutletValve.isOpen
     }
   }
 

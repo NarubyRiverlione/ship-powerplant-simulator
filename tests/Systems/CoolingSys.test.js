@@ -133,6 +133,23 @@ describe('Suction pumps', () => {
 })
 
 describe('Over board valve', () => {
+  test('over board vale open but no pump running = valve has no content', () => {
+    const { OverboardDumpValve } = coolingSys
+    OverboardDumpValve.Open()
+    coolingSys.Thick()
+    expect(OverboardDumpValve.Content).toBe(0)
+  })
+  test('over board vale open and aux pump running = valve has  content', () => {
+    const { OverboardDumpValve, AuxPump, SeaChestLowSuctionIntakeValve } = coolingSys
+    OverboardDumpValve.Open()
+    SeaChestLowSuctionIntakeValve.Open()
+    coolingSys.Thick()
+    AuxPump.Start()
+    coolingSys.Thick()
+    expect(AuxPump.isRunning).toBeTruthy()
+    expect(AuxPump.Content).toBe(CstCoolantSys.AuxSuctionPump)
+    expect(OverboardDumpValve.Content).toBe(CstCoolantSys.AuxSuctionPump)
+  })
   test('Aux pump running, low sea suction valve open but over board valve is closed = no cooling', () => {
     const {
       AuxPump, FwCoolerDsGen1, FwCoolerDsGen2, OverboardDumpValve, SteamCondensor
@@ -143,6 +160,7 @@ describe('Over board valve', () => {
     OverboardDumpValve.Close()
     coolingSys.Thick()
     expect(OverboardDumpValve.isOpen).toBeFalsy()
+    expect(OverboardDumpValve.Content).toBe(0)
 
     expect(FwCoolerDsGen1.hasCooling).toBeFalsy()
     expect(FwCoolerDsGen2.hasCooling).toBeFalsy()
