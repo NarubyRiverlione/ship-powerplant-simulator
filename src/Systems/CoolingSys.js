@@ -8,7 +8,7 @@ const Valve = require('../Components/Valve')
 const Pump = require('../Components/ElectricPump')
 const Cooler = require('../Components/Cooler')
 const SeaChest = { Content: CstCoolantSys.SeaChest }
-// const FwMakeUp = { Content: CstCoolantSys.FwMakeUp }
+const FwMakeUp = { Content: CstCoolantSys.FwMakeUp }
 /* eslint-disable max-len */
 /*
 ** Sea water cooling circuit **
@@ -66,7 +66,7 @@ module.exports = class CoolingSys {
     this.FwExpandTank.RemoveEachStep = CstChanges.DrainStep
 
     this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve)
-    // this.FwIntakeValve.Source = FwMakeUp
+    this.FwIntakeValve.Source = FwMakeUp
     this.FwIntakeValve.cbNowOpen = () => {
       this.FwExpandTank.Adding = true
     }

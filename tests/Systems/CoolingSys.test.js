@@ -78,6 +78,18 @@ describe('Sea chests', () => {
     SeaChestHighSuctionIntakeValve.Open()
     expect(SeaChestHighSuctionIntakeValve.Content).toBe(CstCoolantSys.SeaChest)
   })
+  test('FW intake valve has no content', () => {
+    expect(coolingSys.FwIntakeValve.Content).toBe(0)
+    expect(coolingSys.FwIntakeValve.isOpen).toBeFalsy()
+  })
+  test('FW drain valve has no content', () => {
+    expect(coolingSys.FwDrainValve.Content).toBe(0)
+    expect(coolingSys.FwDrainValve.isOpen).toBeFalsy()
+  })
+  test('sea water over board valve has no content', () => {
+    expect(coolingSys.OverboardDumpValve.Content).toBe(0)
+    expect(coolingSys.OverboardDumpValve.isOpen).toBeFalsy()
+  })
 })
 describe('Suction pumps', () => {
   test('Aux pump with low suction valve open = output is rated', () => {
@@ -245,6 +257,7 @@ describe('Fresh water expand tank', () => {
     coolingSys.FwIntakeValve.Open()
     coolingSys.Thick()
     expect(coolingSys.FwExpandTank.Content).toBe(CstCoolantSys.FwExpandTank.TankAddStep)
+    expect(coolingSys.FwIntakeValve.Content).toBe(CstCoolantSys.FwMakeUp)
   })
   test('closing intake valve, stop filling expand tank', () => {
     coolingSys.FwIntakeValve.Open()
