@@ -29,9 +29,11 @@ export default class DieselGenerator extends Generator {
     this.LubIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.LubIntakeValve}`, lubValve)
     this.LubProvider = lubValve.Source as Tank
     this.LubIntakeValve.cbNowOpen = () => {
-      this.LubSlump.Adding = true
-      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
-      this.LubProvider.Removing = true
+      const lub = this.LubIntakeValve.Source as Valve
+      if (lub.isOpen) {
+        this.LubSlump.Adding = true
+        this.LubProvider.Removing = true
+      }
     }
     this.LubIntakeValve.cbNowClosed = () => {
       this.LubSlump.Adding = false
@@ -73,16 +75,18 @@ export default class DieselGenerator extends Generator {
   }
 
   Start() {
-    this.Thick()
     if (this.CheckAir) super.Start()
   }
 
   Thick() {
-    this.LubSlump.AddEachStep = this.LubIntakeValve.Source.Content === 0
-      // stop filling slump tank if lub source is empty
-      ? 0
-      // restart filling slump if lub source isn't empty
-      : CstPowerSys.DsGen1.Slump.TankAddStep
+    this.LubProvider.RemoveEachStep = 0
+    this.LubSlump.AddEachStep = 0
+    if (this.LubSlump.Adding && this.LubIntakeValve.Source.Content !== 0) {
+      // only  fill slump tank if lub source is not empty
+      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
+      this.LubSlump.AddEachStep = CstPowerSys.DsGen1.Slump.TankAddStep
+    }
+
     this.LubSlump.Thick()
     this.CheckFuel()
     this.CheckLubrication()

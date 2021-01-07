@@ -1,10 +1,15 @@
-const {
+import {
   makeObservable, observable, action, computed
-} = require('mobx')
-const Appliance = require('./Appliance')
+} from 'mobx'
+import Appliance from './Appliance'
+import PowerBus from './PowerBus'
 
-module.exports = class ElectricPump extends Appliance {
-  constructor(name, bus, rate) {
+export default class ElectricPump extends Appliance {
+  RatedFor: number
+  Output: number
+  Providers: number
+
+  constructor(name: string, bus: PowerBus, rate: number) {
     super(name, bus)
     this.RatedFor = rate
     this.Output = 0

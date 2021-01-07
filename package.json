@@ -5,9 +5,8 @@
   "main": "lib/Simulator.js",
   "type": "module",
   "scripts": {
-    "start": "npm run build:live",
+    "dev": "tsc -w",
     "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts'",
     "lint": "eslint . --fix",
     "test:coverage": "npm test -- --coverage",
     "test:badges": "npm run test:coverage  && istanbul-badges-readme",
@@ -47,7 +46,6 @@
       "<rootDir>/src"
     ],
     "testMatch": [
-      "**/__tests__/**/*.+(ts|tsx|js)",
       "**/?(*.)+(spec|test).+(ts|tsx|js)"
     ],
     "transform": {
