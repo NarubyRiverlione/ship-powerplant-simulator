@@ -1,9 +1,14 @@
-const AirSys = require('../../Systems/AirSystem')
-const { CstAirSys } = require('../../Cst')
+import AirSys from '../../Systems/AirSystem'
+import { CstAirSys } from '../../Cst'
+import PowerBus from '../../Components/PowerBus'
 
-let airSys
-const dummyMainBus = { Voltage: 440 }
-const dummyEmergencyBus = { Voltage: 440 }
+let airSys: AirSys
+const dummyMainBus = new PowerBus('dummy main bus')
+dummyMainBus.Voltage = 440
+
+const dummyEmergencyBus = new PowerBus('dummy emergency bus')
+dummyEmergencyBus.Voltage = 440
+
 beforeEach(() => {
   airSys = new AirSys(dummyMainBus, dummyEmergencyBus)
 })

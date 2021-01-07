@@ -1,6 +1,6 @@
-const AlarmSys = require('../../Systems/AlarmSys')
+import AlarmSys from '../../Systems/AlarmSys'
 
-let alarmSys
+let alarmSys: AlarmSys
 
 beforeEach(() => {
   alarmSys = new AlarmSys()
@@ -15,14 +15,14 @@ describe('Init', () => {
 describe('add', () => {
   test('Add new alarm', () => {
     const testAlarm = 42
-    let cbFlag = false
-    const testCb = () => { cbFlag = true }
+    let addedCode = 0
+    const testCb = (code: number) => { addedCode = code }
     alarmSys.cbAlarmAdded = testCb
 
     alarmSys.AddAlarm(testAlarm)
     expect(alarmSys.AlarmList.size).toBe(1)
     expect(alarmSys.AlarmExist(testAlarm)).toBeTruthy()
-    expect(cbFlag).toBeTruthy()
+    expect(addedCode).toBe(testAlarm)
   })
   test('Add an already raised alarm, no cbAlarmAdded', () => {
     const testAlarm = 589
@@ -45,7 +45,7 @@ describe('Remove alarm', () => {
     const testAlarm = 15
     let cbNumberCalled = 0
     let alarmRemoved = 0
-    const testCb = (removed) => { cbNumberCalled += 1; alarmRemoved = removed }
+    const testCb = (removed: number) => { cbNumberCalled += 1; alarmRemoved = removed }
     alarmSys.cbAlarmRemoved = testCb
 
     alarmSys.AddAlarm(testAlarm)

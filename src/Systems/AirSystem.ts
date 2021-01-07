@@ -1,9 +1,11 @@
-const { makeAutoObservable } = require('mobx')
-const TankWithValves = require('../Components/TankWithValves')
-const Valve = require('../Components/Valve')
-const Compressor = require('../Components/Compressor')
-const { CstAirSys } = require('../Cst')
-const CstTxt = require('../CstTxt')
+import { makeAutoObservable } from 'mobx'
+import TankWithValves from '../Components/TankWithValves'
+import Valve from '../Components/Valve'
+import PowerBus from '../Components/PowerBus'
+import Compressor from '../Components/Compressor'
+
+import { CstAirSys } from '../Cst'
+import CstTxt from '../CstTxt'
 const { AirSysTxt } = CstTxt
 /*
 Start air compressor 1 - outlet valve  ------ (intake valve) Start air receiver 1 (outlet valve)
@@ -13,8 +15,13 @@ Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (o
                                                               (drain)
 */
 
-module.exports = class AirSys {
-  constructor(mainBus, emergencyBus) {
+export default class AirSys {
+  StartAirCompressor1: Compressor
+  StartAirReceiver1: TankWithValves
+  EmergencyCompressor: Compressor
+  EmergencyReceiver: TankWithValves
+
+  constructor(mainBus: PowerBus, emergencyBus: PowerBus) {
     // #region  Compressor 1
     this.StartAirCompressor1 = new Compressor(AirSysTxt.Compressor1,
       mainBus, CstAirSys.StartAirCompressor1.AddStep)

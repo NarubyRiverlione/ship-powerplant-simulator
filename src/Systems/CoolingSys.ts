@@ -1,14 +1,15 @@
-const { makeAutoObservable } = require('mobx')
-const { CstCoolantSys, CstChanges } = require('../Cst')
-const CstTxt = require('../CstTxt')
+import { makeAutoObservable } from 'mobx'
+import { CstCoolantSys, CstChanges } from '../Cst'
+import CstTxt from '../CstTxt'
 const { CoolantSysTxt } = CstTxt
 
-const Tank = require('../Components/Tank')
-const Valve = require('../Components/Valve')
-const Pump = require('../Components/ElectricPump')
-const Cooler = require('../Components/Cooler')
-const SeaChest = { Content: CstCoolantSys.SeaChest }
-const FwMakeUp = { Content: CstCoolantSys.FwMakeUp }
+import Tank from '../Components/Tank'
+import Valve from '../Components/Valve'
+import Pump from '../Components/ElectricPump'
+import Cooler from '../Components/Cooler'
+import PowerBus from '../Components/PowerBus'
+import TankWithValves from '../Components/TankWithValves'
+
 /* eslint-disable max-len */
 /*
 ** Sea water cooling circuit **
@@ -27,14 +28,32 @@ Fresh water Expand tank
 */
 /* eslint-enable max-len */
 
-module.exports = class CoolingSys {
-  constructor(mainBus, emergencyBus) {
-    this.SwAvailable = 0
+export default class CoolingSys {
+  FwCoolerDsGen1: Cooler
+  FwCoolerDsGen2: Cooler
+  SteamCondensor: Cooler
+
+  SeaChestLowSuctionIntakeValve: Valve
+  SeaChestHighSuctionIntakeValve: Valve
+  AuxPump: Pump
+  SuctionPump1: Pump
+  SuctionPump2: Pump
+  OverboardDumpValve: Valve
+  SwAvailable: Tank // virtual tank that combines the possible outputs of AuxPump, SuctionPump 1 & 2
+
+  FwExpandTank: Tank
+  FwIntakeValve: Valve
+  FwDrainValve: Valve
+
+  DsGen1LubCooler: Cooler
+  DsGen2LubCooler: Cooler
+
+  constructor(mainBus: PowerBus, emergencyBus: PowerBus) {
+    this.SwAvailable = new Tank('virtual tank that combines the possible outputs of AuxPump, SuctionPump 1 & 2', 1e6, 0)
+    const SeaChest = new Tank('Sea water chest', 1e6, 1e6)
     // #region Sea chests suction valves
-    this.SeaChestLowSuctionIntakeValve = new Valve(CoolantSysTxt.LowSuctionIntakeValve)
-    this.SeaChestLowSuctionIntakeValve.Source = SeaChest
-    this.SeaChestHighSuctionIntakeValve = new Valve(CoolantSysTxt.HighSuctionIntakeValve)
-    this.SeaChestHighSuctionIntakeValve.Source = SeaChest
+    this.SeaChestLowSuctionIntakeValve = new Valve(CoolantSysTxt.LowSuctionIntakeValve, SeaChest)
+    this.SeaChestHighSuctionIntakeValve = new Valve(CoolantSysTxt.HighSuctionIntakeValve, SeaChest)
     // #endregion
     // #region (aux) SuctionPumps
     this.AuxPump = new Pump(CoolantSysTxt.AuxSuctionPump, emergencyBus, CstCoolantSys.AuxSuctionPump)
@@ -47,8 +66,7 @@ module.exports = class CoolingSys {
     this.SteamCondensor = new Cooler(CoolantSysTxt.SteamCondensor, CstCoolantSys.SteamCondensor.coolingRate)
     // #endregion
     // #region Over board dump valve
-    this.OverboardDumpValve = new Valve(CoolantSysTxt.OverboardDumpValve)
-    this.OverboardDumpValve.Source = { Content: this.SwAvailable }
+    this.OverboardDumpValve = new Valve(CoolantSysTxt.OverboardDumpValve, this.SwAvailable)
     this.OverboardDumpValve.cbNowOpen = () => {
       this.FwCoolerDsGen1.CoolingCircuitComplete = true
       this.FwCoolerDsGen2.CoolingCircuitComplete = true
@@ -65,16 +83,15 @@ module.exports = class CoolingSys {
     this.FwExpandTank.AddEachStep = CstCoolantSys.FwExpandTank.TankAddStep
     this.FwExpandTank.RemoveEachStep = CstChanges.DrainStep
 
-    this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve)
-    this.FwIntakeValve.Source = FwMakeUp
+    const FwMakeUp = new Tank('Fresh water make up', 1e6, 1e6)
+    this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve, FwMakeUp)
     this.FwIntakeValve.cbNowOpen = () => {
       this.FwExpandTank.Adding = true
     }
     this.FwIntakeValve.cbNowClosed = () => {
       this.FwExpandTank.Adding = false
     }
-    this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve)
-    this.FwDrainValve.Source = this.FwExpandTank
+    this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve, this.FwExpandTank)
     this.FwDrainValve.cbNowOpen = () => {
       this.FwExpandTank.Removing = true
     }
@@ -110,21 +127,21 @@ module.exports = class CoolingSys {
       + this.SeaChestHighSuctionIntakeValve.Content
     this.SuctionPump2.Thick()
 
-    this.SwAvailable = this.AuxPump.Content
+    this.SwAvailable.Inside = this.AuxPump.Content
       + this.SuctionPump1.Content
       + this.SuctionPump2.Content
 
-    this.OverboardDumpValve.Source = { Content: this.SwAvailable }
+    this.OverboardDumpValve.Source = this.SwAvailable
 
-    this.FwCoolerDsGen1.CoolingProviders = this.SwAvailable
+    this.FwCoolerDsGen1.CoolingProviders = this.SwAvailable.Inside
     this.FwCoolerDsGen1.HotCircuitComplete = this.DsGen1LubCooler.hasCooling
     this.FwCoolerDsGen1.Thick()
 
-    this.FwCoolerDsGen2.CoolingProviders = this.SwAvailable
+    this.FwCoolerDsGen2.CoolingProviders = this.SwAvailable.Inside
     this.FwCoolerDsGen2.HotCircuitComplete = this.DsGen2LubCooler.hasCooling
     this.FwCoolerDsGen2.Thick()
 
-    this.SteamCondensor.CoolingProviders = this.SwAvailable
+    this.SteamCondensor.CoolingProviders = this.SwAvailable.Inside
     this.SteamCondensor.Thick()
 
     this.FwExpandTank.Thick()
