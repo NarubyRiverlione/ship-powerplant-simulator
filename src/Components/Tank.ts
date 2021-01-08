@@ -1,7 +1,8 @@
 import { makeAutoObservable } from 'mobx'
+import AlarmSys from '../Systems/AlarmSys'
 import { Item } from "./Item"
 
-export default class Tank implements Item {
+export interface iTank extends Item {
   Name: string
   Inside: number
   Volume: number
@@ -12,10 +13,28 @@ export default class Tank implements Item {
   cbFull: () => void
   cbAdded: (added: number) => void
   cbRemoved: (removed: number) => void
-  AlarmSystem?: any
+  AlarmSystem?: AlarmSys
   LowLevelAlarmCode: number
   LowLevelAlarm: number
   EmptyAlarmCode: number
+}
+
+export default class Tank implements iTank {
+  Name: string
+  Inside: number
+  Volume: number
+  Adding: boolean
+  Removing: boolean
+  AddEachStep: number
+  RemoveEachStep: number
+  cbFull: () => void
+  cbAdded: (added: number) => void
+  cbRemoved: (removed: number) => void
+  AlarmSystem?: AlarmSys
+  LowLevelAlarmCode: number
+  LowLevelAlarm: number
+  EmptyAlarmCode: number
+
 
   constructor(Name: string, Volume: number, StartContent = 0.0) {
     this.Name = Name
@@ -34,7 +53,7 @@ export default class Tank implements Item {
     this.cbAdded = () => { }
     this.cbRemoved = () => { }
 
-    this.AlarmSystem = null
+    this.AlarmSystem = undefined
     this.LowLevelAlarmCode = 0
     this.LowLevelAlarm = 0
     this.EmptyAlarmCode = 0
@@ -72,10 +91,10 @@ export default class Tank implements Item {
     if (this.LowLevelAlarmCode !== 0) {
       // Raise if content below LowLevelAlarm
       if (this.Content < this.LowLevelAlarm) {
-        this.AlarmSystem.AddAlarm(this.LowLevelAlarmCode)
+        this.AlarmSystem?.AddAlarm(this.LowLevelAlarmCode)
       }
       // cancel alarm is previous raised and now above LowLevelAlarm
-      if (this.AlarmSystem.AlarmExist(this.LowLevelAlarmCode) && this.Content >= this.LowLevelAlarm) {
+      if (this.AlarmSystem?.AlarmExist(this.LowLevelAlarmCode) && this.Content >= this.LowLevelAlarm) {
         this.AlarmSystem.RemoveAlarm(this.LowLevelAlarmCode)
       }
     }
@@ -84,10 +103,10 @@ export default class Tank implements Item {
     if (this.EmptyAlarmCode !== 0) {
       // Raise if tank is empty
       if (this.Content === 0) {
-        this.AlarmSystem.AddAlarm(this.EmptyAlarmCode)
+        this.AlarmSystem?.AddAlarm(this.EmptyAlarmCode)
       }
       // cancel alarm is previous raised and tank is no longer empty
-      if (this.AlarmSystem.AlarmExist(this.EmptyAlarmCode) && this.Content !== 0) {
+      if (this.AlarmSystem?.AlarmExist(this.EmptyAlarmCode) && this.Content !== 0) {
         this.AlarmSystem.RemoveAlarm(this.EmptyAlarmCode)
       }
     }

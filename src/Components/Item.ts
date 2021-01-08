@@ -4,3 +4,7 @@ export interface Item {
   Toggle?: () => void;
   Thick: () => void;
 }
+
+export interface ControlItem extends Item {
+  isOpen: boolean
+}

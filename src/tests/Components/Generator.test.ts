@@ -1,10 +1,10 @@
 import Generator from '../../Components/Generator'
-import Tank from '../../Components/Tank'
+import mockTank from '../mocks/mockTank'
 
 let generator: Generator
 const testRate = 12345
 beforeEach(() => {
-  const testFuelProvider = new Tank('test tank', 1000, 1000)
+  const testFuelProvider = new mockTank('test tank', 1000, 1000)
 
   generator = new Generator('test generator', testRate, testFuelProvider)
 })

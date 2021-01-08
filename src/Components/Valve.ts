@@ -1,9 +1,9 @@
-import { Item } from "./Item"
+import { ControlItem } from "./Item"
 import Tank from "./Tank"
 import { makeAutoObservable } from 'mobx'
 import Compressor from "./Compressor"
 
-export default class Valve implements Item {
+export default class Valve implements ControlItem {
   isOpen: boolean
   Name: string
   Source: Valve | Tank | Compressor

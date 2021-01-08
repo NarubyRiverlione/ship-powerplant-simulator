@@ -1,6 +1,6 @@
 import Cooler from '../../Components/Cooler'
 import DieselGenerator from '../../Components/DieselGenerator'
-import Tank from '../../Components/Tank'
+import mockTank from '../mocks/mockTank'
 import Valve from '../../Components/Valve'
 import {
   CstFuelSys, CstAirSys, CstPowerSys, CstLubSys
@@ -14,15 +14,15 @@ const startAirAmount = CstAirSys.DieselGenerator.MinPressure
 let dsgen: DieselGenerator
 
 beforeEach(() => {
-  const fuelSource = new Tank('dummy fuel tank', 100, startFuelAmount)
+  const fuelSource = new mockTank('dummy fuel tank', 100, startFuelAmount)
   const dummyFuelOutletValve = new Valve('test fuel source outlet valve', fuelSource)
   dummyFuelOutletValve.Open()
 
-  const lubSource = new Tank('dummy lub  tank', 100, startLubAmount)
+  const lubSource = new mockTank('dummy lub  tank', 100, startLubAmount)
   const dummyLubOutletValve = new Valve('test lub source outlet valve', lubSource)
   dummyLubOutletValve.Open()
 
-  const airSource = new Tank('dummy air receiver', 100, startAirAmount)
+  const airSource = new mockTank('dummy air receiver', 100, startAirAmount)
   const dummyAirOutletValve = new Valve('test air source valve', airSource)
   dummyAirOutletValve.Open()
 
@@ -86,13 +86,13 @@ describe('Slump', () => {
     expect(dsgen.LubSlump.AddEachStep).toBe(0)
   })
   test('Lub source is empty, stop adding slump', () => {
-    dsgen.LubProvider = new Tank('dummy', 100, CstPowerSys.DsGen1.Slump.TankAddStep)
+    dsgen.LubProvider = new mockTank('dummy', 100, CstPowerSys.DsGen1.Slump.TankAddStep)
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
     expect(dsgen.LubSlump.AddEachStep).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
     expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
     // dummy test source  hasn't logic to remove content, set manual to 0
-    dsgen.LubIntakeValve.Source = new Tank('dummy', 100, 0)
+    dsgen.LubIntakeValve.Source = new mockTank('dummy', 100, 0)
     expect(dsgen.LubIntakeValve.Source.Content).toBe(0)
 
     dsgen.Thick()
@@ -168,7 +168,7 @@ describe('Start', () => {
     dsgen.Thick()
     expect(dsgen.isRunning).toBeTruthy()
 
-    const emptyFuelSource = new Tank('empty tank', 100, 0)
+    const emptyFuelSource = new mockTank('empty tank', 100, 0)
     const emptyFuelValve = new Valve('dummy', emptyFuelSource)
 
     dsgen.FuelIntakeValve = emptyFuelValve
@@ -227,7 +227,7 @@ describe('Start', () => {
   test('fuel & lubrication but to less air = cannot start', () => {
     dsgen.FuelIntakeValve.Open()
     dsgen.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
-    dsgen.AirIntakeValve.Source = new Tank('dummy', 100,
+    dsgen.AirIntakeValve.Source = new mockTank('dummy', 100,
       CstAirSys.DieselGenerator.MinPressure - 0.1)
     dsgen.AirIntakeValve.Open()
     dsgen.Start()

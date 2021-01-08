@@ -1,8 +1,8 @@
 import Pump from '../../Components/ElectricPump'
-import PowerBus from '../../Components/PowerBus'
+import mockPowerBus from '../mocks/mockPowerBus'
 
 const ratedFor = 6916
-const testBus = new PowerBus('dummy bus')
+const testBus = new mockPowerBus('dummy bus')
 let pump: Pump
 
 beforeEach(() => {

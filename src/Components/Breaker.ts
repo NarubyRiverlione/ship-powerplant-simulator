@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx'
-import { Item } from "./Item"
+import { ControlItem } from "./Item"
 
-export default class Breaker implements Item {
+export default class Breaker implements ControlItem {
   Name: string
   isOpen: boolean
   RatedFor: number

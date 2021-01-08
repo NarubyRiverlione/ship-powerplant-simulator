@@ -2,7 +2,12 @@ import { CstPowerSys } from '../Cst'
 import { makeAutoObservable } from 'mobx'
 import { Item } from "./Item"
 
-export default class PowerBus implements Item {
+export interface iPowerBus extends Item {
+  Voltage: number
+  Providers: number
+}
+
+export default class PowerBus implements iPowerBus {
   Name: string
   Voltage: number
   Providers: number

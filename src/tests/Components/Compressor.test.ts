@@ -1,17 +1,13 @@
+import mockPowerBus from '../mocks/mockPowerBus'
 import Compressor from '../../Components/Compressor'
-import PowerBus from '../../Components/PowerBus'
 
 let comp: Compressor
 const ratedFor = 13568
 
 beforeEach(() => {
-  const testBus: PowerBus = {
-    Name: 'test bus',
-    Providers: 0,
-    Thick: () => { },
-    Voltage: ratedFor,
-    Content: ratedFor
-  }
+  const testBus = new mockPowerBus('test bus')
+  testBus.Voltage = ratedFor
+
   comp = new Compressor('test', testBus, ratedFor)
 })
 
