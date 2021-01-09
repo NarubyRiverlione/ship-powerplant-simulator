@@ -1,9 +1,9 @@
 import Valve from '../../Components/Valve'
-import Tank from '../../Components/Tank'
+import mockTank from '../mocks/mockTank'
 
 const name = 'Test valve'
 const sourceContent = 12
-const source = new Tank('dummy source', 100, sourceContent)
+const source = new mockTank('dummy source', 100, sourceContent)
 
 let valve: Valve
 beforeEach(() => {

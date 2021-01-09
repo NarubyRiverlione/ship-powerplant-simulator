@@ -1,7 +1,7 @@
-import Cooler from '../../Components/Cooler'
 import DieselGenerator from '../../Components/DieselGenerator'
 import mockTank from '../mocks/mockTank'
-import Valve from '../../Components/Valve'
+import mockValve from '../mocks/mockValve'
+import mockCooler from '../mocks/mockCooler'
 import {
   CstFuelSys, CstAirSys, CstPowerSys, CstLubSys
 } from '../../Cst'
@@ -15,18 +15,15 @@ let dsgen: DieselGenerator
 
 beforeEach(() => {
   const fuelSource = new mockTank('dummy fuel tank', 100, startFuelAmount)
-  const dummyFuelOutletValve = new Valve('test fuel source outlet valve', fuelSource)
-  dummyFuelOutletValve.Open()
+  const dummyFuelOutletValve = new mockValve('test fuel source outlet valve', fuelSource)
 
   const lubSource = new mockTank('dummy lub  tank', 100, startLubAmount)
-  const dummyLubOutletValve = new Valve('test lub source outlet valve', lubSource)
-  dummyLubOutletValve.Open()
+  const dummyLubOutletValve = new mockValve('test lub source outlet valve', lubSource)
 
   const airSource = new mockTank('dummy air receiver', 100, startAirAmount)
-  const dummyAirOutletValve = new Valve('test air source valve', airSource)
-  dummyAirOutletValve.Open()
+  const dummyAirOutletValve = new mockValve('test air source valve', airSource)
 
-  const dummyLubCooler = new Cooler('dummy cooler', 1)
+  const dummyLubCooler = new mockCooler('dummy cooler', 1)
   dummyLubCooler.isCooling = true
 
   dsgen = new DieselGenerator('test diesel generator', Rated,
@@ -169,7 +166,7 @@ describe('Start', () => {
     expect(dsgen.isRunning).toBeTruthy()
 
     const emptyFuelSource = new mockTank('empty tank', 100, 0)
-    const emptyFuelValve = new Valve('dummy', emptyFuelSource)
+    const emptyFuelValve = new mockValve('dummy', emptyFuelSource)
 
     dsgen.FuelIntakeValve = emptyFuelValve
     dsgen.Thick()

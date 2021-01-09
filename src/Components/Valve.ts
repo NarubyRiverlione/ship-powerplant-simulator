@@ -1,16 +1,25 @@
-import { ControlItem } from "./Item"
+import Item from './Item'
 import Tank from "./Tank"
 import { makeAutoObservable } from 'mobx'
 import Compressor from "./Compressor"
 
-export default class Valve implements ControlItem {
+
+export interface iValve extends Item {
   isOpen: boolean
   Name: string
-  Source: Valve | Tank | Compressor
+  Source: Item
+  cbNowOpen?: () => void
+  cbNowClosed?: () => void
+}
+
+export default class Valve implements iValve {
+  isOpen: boolean
+  Name: string
+  Source: Item
   cbNowOpen?: () => void
   cbNowClosed?: () => void
 
-  constructor(name: string, source: Valve | Tank | Compressor) {
+  constructor(name: string, source: Item) {
     this.isOpen = false
     this.cbNowOpen = () => { }
     this.cbNowClosed = () => { }

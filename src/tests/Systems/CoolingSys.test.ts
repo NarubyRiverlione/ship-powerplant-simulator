@@ -212,7 +212,7 @@ describe('Aux pump', () => {
 
     expect(FwCoolerDsGen1.CoolingCircuitComplete).toBeTruthy()
     expect(FwCoolerDsGen1.CoolingProviders).toBe(CstCoolantSys.AuxSuctionPump)
-    expect(FwCoolerDsGen1.CheckCoolingRate()).toBeTruthy()
+    expect(FwCoolerDsGen1.CheckCoolingRate).toBeTruthy()
     expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
 
     expect(FwCoolerDsGen2.hasCooling).toBeTruthy()
@@ -291,7 +291,7 @@ describe('Diesel gen 1 lubrication cooler', () => {
     coolingSys.FwExpandTank.Inside = FwContent
     coolingSys.Thick()
     expect(DsGen1LubCooler.CoolingProviders).toBe(FwContent)
-    expect(DsGen1LubCooler.CheckCoolingRate()).toBeTruthy()
+    expect(DsGen1LubCooler.CheckCoolingRate).toBeTruthy()
     expect(DsGen1LubCooler.CoolingCircuitComplete).toBeTruthy()
     expect(DsGen1LubCooler.hasCooling).toBeTruthy()
   })
@@ -324,7 +324,7 @@ describe('Diesel gen 2 lubrication cooler', () => {
     coolingSys.FwExpandTank.Inside = FwContent
     coolingSys.Thick()
     expect(DsGen2LubCooler.CoolingProviders).toBe(FwContent)
-    expect(DsGen2LubCooler.CheckCoolingRate()).toBeTruthy()
+    expect(DsGen2LubCooler.CheckCoolingRate).toBeTruthy()
     expect(DsGen2LubCooler.CoolingCircuitComplete).toBeTruthy()
     expect(DsGen2LubCooler.hasCooling).toBeTruthy()
   })

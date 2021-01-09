@@ -1,5 +1,5 @@
 import { makeObservable, observable, action, computed } from 'mobx'
-import { Item } from "./Item"
+import Item from "./Item"
 import PowerBus from './PowerBus'
 
 export default class Appliance implements Item {

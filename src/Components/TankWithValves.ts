@@ -1,7 +1,7 @@
 import Valve from './Valve'
 import Tank from './Tank'
 import { CstChanges } from '../Cst'
-import { Item } from './Item'
+import Item from './Item'
 
 export default class TankWithValves implements Item {
   Name: string

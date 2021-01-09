@@ -1,5 +1,5 @@
 import { makeObservable, observable, action } from 'mobx'
-import { Item } from './Item'
+import Item from './Item'
 import Tank from './Tank'
 
 export default class Generator implements Item {

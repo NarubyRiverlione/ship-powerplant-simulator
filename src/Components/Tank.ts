@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import AlarmSys from '../Systems/AlarmSys'
-import { Item } from "./Item"
+import Item from "./Item"
 
 export interface iTank extends Item {
   Name: string

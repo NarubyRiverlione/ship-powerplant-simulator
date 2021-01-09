@@ -1,14 +1,14 @@
 import TankWithValves from '../../Components/TankWithValves'
-import Valve from '../../Components/Valve'
-import Tank from '../../Components/Tank'
+import mockTank from '../mocks/mockTank'
+import mockValve from '../mocks/mockValve'
 import { CstChanges } from '../../Cst'
 
 let tankV: TankWithValves
 const Volume = 315689746
 const StartContent = 66599
 
-const dummySource = new Tank('dummy source tank', 1000, 887)
-const dummySourceValve = new Valve('test dummy source valve', dummySource)
+const dummySource = new mockTank('dummy source tank', 1000, 887)
+const dummySourceValve = new mockValve('test dummy source valve', dummySource)
 
 beforeEach(() => {
   tankV = new TankWithValves('test tank', Volume, StartContent, dummySourceValve)
@@ -38,6 +38,7 @@ describe('Init', () => {
 
 describe('Intake valve', () => {
   test('intake & source valves are closed --> no filling', () => {
+    dummySourceValve.Close()
     expect(dummySourceValve.isOpen).toBeFalsy()
     expect(tankV.Tank.Adding).toBeFalsy()
   })
@@ -106,7 +107,7 @@ describe('Outlet valve', () => {
 describe('Drain valve', () => {
   test('open drain valve = remove from tank', () => {
     const startContent = 1435
-    const drainTarget = new Tank('test drain tank', 1000)
+    const drainTarget = new mockTank('test drain tank', 1000)
     tankV.Tank.Inside = startContent
     tankV.DrainTarget = drainTarget
     tankV.DrainValve.Open()

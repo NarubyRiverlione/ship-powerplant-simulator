@@ -27,12 +27,12 @@ describe('Cooling rate checks', () => {
   test('Cooling input > cooling rate = is cooling', () => {
     const coolInput = 789
     cooler.CoolingProviders = coolInput
-    expect(cooler.CheckCoolingRate()).toBeTruthy()
+    expect(cooler.CheckCoolingRate).toBeTruthy()
   })
   test('Cooling input < cooling rate = no cooling', () => {
     const coolInput = 122
     cooler.CoolingProviders = coolInput
-    expect(cooler.CheckCoolingRate()).toBeFalsy()
+    expect(cooler.CheckCoolingRate).toBeFalsy()
   })
 })
 

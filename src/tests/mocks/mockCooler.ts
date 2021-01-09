@@ -1,18 +1,7 @@
-import { makeAutoObservable } from 'mobx'
-import Item from './Item'
+import { iCooler } from '../../Components/Cooler'
 
-export interface iCooler extends Item {
-  Name: string
-  isCooling: boolean
-  hasCooling: boolean
-  CoolingInputRate: number
-  CoolingProviders: number
-  CoolingCircuitComplete: boolean
-  HotCircuitComplete: boolean
-  CheckCoolingRate: boolean
-}
+export default class mockCooler implements iCooler {
 
-export default class Cooler implements iCooler {
   Name: string
   isCooling: boolean
   hasCooling: boolean
@@ -23,7 +12,7 @@ export default class Cooler implements iCooler {
 
   constructor(name: string, coolingInputRate: number) {
     this.Name = name
-    this.isCooling = false // cooling circuit & rate is ok
+    this.isCooling = true  // mock cooler : cooling circuit & rate is ok
     this.hasCooling = false // isCooling && hot circuit is ok
     this.CoolingInputRate = coolingInputRate
     this.CoolingProviders = 0
@@ -31,17 +20,11 @@ export default class Cooler implements iCooler {
     this.CoolingCircuitComplete = false
     this.HotCircuitComplete = false
 
-    makeAutoObservable(this)
   }
-
+  Thick() { }
   get Content() { return this.isCooling ? 1 : 0 }
 
   get CheckCoolingRate() {
     return this.CoolingProviders >= this.CoolingInputRate
-  }
-
-  Thick() {
-    this.hasCooling = this.CheckCoolingRate && this.CoolingCircuitComplete
-    this.isCooling = this.hasCooling && this.HotCircuitComplete
   }
 }

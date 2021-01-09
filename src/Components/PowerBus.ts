@@ -1,6 +1,6 @@
 import { CstPowerSys } from '../Cst'
 import { makeAutoObservable } from 'mobx'
-import { Item } from "./Item"
+import Item from "./Item"
 
 export interface iPowerBus extends Item {
   Voltage: number
