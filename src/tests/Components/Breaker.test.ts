@@ -12,6 +12,7 @@ describe('Init breaker', () => {
   test('Rated = 0, load = 0, provider = 0', () => {
     expect(breaker.RatedFor).toBe(0)
     expect(breaker.Load).toBe(0)
+    expect(breaker.Content).toBe(0)
     expect(breaker.Providers).toBe(0)
   })
 })

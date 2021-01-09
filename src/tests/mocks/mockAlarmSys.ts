@@ -1,4 +1,5 @@
-import { iAlarmSys } from '../../../src/Systems/AlarmSys'
+/* istanbul ignore file */
+import { iAlarmSys } from '../../Systems/AlarmSystem'
 
 export default class mockAlarmSys implements iAlarmSys {
   cbAlarmAdded: (addedAlarmCode: number) => void

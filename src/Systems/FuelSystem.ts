@@ -4,7 +4,7 @@ import TankWithValves from '../Components/TankWithValves'
 import Valve from '../Components/Valve'
 
 import CstTxt from '../CstTxt'
-import AlarmSys from './AlarmSys'
+import AlarmSystem from './AlarmSystem'
 import { CstFuelSys, CstChanges } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
 
@@ -18,7 +18,7 @@ export default class FuelSystem {
   DsStorage: TankWithValves
   DsService: TankWithValves
 
-  constructor(alarmSys: AlarmSys) {
+  constructor(alarmSys: AlarmSystem) {
     // #region Intake valve from shore to diesel storage tank
     const dummyShore = new Tank('Shore as tank', CstFuelSys.ShoreVolume, CstFuelSys.ShoreVolume)
     this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)

@@ -16,8 +16,8 @@ export default class Valve implements iValve {
   isOpen: boolean
   Name: string
   Source: Item
-  cbNowOpen?: () => void
-  cbNowClosed?: () => void
+  cbNowOpen: () => void
+  cbNowClosed: () => void
 
   constructor(name: string, source: Item) {
     this.isOpen = false
@@ -30,12 +30,12 @@ export default class Valve implements iValve {
 
   Open() {
     this.isOpen = true
-    if (this.cbNowOpen) this.cbNowOpen()
+    this.cbNowOpen()
   }
 
   Close() {
     this.isOpen = false
-    if (this.cbNowClosed) this.cbNowClosed()
+    this.cbNowClosed()
   }
 
   get Content(): number {

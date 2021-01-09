@@ -1,5 +1,5 @@
 const { CstFuelSys, CstChanges } = require('../../Cst')
-import FuelSystem from '../../Systems/FuelSys'
+import FuelSystem from '../../Systems/FuelSystem'
 import CstTxt from '../../CstTxt'
 import { AlarmCode, AlarmLevel } from '../../CstAlarms'
 import mockAlarmSys from '../mocks/mockAlarmSys'

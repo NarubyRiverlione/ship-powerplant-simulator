@@ -2,7 +2,7 @@ import { makeObservable, action } from 'mobx'
 import Tank from '../Components/Tank'
 import TankWithValves from '../Components/TankWithValves'
 import Valve from '../Components/Valve'
-import AlarmSys from './AlarmSys'
+import AlarmSystem from './AlarmSystem'
 
 import { CstLubSys } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
@@ -12,12 +12,12 @@ const { LubSysTxt } = CstTxt
 /*
 Shore Valve --> (intake valve) DsStorage (outlet valve)
 */
-export default class LubSys {
+export default class LubricationSystem {
   ShoreValve: Valve
   Storage: TankWithValves
 
 
-  constructor(alarmSys: AlarmSys) {
+  constructor(alarmSys: AlarmSystem) {
     makeObservable(this, { Thick: action })
     const dummyShore = new Tank('dummy shore', CstLubSys.ShoreVolume, CstLubSys.ShoreVolume)
     this.ShoreValve = new Valve(LubSysTxt.LubShoreFillValve, dummyShore)

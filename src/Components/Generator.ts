@@ -54,19 +54,15 @@ export default class Generator implements Item {
 
   Start() {
     this.isRunning = true
+    this.FuelProvider.Removing = true
+    this.FuelProvider.RemoveEachStep += this.FuelConsumption
 
-    if (this.FuelProvider) {
-      this.FuelProvider.Removing = true
-      this.FuelProvider.RemoveEachStep += this.FuelConsumption
-    }
   }
 
   Stop() {
     this.isRunning = false
-    if (this.FuelProvider) {
-      this.FuelProvider.Removing = false
-      this.FuelProvider.RemoveEachStep -= this.FuelConsumption
-    }
+    this.FuelProvider.Removing = false
+    this.FuelProvider.RemoveEachStep -= this.FuelConsumption
   }
 
   Toggle() {

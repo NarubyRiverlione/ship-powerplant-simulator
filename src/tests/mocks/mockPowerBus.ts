@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { iPowerBus } from '../../Components/PowerBus'
 
 export default class mockPowerBus implements iPowerBus {

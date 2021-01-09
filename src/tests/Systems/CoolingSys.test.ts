@@ -1,15 +1,15 @@
 import mockPowerBus from '../mocks/mockPowerBus'
 import { CstCoolantSys, CstChanges } from '../../Cst'
-import CoolingSys from '../../Systems/CoolingSys'
+import CoolingSystem from '../../Systems/CoolingSystem'
 
 const dummyEmergencyBus = new mockPowerBus('dummy emergency bus')
 dummyEmergencyBus.Voltage = 440
 const dummyMainBus = new mockPowerBus('dummy main bus')
 dummyMainBus.Voltage = 440
 
-let coolingSys: CoolingSys
+let coolingSys: CoolingSystem
 beforeEach(() => {
-  coolingSys = new CoolingSys(dummyMainBus, dummyEmergencyBus)
+  coolingSys = new CoolingSystem(dummyMainBus, dummyEmergencyBus)
 })
 
 describe('Init', () => {

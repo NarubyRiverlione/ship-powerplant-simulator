@@ -8,7 +8,7 @@ export interface iAlarmSys {
   AlarmExist: (code: number) => boolean
 }
 
-export default class AlarmSys implements iAlarmSys {
+export default class AlarmSystem implements iAlarmSys {
   cbAlarmAdded: (addedAlarmCode: number) => void
   cbAlarmRemoved: (addedAlarmCode: number) => void
   AlarmList: Set<number>

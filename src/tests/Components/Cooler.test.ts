@@ -9,11 +9,12 @@ beforeEach(() => {
 
 describe('Init', () => {
   test('does\'t have cooling', () => {
-    cooler.hasCooling = false
-    cooler.isCooling = false
+    expect(cooler.hasCooling).toBeFalsy()
+    expect(cooler.isCooling).toBeFalsy()
+    expect(cooler.Content).toBe(0)
   })
   test('Cooling input rate', () => {
-    cooler.CoolingInputRate = coolingRate
+    expect(cooler.CoolingInputRate).toBe(coolingRate)
   })
   test('no hot circuit ', () => {
     expect(cooler.HotCircuitComplete).toBeFalsy()
@@ -28,6 +29,7 @@ describe('Cooling rate checks', () => {
     const coolInput = 789
     cooler.CoolingProviders = coolInput
     expect(cooler.CheckCoolingRate).toBeTruthy()
+
   })
   test('Cooling input < cooling rate = no cooling', () => {
     const coolInput = 122
@@ -81,6 +83,7 @@ describe('Is cooling', () => {
     cooler.CoolingCircuitComplete = true
     cooler.Thick()
     expect(cooler.isCooling).toBeTruthy()
+    expect(cooler.Content).toBe(1)
   })
   test('not enough cooling and hot circuit = not cooling', () => {
     cooler.CoolingProviders = 7

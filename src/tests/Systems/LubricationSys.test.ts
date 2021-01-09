@@ -1,13 +1,13 @@
-import LubSys from '../../Systems/LubricationSystem'
+import LubricationSystem from '../../Systems/LubricationSystem'
 import { CstLubSys } from '../../Cst'
 import { AlarmCode, AlarmLevel } from '../../CstAlarms'
 import mockAlarmSys from '../mocks/mockAlarmSys'
 
-let lubSys: LubSys
+let lubSys: LubricationSystem
 const dummyAlarmSys = new mockAlarmSys()
 
 beforeEach(() => {
-  lubSys = new LubSys(dummyAlarmSys)
+  lubSys = new LubricationSystem(dummyAlarmSys)
 })
 describe('Init', () => {
   test('Shore intake valve is closed', () => {

@@ -17,16 +17,29 @@ describe('Generator init', () => {
     expect(generator.HasLubrication).toBeFalsy()
     generator.Thick()
     expect(generator.Output).toBe(0)
+    expect(generator.Content).toBe(0)
   })
 })
 describe('Generator start/stop', () => {
-  test('Cannot start without fuel', () => {
+  test('Cannot start without fuel provider', () => {
+    generator.HasLubrication = true; generator.HasCooling = true
+    generator.FuelProvider = new mockTank('empty tank', 100, 0)
+    generator.Thick()
+    expect(generator.HasFuel).toBeFalsy()
+    generator.Start()
+    generator.Thick()
+    expect(generator.isRunning).toBeFalsy()
+    expect(generator.Output).toBe(0)
+    expect(generator.Content).toBe(0)
+  })
+  test('Cannot start with empty fuel', () => {
     generator.HasLubrication = true; generator.HasCooling = true
     expect(generator.HasFuel).toBeFalsy()
     generator.Start()
     generator.Thick()
     expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
+    expect(generator.Content).toBe(0)
   })
   test('Cannot start without cooling', () => {
     generator.HasFuel = true; generator.HasLubrication = true
@@ -35,6 +48,7 @@ describe('Generator start/stop', () => {
     generator.Thick()
     expect(generator.isRunning).toBeFalsy()
     expect(generator.Output).toBe(0)
+    expect(generator.Content).toBe(0)
   })
   test('Cannot start without lubrication', () => {
     generator.HasFuel = true; generator.HasCooling = true
@@ -54,6 +68,7 @@ describe('Generator start/stop', () => {
     generator.Thick()
     expect(generator.isRunning).toBeTruthy()
     expect(generator.Output).toBe(rate)
+    expect(generator.Content).toBe(rate)
   })
   test('No running after stop', () => {
     generator.RatedFor = 1236982

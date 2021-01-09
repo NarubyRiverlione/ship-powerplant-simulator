@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import AlarmSys from '../Systems/AlarmSys'
+import AlarmSystem from '../Systems/AlarmSystem'
 import Item from "./Item"
 
 export interface iTank extends Item {
@@ -13,7 +13,7 @@ export interface iTank extends Item {
   cbFull: () => void
   cbAdded: (added: number) => void
   cbRemoved: (removed: number) => void
-  AlarmSystem?: AlarmSys
+  AlarmSystem?: AlarmSystem
   LowLevelAlarmCode: number
   LowLevelAlarm: number
   EmptyAlarmCode: number
@@ -30,7 +30,7 @@ export default class Tank implements iTank {
   cbFull: () => void
   cbAdded: (added: number) => void
   cbRemoved: (removed: number) => void
-  AlarmSystem?: AlarmSys
+  AlarmSystem?: AlarmSystem
   LowLevelAlarmCode: number
   LowLevelAlarm: number
   EmptyAlarmCode: number

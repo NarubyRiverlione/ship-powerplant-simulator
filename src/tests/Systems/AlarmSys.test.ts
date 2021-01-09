@@ -1,9 +1,9 @@
-import AlarmSys from '../../Systems/AlarmSys'
+import AlarmSystem from '../../Systems/AlarmSystem'
 
-let alarmSys: AlarmSys
+let alarmSys: AlarmSystem
 
 beforeEach(() => {
-  alarmSys = new AlarmSys()
+  alarmSys = new AlarmSystem()
 })
 
 describe('Init', () => {

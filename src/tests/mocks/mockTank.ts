@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { iTank } from "../../Components/Tank"
 
 export default class mockTank implements iTank {

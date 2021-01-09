@@ -13,6 +13,7 @@ beforeEach(() => {
 describe('Init', () => {
   test('bus', () => {
     expect(appliance.Bus.Content).toEqual(testVoltage)
+    expect(appliance.Content).toEqual(0)
   })
   test('not running', () => {
     expect(appliance.isRunning).toBeFalsy()
@@ -23,6 +24,7 @@ describe('start/stop', () => {
   test('start without power on bus = not running', () => {
     appliance.Bus.Voltage = 0
     appliance.Start()
+    expect(appliance.CheckPower).toBeFalsy()
     expect(appliance.isRunning).toBeFalsy()
   })
   test('start  power on bus =  running', () => {

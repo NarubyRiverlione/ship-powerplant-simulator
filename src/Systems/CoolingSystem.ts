@@ -28,7 +28,7 @@ Fresh water Expand tank
 */
 /* eslint-enable max-len */
 
-export default class CoolingSys {
+export default class CoolingSystem {
   FwCoolerDsGen1: Cooler
   FwCoolerDsGen2: Cooler
   SteamCondensor: Cooler
@@ -48,7 +48,7 @@ export default class CoolingSys {
   DsGen1LubCooler: Cooler
   DsGen2LubCooler: Cooler
 
-  constructor(mainBus: PowerBus, emergencyBus: PowerBus) {
+  constructor(mainBus = new PowerBus('dummy mainBus'), emergencyBus = new PowerBus('dummy emergency power bus')) {
     this.SwAvailable = new Tank('virtual tank that combines the possible outputs of AuxPump, SuctionPump 1 & 2', 1e6, 0)
     const SeaChest = new Tank('Sea water chest', 1e6, 1e6)
     // #region Sea chests suction valves

@@ -15,13 +15,13 @@ Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (o
                                                               (drain)
 */
 
-export default class AirSys {
+export default class AirSystem {
   StartAirCompressor1: Compressor
   StartAirReceiver1: TankWithValves
   EmergencyCompressor: Compressor
   EmergencyReceiver: TankWithValves
 
-  constructor(mainBus: PowerBus, emergencyBus: PowerBus) {
+  constructor(mainBus = new PowerBus('dummy mainBus'), emergencyBus = new PowerBus('dummy emergency power bus')) {
     // #region  Compressor 1
     this.StartAirCompressor1 = new Compressor(AirSysTxt.Compressor1,
       mainBus, CstAirSys.StartAirCompressor1.AddStep)
