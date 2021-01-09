@@ -1,18 +1,14 @@
-const FuelSystem = require('../../Systems/FuelSystem')
 const { CstFuelSys, CstChanges } = require('../../Cst')
-const CstTxt = require('../../CstTxt')
+import FuelSystem from '../../Systems/FuelSys'
+import CstTxt from '../../CstTxt'
+import { AlarmCode, AlarmLevel } from '../../CstAlarms'
+import mockAlarmSys from '../mocks/mockAlarmSys'
 const { FuelSysTxt } = CstTxt
-const { AlarmCode, AlarmLevel } = require('../../CstAlarms')
 
-let fuelSys
-const raisedAlarmCode = new Set()
+let fuelSys: FuelSystem
+const dummyAlarmSys = new mockAlarmSys()
 
 beforeEach(() => {
-  const dummyAlarmSys = {
-    AddAlarm: (raise) => { raisedAlarmCode.add(raise) },
-    RemoveAlarm: (kill) => { raisedAlarmCode.delete(kill) },
-    AlarmExist: (code) => raisedAlarmCode.has(code)
-  }
   fuelSys = new FuelSystem(dummyAlarmSys)
 })
 
@@ -376,11 +372,11 @@ describe('Alarms', () => {
     // at alarm level = no alarm yet, must be below
     fuelSys.DsStorage.Tank.Inside = AlarmLevel.FuelSys.LowDsStorage
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsStorageTank)).toBeFalsy()
     // raise alarm
     fuelSys.DsStorage.Tank.Inside = AlarmLevel.FuelSys.LowDsStorage - 0.1
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsStorageTank)).toBeTruthy()
   })
   test('Cancel Low diesel storage tanks', () => {
     // full service tank to prevent low service alarm
@@ -388,11 +384,11 @@ describe('Alarms', () => {
     // at alarm level = no alarm yet, must be below
     fuelSys.DsStorage.Tank.Inside = AlarmLevel.FuelSys.LowDsStorage - 5
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsStorageTank)).toBeTruthy()
     // above low level = cancel alarm
     fuelSys.DsStorage.Tank.Inside = AlarmLevel.FuelSys.LowDsStorage
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsStorageTank)).toBeFalsy()
   })
 
   test('Raise Low diesel service tanks', () => {
@@ -401,11 +397,11 @@ describe('Alarms', () => {
     // at alarm level = no alarm yet, must be below
     fuelSys.DsService.Tank.Inside = AlarmLevel.FuelSys.LowDsService
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsServiceTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsServiceTank)).toBeFalsy()
     // raise alarm
     fuelSys.DsService.Tank.Inside = AlarmLevel.FuelSys.LowDsService - 0.1
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsServiceTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsServiceTank)).toBeTruthy()
   })
   test('Cancel Low diesel service tanks', () => {
     // full service tank to prevent low service alarm
@@ -413,11 +409,11 @@ describe('Alarms', () => {
     // raise alarm
     fuelSys.DsService.Tank.Inside = AlarmLevel.FuelSys.LowDsService - 5
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsServiceTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsServiceTank)).toBeTruthy()
     // above low level = cancel alarm
     fuelSys.DsService.Tank.Inside = AlarmLevel.FuelSys.LowDsService
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowDsServiceTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowDsServiceTank)).toBeFalsy()
   })
 
   test('Raise Empty diesel storage tanks', () => {
@@ -426,11 +422,11 @@ describe('Alarms', () => {
     // at alarm level = no alarm yet, must be below
     fuelSys.DsStorage.Tank.Inside = 1
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsStorageTank)).toBeFalsy()
 
     fuelSys.DsStorage.Tank.Inside = 0
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsStorageTank)).toBeTruthy()
   })
   test('Cancel Empty diesel storage tanks', () => {
     // full service tank to prevent low service alarm
@@ -438,11 +434,11 @@ describe('Alarms', () => {
     // raise alarm
     fuelSys.DsStorage.Tank.Inside = 0
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsStorageTank)).toBeTruthy()
     // no longer empty = cancel alarm
     fuelSys.DsStorage.Tank.Inside = 0.1
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsStorageTank)).toBeFalsy()
   })
 
   test('Raise Empty diesel service tanks', () => {
@@ -451,11 +447,11 @@ describe('Alarms', () => {
     // at alarm level = no alarm yet, must be below
     fuelSys.DsService.Tank.Inside = 1
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsServiceTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsServiceTank)).toBeFalsy()
 
     fuelSys.DsService.Tank.Inside = 0
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsServiceTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsServiceTank)).toBeTruthy()
   })
   test('Cancel Empty diesel service tanks', () => {
     // full storage tank to prevent low storage alarm
@@ -463,10 +459,10 @@ describe('Alarms', () => {
     // raise
     fuelSys.DsService.Tank.Inside = 0
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsServiceTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsServiceTank)).toBeTruthy()
     // cancel
     fuelSys.DsService.Tank.Inside = 5
     fuelSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyDsServiceTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyDsServiceTank)).toBeFalsy()
   })
 })

@@ -1,19 +1,26 @@
-const { makeObservable, action } = require('mobx')
-const TankWithValves = require('../Components/TankWithValves')
-const Valve = require('../Components/Valve')
-const { CstLubSys } = require('../Cst')
-const CstTxt = require('../CstTxt')
+import { makeObservable, action } from 'mobx'
+import Tank from '../Components/Tank'
+import TankWithValves from '../Components/TankWithValves'
+import Valve from '../Components/Valve'
+import AlarmSys from './AlarmSys'
+
+import { CstLubSys } from '../Cst'
+import { AlarmCode, AlarmLevel } from '../CstAlarms'
+import CstTxt from '../CstTxt'
 const { LubSysTxt } = CstTxt
-const { AlarmCode, AlarmLevel } = require('../CstAlarms')
 
 /*
 Shore Valve --> (intake valve) DsStorage (outlet valve)
 */
-module.exports = class LubSys {
-  constructor(alarmSys) {
+export default class LubSys {
+  ShoreValve: Valve
+  Storage: TankWithValves
+
+
+  constructor(alarmSys: AlarmSys) {
     makeObservable(this, { Thick: action })
-    this.ShoreValve = new Valve(LubSysTxt.LubShoreFillValve)
-    this.ShoreValve.Source = { Content: CstLubSys.ShoreVolume }
+    const dummyShore = new Tank('dummy shore', CstLubSys.ShoreVolume, CstLubSys.ShoreVolume)
+    this.ShoreValve = new Valve(LubSysTxt.LubShoreFillValve, dummyShore)
     // if both shore and storage intake valves are open --> filling
     this.ShoreValve.cbNowOpen = () => {
       if (this.Storage.IntakeValve.isOpen) this.Storage.Tank.Adding = true

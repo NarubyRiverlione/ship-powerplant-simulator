@@ -1,12 +1,12 @@
 import AirSys from '../../Systems/AirSystem'
 import { CstAirSys } from '../../Cst'
-import PowerBus from '../../Components/PowerBus'
+import mockPowerBus from '../mocks/mockPowerBus'
 
 let airSys: AirSys
-const dummyMainBus = new PowerBus('dummy main bus')
+const dummyMainBus = new mockPowerBus('dummy main bus')
 dummyMainBus.Voltage = 440
 
-const dummyEmergencyBus = new PowerBus('dummy emergency bus')
+const dummyEmergencyBus = new mockPowerBus('dummy emergency bus')
 dummyEmergencyBus.Voltage = 440
 
 beforeEach(() => {

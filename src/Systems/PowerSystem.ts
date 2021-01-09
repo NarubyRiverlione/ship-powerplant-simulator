@@ -1,10 +1,13 @@
-const { makeAutoObservable } = require('mobx')
+import { makeAutoObservable } from 'mobx'
 
-const { CstPowerSys, CstFuelSys } = require('../Cst')
-const Generator = require('../Components/Generator')
-const DieselGenerator = require('../Components/DieselGenerator')
-const Breaker = require('../Components/Breaker')
-const PowerBus = require('../Components/PowerBus')
+import { CstPowerSys, CstFuelSys } from '../Cst'
+import Generator from '../Components/Generator'
+import DieselGenerator from '../Components/DieselGenerator'
+import Breaker from '../Components/Breaker'
+import PowerBus from '../Components/PowerBus'
+import Valve from '../Components/Valve'
+import Cooler from '../Components/Cooler'
+import Tank from '../Components/Tank'
 
 /*
 ** Switchboard **
@@ -25,8 +28,21 @@ Diesel generator 1 -->  Breaker DsGen 1
 -- (Lubrication service tank) ------>-- Lubrication intake valve -->-- Slump (min level)
 -- (Lubrication cooler DsGen 1) ---->--
 */
-module.exports = class PowerSystem {
-  constructor(DsGen1FuelValve, DsGen1LubValve, DsGen1AirValve, LubCooler) {
+export default class PowerSystem {
+  Providers: number
+  ShoreBreaker: Breaker
+  MainBreaker1: Breaker
+  MainBus1: PowerBus
+  EmergencyBus: PowerBus
+  EmergencyGen: Generator
+  DsGen1: DieselGenerator
+  DsGenBreaker1: Breaker
+
+  constructor(DsGen1FuelValve: Valve,
+    DsGen1LubValve: Valve,
+    DsGen1AirValve: Valve,
+    LubCooler: Cooler) {
+
     this.Providers = 0 // sum of all providers, can be connected to main busses
     //  Shore power
     this.ShoreBreaker = new Breaker('Shore breaker')
@@ -39,10 +55,11 @@ module.exports = class PowerSystem {
 
     //  Emergency Generator
     this.EmergencyBus = new PowerBus('Emergency bus')
-    this.EmergencyGen = new Generator('Emergency generator', CstPowerSys.EmergencyGen.RatedFor)
+    // TODO emergency generator needs fuel ?
+    const dummyEmergencyFuel = new Tank('dummy emergency fuel', 1e6, 1e6)
+    this.EmergencyGen = new Generator('Emergency generator', CstPowerSys.EmergencyGen.RatedFor, dummyEmergencyFuel)
     // emergency generator doesn't need cooling nor lubrication
     this.EmergencyGen.HasCooling = true; this.EmergencyGen.HasLubrication = true
-    // TODO emergency generator needs fuel ?
     this.EmergencyGen.HasFuel = true
 
     // Diesel Generator 1

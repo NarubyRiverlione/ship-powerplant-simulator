@@ -1,21 +1,27 @@
-const { makeObservable, action } = require('mobx')
-const TankWithValves = require('../Components/TankWithValves')
-const Valve = require('../Components/Valve')
+import { makeObservable, action } from 'mobx'
+import Tank from '../Components/Tank'
+import TankWithValves from '../Components/TankWithValves'
+import Valve from '../Components/Valve'
 
-const { CstFuelSys, CstChanges } = require('../Cst')
-const { AlarmCode, AlarmLevel } = require('../CstAlarms')
+import CstTxt from '../CstTxt'
+import AlarmSys from './AlarmSys'
+import { CstFuelSys, CstChanges } from '../Cst'
+import { AlarmCode, AlarmLevel } from '../CstAlarms'
 
-const CstTxt = require('../CstTxt')
 const { FuelSysTxt } = CstTxt
 /*
 Shore Valve --> (intake valve) DsStorage (outlet valve) --> (intake valve) DsService (outlet valve)
                                 (drain)                                     (drain)
 */
-module.exports = class FuelSystem {
-  constructor(alarmSys) {
+export default class FuelSystem {
+  DsShoreValve: Valve
+  DsStorage: TankWithValves
+  DsService: TankWithValves
+
+  constructor(alarmSys: AlarmSys) {
     // #region Intake valve from shore to diesel storage tank
-    this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve)
-    this.DsShoreValve.Source = { Content: CstFuelSys.ShoreVolume }
+    const dummyShore = new Tank('Shore as tank', CstFuelSys.ShoreVolume, CstFuelSys.ShoreVolume)
+    this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
     // if both shore and storage intake valves are open --> filling
     this.DsShoreValve.cbNowOpen = () => {
       if (this.DsStorage.IntakeValve.isOpen) this.DsStorage.Tank.Adding = true

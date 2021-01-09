@@ -1,16 +1,12 @@
-const LubSys = require('../../Systems/LubricationSystem')
-const { CstLubSys } = require('../../Cst')
-const { AlarmCode, AlarmLevel } = require('../../CstAlarms')
+import LubSys from '../../Systems/LubricationSystem'
+import { CstLubSys } from '../../Cst'
+import { AlarmCode, AlarmLevel } from '../../CstAlarms'
+import mockAlarmSys from '../mocks/mockAlarmSys'
 
-let lubSys
-const raisedAlarmCode = new Set()
+let lubSys: LubSys
+const dummyAlarmSys = new mockAlarmSys()
 
 beforeEach(() => {
-  const dummyAlarmSys = {
-    AddAlarm: (raise) => { raisedAlarmCode.add(raise) },
-    RemoveAlarm: (kill) => { raisedAlarmCode.delete(kill) },
-    AlarmExist: (code) => raisedAlarmCode.has(code)
-  }
   lubSys = new LubSys(dummyAlarmSys)
 })
 describe('Init', () => {
@@ -119,40 +115,40 @@ describe('Alarms', () => {
     // at alarm level = no alarm yet, must be below
     lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.LowStorage
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowLubStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowLubStorageTank)).toBeFalsy()
     // raise alarm
     lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.LowStorage - 0.1
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowLubStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowLubStorageTank)).toBeTruthy()
   })
   test('Cancel Low level storage tank', () => {
     // at alarm level = no alarm yet, must be below
     lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.LowStorage - 5
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowLubStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowLubStorageTank)).toBeTruthy()
     // above low level = cancel alarm
     lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.LowStorage
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.LowLubStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.LowLubStorageTank)).toBeFalsy()
   })
   test('Raise empty diesel storage tank', () => {
     // at alarm level = no alarm yet, must be below
     lubSys.Storage.Tank.Inside = 1
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyLubStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyLubStorageTank)).toBeFalsy()
     // raise alarm
     lubSys.Storage.Tank.Inside = 0
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyLubStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyLubStorageTank)).toBeTruthy()
   })
   test('Cancel empty level storage tank', () => {
     // raise empty alarm
     lubSys.Storage.Tank.Inside = 0
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyLubStorageTank)).toBeTruthy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyLubStorageTank)).toBeTruthy()
     //  cancel alarm
     lubSys.Storage.Tank.Inside = 0.1
     lubSys.Thick()
-    expect(raisedAlarmCode.has(AlarmCode.EmptyLubStorageTank)).toBeFalsy()
+    expect(dummyAlarmSys.AlarmExist(AlarmCode.EmptyLubStorageTank)).toBeFalsy()
   })
 })

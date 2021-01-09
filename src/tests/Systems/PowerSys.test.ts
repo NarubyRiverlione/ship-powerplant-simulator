@@ -1,32 +1,28 @@
-const PowerSystem = require('../../Systems/PowerSystem')
-const { CstPowerSys, CstFuelSys, CstAirSys } = require('../../Cst')
+import PowerSystem from '../../Systems/PowerSystem'
+import { CstPowerSys, CstFuelSys, CstAirSys } from '../../Cst'
+import mockValve from '../mocks/mockValve'
+import mockTank from '../mocks/mockTank'
+import mockCooler from '../mocks/mockCooler'
 
-let powerSys
-// fake fuel, air & lub sources,
-// testing diesel generator only here, not the complete system (that's simulator test)
+let powerSys: PowerSystem
+
 const startFuelAmount = 10000
 const startLubAmount = 2000
 const startAirAmount = CstAirSys.DieselGenerator.MinPressure
 
-let fuelSource
-const lubSource = { Content: startLubAmount }
-const airSource = { Content: startAirAmount }
-
 beforeEach(() => {
-  fuelSource = { Content: startFuelAmount, RemoveEachStep: 0 }
+  const fuelSource = new mockTank('dummy fuel source', 1e6, startFuelAmount)
+  const lubSource = new mockTank('dummy lub source', 1e6, startLubAmount)
+  const airSource = new mockTank('dummy air source', 1e6, startAirAmount)
 
-  const dummyFuelOutletValve = { Source: fuelSource, isOpen: true }
-  dummyFuelOutletValve.Content = fuelSource.Content
+  const dummyFuelOutletValve = new mockValve('dummy fuel source valve', fuelSource)
+  const dummyLubOutletValve = new mockValve('dummy lub source valve', lubSource)
+  const dummyAirOutletValve = new mockValve('dummy air source valve', airSource)
 
-  const dummyLubOutletValve = { Source: lubSource, isOpen: true }
-  dummyLubOutletValve.Content = lubSource.Content
+  const dummyLubCooler = new mockCooler('dummy FW cooler', 1e6)
 
-  const dummyAirOutletValve = { Source: airSource, isOpen: true }
-  dummyAirOutletValve.Content = airSource.Content
-
-  const dummyLubCooler = { isCooling: true }
-
-  powerSys = new PowerSystem(dummyFuelOutletValve, dummyLubOutletValve, dummyAirOutletValve, dummyLubCooler)
+  powerSys = new PowerSystem(dummyFuelOutletValve, dummyLubOutletValve, dummyAirOutletValve,
+    dummyLubCooler)
 
   powerSys.DsGen1.FuelIntakeValve.Open()
   powerSys.DsGen1.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
@@ -177,12 +173,13 @@ describe('Diesel generator 1', () => {
     expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
   })
   test('Running DS 1, consume fuel = set fuel consumption', () => {
-    powerSys.DsGen1.Start()
-    expect(powerSys.DsGen1.isRunning).toBeTruthy()
-    expect(powerSys.DsGen1.FuelProvider).toEqual(fuelSource)
-    expect(powerSys.DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
+    const { DsGen1 } = powerSys
+
+    DsGen1.Start()
+    expect(DsGen1.isRunning).toBeTruthy()
+    expect(DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
 
     powerSys.Thick()
-    expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
+    expect(DsGen1.FuelProvider.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
   })
 })
