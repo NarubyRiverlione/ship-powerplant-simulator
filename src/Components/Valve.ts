@@ -38,7 +38,7 @@ export default class Valve implements iValve {
     this.cbNowClosed()
   }
 
-  get Content(): number {
+  get Content() {
     return this.isOpen ? this.Source.Content : 0
   }
   Thick() {

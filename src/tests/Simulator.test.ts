@@ -1,7 +1,8 @@
 import Simulator from '../Simulator'
 import {
-  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys, CstCoolantSys
+  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys, CstCoolantSys, CstSteamSys
 } from '../Cst'
+import PowerSystem from '../Systems/PowerSystem'
 
 
 let simulator: Simulator
@@ -263,5 +264,45 @@ describe('Sea water system', () => {
     expect(AuxPump.isRunning).toBeTruthy()
     expect(AuxPump.Providers).toBe(CstCoolantSys.SeaChest)
     expect(AuxPump.Content).toBe(CstCoolantSys.AuxSuctionPump)
+  })
+})
+
+describe('Steam', () => {
+  test('Ignite boiler', () => {
+    const { FuelSys: { DsService }, SteamSys: { Boiler, FeedWaterSupply, FeedWaterPump } } = simulator
+    const { PowerSys: { MainBus1, MainBreaker1 } } = simulator
+    // fake Main bus has voltage via shore breaker
+    simulator.PowerSys.ConnectShore()
+    simulator.Thick()
+    MainBreaker1.Close()
+    simulator.Thick()
+    expect(MainBus1.Voltage).toBe(CstPowerSys.Voltage)
+    // fake full feed water supply (is tested in SteamSys)
+    FeedWaterSupply.Tank.Inside = CstSteamSys.FeedWaterSupply.TankVolume
+    // fake full DsService
+    DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
+    DsService.OutletValve.Open()
+
+    // fill boiler wit water until there is enough for ignition
+    FeedWaterSupply.OutletValve.Open()
+    simulator.Thick()
+
+    FeedWaterPump.Start()
+    simulator.Thick()
+    expect(FeedWaterPump.CheckPower).toBeTruthy()
+    expect(FeedWaterPump.isRunning).toBeTruthy()
+
+    Boiler.WaterIntakeValve.Open()
+    simulator.Thick()
+    expect(Boiler.WaterLevel).toBe(CstSteamSys.FeedWaterPump)
+    do {
+      simulator.Thick()
+    } while (!Boiler.hasEnoughWaterForFlame)
+
+    Boiler.FuelIntakeValve.Open()
+    simulator.Thick()
+    Boiler.Ignite()
+    simulator.Thick()
+    expect(Boiler.hasFlame).toBeTruthy()
   })
 })

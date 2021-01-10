@@ -71,4 +71,17 @@ export const CstCoolantSys = {
   DsGenLubCooler: { coolingRate: 10 }
 
 }
-
+export const CstSteamSys = {
+  FeedWaterSupply: {
+    TankVolume: 100,
+    TankAddStep: 5
+  },
+  FeedWaterPump: 10,
+  Boiler: {
+    WaterVolume: 100,
+    StartTemp: 25,
+    OperatingTemp: 200,
+    TempAddStep: 2,
+    MinWaterLvlForFlame: 20
+  }
+}

@@ -7,6 +7,7 @@ import AirSystem from './Systems/AirSystem'
 import CoolingSystem from './Systems/CoolingSystem'
 import LubricationSystem from './Systems/LubricationSystem'
 import AlarmSystem from './Systems/AlarmSystem'
+import SteamSystem from './Systems/SteamSystem'
 
 
 export default class Simulator {
@@ -17,6 +18,7 @@ export default class Simulator {
   AirSys!: AirSystem
   PowerSys!: PowerSystem
   CoolingSys!: CoolingSystem
+  SteamSys!: SteamSystem
 
   constructor() {
     this.Reset()
@@ -36,6 +38,8 @@ export default class Simulator {
       this.CoolingSys.DsGen1LubCooler
     )
 
+    this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.FuelSys.DsService)
+
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
     this.AirSys.StartAirCompressor1.Bus = this.PowerSys.MainBus1
 
@@ -52,6 +56,7 @@ export default class Simulator {
     this.LubSys.Thick()
     this.AirSys.Thick()
     this.CoolingSys.Thick()
+    this.SteamSys.Thick()
   }
 
   Start() {

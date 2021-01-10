@@ -8,7 +8,6 @@ import Valve from '../Components/Valve'
 import Pump from '../Components/ElectricPump'
 import Cooler from '../Components/Cooler'
 import PowerBus from '../Components/PowerBus'
-import TankWithValves from '../Components/TankWithValves'
 
 /* eslint-disable max-len */
 /*

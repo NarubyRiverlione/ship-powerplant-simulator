@@ -49,5 +49,15 @@ export default {
     LubIntakeValve: ' - lubrication intake valve',
     AirIntakeValve: ' - Air intake valve',
     LubSlump: 'slump'
+  },
+  SteamSysTxt: {
+    FeedWaterSupply: 'Feed water supply',
+    FeedWaterPump: 'Feed water pump',
+    Boiler: {
+      Name: 'Oil fired boiler',
+      WaterIntakeValve: 'Water intake valve',
+      WaterDrainValve: 'Water drain valve',
+      FuelIntakeValve: 'Fuel intake valve'
+    }
   }
 }

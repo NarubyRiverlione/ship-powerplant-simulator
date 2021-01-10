@@ -107,6 +107,7 @@ export default class PowerSystem {
     // TODO takes also for diesel generator(s)
     this.EmergencyBus.Providers = this.Providers
     this.EmergencyBus.Thick()
+
     // #endregion
 
     //  main breaker is connected to Provides
