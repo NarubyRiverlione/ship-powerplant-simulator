@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 import { iCooler } from '../../Components/Cooler'
 
 export default class mockCooler implements iCooler {

@@ -11,14 +11,18 @@ import AlarmSystem from './Systems/AlarmSystem'
 
 export default class Simulator {
   Running?: NodeJS.Timeout // ref setInterval
-  AlarmSys: AlarmSystem
-  FuelSys: FuelSystem
-  LubSys: LubricationSystem
-  AirSys: AirSystem
-  PowerSys: PowerSystem
-  CoolingSys: CoolingSystem
+  AlarmSys!: AlarmSystem
+  FuelSys!: FuelSystem
+  LubSys!: LubricationSystem
+  AirSys!: AirSystem
+  PowerSys!: PowerSystem
+  CoolingSys!: CoolingSystem
 
   constructor() {
+    this.Reset()
+    makeAutoObservable(this)
+  }
+  Reset() {
     this.AlarmSys = new AlarmSystem()
     this.FuelSys = new FuelSystem(this.AlarmSys)
     this.LubSys = new LubricationSystem(this.AlarmSys)
@@ -40,7 +44,6 @@ export default class Simulator {
     this.CoolingSys.AuxPump.Bus = this.PowerSys.EmergencyBus
 
     this.Running = undefined
-    makeAutoObservable(this)
   }
 
   Thick() {

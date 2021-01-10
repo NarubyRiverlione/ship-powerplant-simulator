@@ -1,6 +1,6 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Simulator logic for ship powerplant",
   "main": "lib/Simulator.js",
   "types": "lib/Simulator.d.ts",
@@ -12,7 +12,7 @@
     "lint": "eslint . --fix",
     "test:coverage": "npm test -- --coverage",
     "test:badges": "npm run test:coverage  && istanbul-badges-readme",
-    "test": "jest  --runInBand"
+    "test": "jest  --detectOpenHandles"
   },
   "author": "Naruby Riverlione",
   "repository": {
@@ -43,7 +43,6 @@
       "lcov"
     ],
     "testEnvironment": "node",
-    "maxWorkers": 4,
     "roots": [
       "<rootDir>/src"
     ],

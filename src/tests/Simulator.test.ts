@@ -8,7 +8,9 @@ let simulator: Simulator
 beforeEach(() => {
   simulator = new Simulator()
 })
-
+afterEach(() => {
+  simulator.Stop()
+})
 describe('Simulator running tests', () => {
   test('Not running after init', () => {
     expect(simulator.Running).toBeUndefined()
@@ -18,7 +20,6 @@ describe('Simulator running tests', () => {
     expect(simulator.Running).not.toBeNull()
     setTimeout(() => {
       // wait for 1 thick
-      simulator.Stop()
       done()
     }, CstChanges.Interval)
   })
@@ -162,7 +163,7 @@ describe('Diesel generator- Lubrication from Lub storage', () => {
     expect(DsGen1.LubSlump.Content).toBe(CstPowerSys.DsGen1.Slump.TankAddStep)
   })
 })
-describe.skip('Diesel generator- full startup diesel generator, startup power via emergency generator', () => {
+describe('Diesel generator- full startup diesel generator, startup power via emergency generator', () => {
   test('with full diesel service tank and lubrication storage tank', () => {
     const { PowerSys: { DsGen1, EmergencyGen, EmergencyBus } } = simulator
     const { FuelSys: { DsService } } = simulator
@@ -245,7 +246,7 @@ describe.skip('Diesel generator- full startup diesel generator, startup power vi
     simulator.Thick()
     expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume
       - CstFuelSys.DieselGenerator.Consumption * 3)
-  })
+  }, 8000)
 })
 
 describe('Sea water system', () => {

@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 import { iAlarmSys } from '../../Systems/AlarmSystem'
 
 export default class mockAlarmSys implements iAlarmSys {

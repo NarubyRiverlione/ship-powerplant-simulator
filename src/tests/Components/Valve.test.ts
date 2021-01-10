@@ -12,6 +12,7 @@ beforeEach(() => {
 
 describe('Valve init', () => {
   test('Valve starts closed, without output', () => {
+    valve.Thick()
     expect(valve.isOpen).toBeFalsy()
     expect(valve.Content).toBe(0)
     expect(valve.Name).toBe(name)

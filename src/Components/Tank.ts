@@ -87,15 +87,17 @@ export default class Tank implements iTank {
   }
 
   CheckAlarmLevels() {
+    if (!this.AlarmSystem) return
+    const AlarmSys = this.AlarmSystem as AlarmSystem // null/undefiled safe
     // Low Level alarm
     if (this.LowLevelAlarmCode !== 0) {
       // Raise if content below LowLevelAlarm
       if (this.Content < this.LowLevelAlarm) {
-        this.AlarmSystem?.AddAlarm(this.LowLevelAlarmCode)
+        AlarmSys.AddAlarm(this.LowLevelAlarmCode)
       }
       // cancel alarm is previous raised and now above LowLevelAlarm
-      if (this.AlarmSystem?.AlarmExist(this.LowLevelAlarmCode) && this.Content >= this.LowLevelAlarm) {
-        this.AlarmSystem.RemoveAlarm(this.LowLevelAlarmCode)
+      if (AlarmSys.AlarmExist(this.LowLevelAlarmCode) && this.Content >= this.LowLevelAlarm) {
+        AlarmSys.RemoveAlarm(this.LowLevelAlarmCode)
       }
     }
 
@@ -103,11 +105,11 @@ export default class Tank implements iTank {
     if (this.EmptyAlarmCode !== 0) {
       // Raise if tank is empty
       if (this.Content === 0) {
-        this.AlarmSystem?.AddAlarm(this.EmptyAlarmCode)
+        AlarmSys.AddAlarm(this.EmptyAlarmCode)
       }
       // cancel alarm is previous raised and tank is no longer empty
-      if (this.AlarmSystem?.AlarmExist(this.EmptyAlarmCode) && this.Content !== 0) {
-        this.AlarmSystem.RemoveAlarm(this.EmptyAlarmCode)
+      if (AlarmSys.AlarmExist(this.EmptyAlarmCode) && this.Content !== 0) {
+        AlarmSys.RemoveAlarm(this.EmptyAlarmCode)
       }
     }
   }
@@ -115,7 +117,7 @@ export default class Tank implements iTank {
   Thick() {
     if (this.Adding) this.Add()
     if (this.Removing) this.Remove()
-    if (this.AlarmSystem) { this.CheckAlarmLevels() }
+    this.CheckAlarmLevels()
 
     /* istanbul ignore if  */
     if (this.RemoveEachStep < 0) {
