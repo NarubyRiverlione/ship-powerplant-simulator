@@ -63,4 +63,8 @@ export default class Simulator {
       this.Running = undefined
     }
   }
+  Toggle() {
+    if (this.Running) this.Stop()
+    else this.Start()
+  }
 }

@@ -1,10 +1,12 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Simulator logic for ship powerplant",
   "main": "lib/Simulator.js",
+  "types": "lib/Simulator.d.ts",
   "type": "module",
   "scripts": {
+    "prepare": "tsc",
     "dev": "tsc -w",
     "build": "tsc -p .",
     "lint": "eslint . --fix",

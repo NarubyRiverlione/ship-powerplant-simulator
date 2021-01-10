@@ -4,7 +4,7 @@ simulation of a ship engine power plant
 
 | Statements                  | Branches                | Functions                 | Lines                |
 | --------------------------- | ----------------------- | ------------------------- | -------------------- |
-| ![Statements](https://img.shields.io/badge/Coverage-99.14%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-96.39%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-85.61%25-yellow.svg) | ![Lines](https://img.shields.io/badge/Coverage-99.11%25-brightgreen.svg)    |
+| ![Statements](https://img.shields.io/badge/Coverage-99.31%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-96.39%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-86.23%25-yellow.svg) | ![Lines](https://img.shields.io/badge/Coverage-99.29%25-brightgreen.svg)    |
 
 ## Power systems
 ### Switchboard

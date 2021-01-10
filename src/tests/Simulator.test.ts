@@ -31,7 +31,15 @@ describe('Simulator running tests', () => {
     simulator.Stop()
     expect(simulator.Running).toBeUndefined()
   })
-
+  test('Toggle from not running', () => {
+    simulator.Toggle()
+    expect(simulator.Running).not.toBeUndefined()
+  })
+  test('Toggle from running', () => {
+    simulator.Start()
+    simulator.Toggle()
+    expect(simulator.Running).toBeUndefined()
+  })
 })
 
 describe('Fuel sys via simulator start', () => {
