@@ -4,7 +4,7 @@ simulation of a ship engine power plant
 
 | Statements                  | Branches                | Functions                 | Lines                |
 | --------------------------- | ----------------------- | ------------------------- | -------------------- |
-| ![Statements](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)    |
+| ![Statements](https://img.shields.io/badge/Coverage-98.91%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-98.24%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-97.73%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-99.02%25-brightgreen.svg)    |
 
 ## Power systems
 ### Switchboard
@@ -71,6 +71,7 @@ Sea chest low   - suction valve ->-|
 ```
 
 ### Fresh water cooling circuits
+```
                                                     Fresh water Expand tank
                                                     |
       |->- Fresh water cooler Diesel generator 1 ->-|
@@ -78,8 +79,19 @@ Sea chest low   - suction valve ->-|
       |-<- Lubrication cooler diesel generator 1 -<-|
 ```
 
+## (WIP) Steam system
+```
+    |
+  Main Steam Valve
+      |
+  BOILER    -<- Fuel Intake Valve  ==<== Fuel Pump   ==<== (Fuel Provider tank via Diesel Service  Outlet Valve)  
+   |
+(WaterTank) -<- Water Intake Valve ==<== Feed Water Pump 
+  |                                           |==<== Feed Water Supply Outlet Valve 
+Water Drain valve                                         |
+                                                          |-<- Feed Water Supply Tank 
+                                                                |         |-<- Feed Water Inlet Valve -<- (Feed water Make up)
+                                       Feed Water Supply Drain valve   
+```
 
-## (Todo) Steam system
-
-
-## (Todo) Engine
+## (Todo) Main Engine
