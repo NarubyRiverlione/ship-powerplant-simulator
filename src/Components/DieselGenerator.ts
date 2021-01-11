@@ -32,13 +32,13 @@ export default class DieselGenerator extends Generator {
       const lub = this.LubIntakeValve.Source as Valve
       if (lub.isOpen) {
         this.LubSlump.Adding = true
-        this.LubProvider.Removing = true
+        this.LubProvider.AmountRemovers += 1
       }
     }
     this.LubIntakeValve.cbNowClosed = () => {
       this.LubSlump.Adding = false
       this.LubProvider.RemoveEachStep = CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
-      this.LubProvider.Removing = false
+      this.LubProvider.AmountRemovers -= 1
     }
 
     this.LubSlump = new Tank(DieselGeneratorTxt.LubSlump, CstPowerSys.DsGen1.Slump.TankVolume)

@@ -131,7 +131,7 @@ describe('Drain & outlet combo', () => {
     const removeViaOutlet = 5
     tankV.OutletValve.cbNowOpen = () => {
       tankV.Tank.RemoveEachStep += removeViaOutlet
-      tankV.Tank.Removing = true
+      tankV.Tank.AmountRemovers += 1
     }
     tankV.DrainValve.Open()
     tankV.Thick()
@@ -144,7 +144,7 @@ describe('Drain & outlet combo', () => {
     const removeViaOutlet = 5
     tankV.OutletValve.cbNowOpen = () => {
       tankV.Tank.RemoveEachStep += removeViaOutlet
-      tankV.Tank.Removing = true
+      tankV.Tank.AmountRemovers += 1
     }
     tankV.DrainValve.Open()
     tankV.Thick()
@@ -160,11 +160,11 @@ describe('Drain & outlet combo', () => {
     const removeViaOutlet = 5
     tankV.OutletValve.cbNowOpen = () => {
       tankV.Tank.RemoveEachStep += removeViaOutlet
-      tankV.Tank.Removing = true
+      tankV.Tank.AmountRemovers += 1
     }
     tankV.OutletValve.cbNowClosed = () => {
       tankV.Tank.RemoveEachStep -= removeViaOutlet
-      tankV.Tank.Removing = tankV.DrainValve.isOpen
+      tankV.Tank.AmountRemovers -= 1
     }
     tankV.DrainValve.Open()
     tankV.Thick()
@@ -179,11 +179,11 @@ describe('Drain & outlet combo', () => {
     const removeViaOutlet = 5
     tankV.OutletValve.cbNowOpen = () => {
       tankV.Tank.RemoveEachStep += removeViaOutlet
-      tankV.Tank.Removing = true
+      tankV.Tank.AmountRemovers += 1
     }
     tankV.OutletValve.cbNowClosed = () => {
       tankV.Tank.RemoveEachStep -= removeViaOutlet
-      tankV.Tank.Removing = tankV.DrainValve.isOpen
+      tankV.Tank.AmountRemovers -= 1
     }
     tankV.DrainValve.Open()
     tankV.Thick()
@@ -199,11 +199,11 @@ describe('Drain & outlet combo', () => {
     const removeViaOutlet = 5
     tankV.OutletValve.cbNowOpen = () => {
       tankV.Tank.RemoveEachStep += removeViaOutlet
-      tankV.Tank.Removing = true
+      tankV.Tank.AmountRemovers += 1
     }
     tankV.OutletValve.cbNowClosed = () => {
       tankV.Tank.RemoveEachStep -= removeViaOutlet
-      tankV.Tank.Removing = tankV.DrainValve.isOpen
+      tankV.Tank.AmountRemovers -= 1
     }
     tankV.DrainValve.Open()
     tankV.Thick()
@@ -219,7 +219,7 @@ describe('Drain & outlet combo', () => {
     const removeViaOutlet = 5
     tankV.OutletValve.cbNowOpen = () => {
       tankV.Tank.RemoveEachStep += removeViaOutlet
-      tankV.Tank.Removing = true
+      tankV.Tank.AmountRemovers += 1
     }
     tankV.OutletValve.Open()
     tankV.Thick()

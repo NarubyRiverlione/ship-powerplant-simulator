@@ -8,6 +8,7 @@ describe('Tank init', () => {
     expect(tank.Content).toBe(0)
     expect(tank.Name).toBe(name)
     expect(tank.Adding).toBeFalsy()
+    expect(tank.AmountRemovers).toBe(0)
     expect(tank.Removing).toBeFalsy()
   })
   test('New tank with content', () => {
@@ -83,7 +84,7 @@ describe('Tank remove 1 step', () => {
     const removeEachStep = 80
     const tank = new Tank('full tank', start, start)
     tank.RemoveEachStep = removeEachStep
-    tank.Removing = true
+    tank.AmountRemovers = 1
     tank.cbRemoved = () => { flagRemoved = true }
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep)
@@ -95,7 +96,7 @@ describe('Tank remove 1 step', () => {
     const removeEachStep = 1
     const tank = new Tank('empty tank', 200)
     tank.RemoveEachStep = removeEachStep
-    tank.Removing = true
+    tank.AmountRemovers = 1
     tank.Thick()
     expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
@@ -105,7 +106,7 @@ describe('Tank remove 1 step', () => {
     const removeEachStep = 1
     const tank = new Tank('empty tank', 200)
     tank.RemoveEachStep = removeEachStep
-    tank.Removing = true
+    tank.AmountRemovers = 1
     tank.Thick()
     expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
@@ -116,7 +117,7 @@ describe('Tank remove 1 step', () => {
     const start = 50
     const tank = new Tank('not empty tank', 200, start)
     tank.RemoveEachStep = removeEachStep
-    tank.Removing = true
+    tank.AmountRemovers = 1
     tank.Thick()
     expect(tank.Content).toBe(0)
     expect(tank.Removing).toBeTruthy()
@@ -181,7 +182,7 @@ describe('Tank remove over time', () => {
 
     const tank = new Tank('remove over time', 100, start)
     tank.RemoveEachStep = removeEachStep
-    tank.Removing = true
+    tank.AmountRemovers = 1
 
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep)
@@ -202,7 +203,7 @@ describe('Tank remove over time', () => {
 
     const tank = new Tank('remove over time', 100, start)
     tank.RemoveEachStep = removeEachStep
-    tank.Removing = true
+    tank.AmountRemovers = 1
 
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep)

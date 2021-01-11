@@ -53,11 +53,13 @@ export default {
   SteamSysTxt: {
     FeedWaterSupply: 'Feed water supply',
     FeedWaterPump: 'Feed water pump',
+    FuelPump: 'Fuel pump',
     Boiler: {
       Name: 'Oil fired boiler',
       WaterIntakeValve: 'Water intake valve',
       WaterDrainValve: 'Water drain valve',
-      FuelIntakeValve: 'Fuel intake valve'
+      FuelIntakeValve: 'Fuel intake valve',
+      MainSteamValve: 'Main steam valve'
     }
   }
 }

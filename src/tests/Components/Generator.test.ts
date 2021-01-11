@@ -122,6 +122,7 @@ describe('Fuel consumption', () => {
     expect(generator.isRunning).toBeTruthy()
     expect(generator.FuelConsumption).toBe(consumption)
     expect(generator.FuelProvider.RemoveEachStep).toBe(consumption)
+    expect(generator.FuelProvider.AmountRemovers).toBe(1)
     expect(generator.FuelProvider.Removing).toBeTruthy()
     expect(generator.FuelProvider.RemoveEachStep).toBe(consumption)
   })

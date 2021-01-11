@@ -7,7 +7,7 @@ export default class mockTank implements iTank {
   Inside: number
   Volume: number
   Adding: boolean
-  Removing: boolean
+  AmountRemovers: number
   AddEachStep: number
   RemoveEachStep: number
   cbFull: () => void
@@ -26,7 +26,7 @@ export default class mockTank implements iTank {
     // flags are needed to remember when tank is full/empty that
     // was filling/removing to resume after tank is no longer full/empty
     this.Adding = false
-    this.Removing = false
+    this.AmountRemovers = 0
 
     this.AddEachStep = 0.0
     this.RemoveEachStep = 0.0
@@ -43,7 +43,7 @@ export default class mockTank implements iTank {
   Add() {
     this.Inside += this.AddEachStep
   }
-
+  get Removing() { return this.AmountRemovers !== 0 }
   Remove() {
     this.Inside -= this.RemoveEachStep
   }

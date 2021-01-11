@@ -39,7 +39,8 @@ export const CstFuelSys = {
     TankVolume: 100,
     TankAddStep: 1
   },
-  DieselGenerator: { Consumption: 0.05 }
+  DieselGenerator: { Consumption: 0.05 },
+  SteamBoiler: { Consumption: 0.1 }
 }
 export const CstAirSys = {
   StartAirCompressor1: {
@@ -76,12 +77,14 @@ export const CstSteamSys = {
     TankVolume: 100,
     TankAddStep: 5
   },
-  FeedWaterPump: 10,
+  FeedWaterPump: 2,
+  FuelPump: 10,
   Boiler: {
     WaterVolume: 100,
     StartTemp: 25,
     OperatingTemp: 200,
     TempAddStep: 2,
-    MinWaterLvlForFlame: 20
+    MinWaterLvlForFlame: 20,
+    MainSteamValveWaterDrain: 0.1
   }
 }

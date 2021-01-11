@@ -30,6 +30,9 @@ describe('Init', () => {
     expect(boiler.FuelIntakeValve.isOpen).toBeFalsy()
     expect(boiler.FuelIntakeValve.Source.Content).toBe(100)
   })
+  test('main steam  valve is closed', () => {
+    expect(boiler.MainSteamValve.isOpen).toBeFalsy()
+  })
 })
 
 describe('water level', () => {
@@ -187,5 +190,95 @@ describe('Pressure', () => {
     boiler.Thick()
     boiler.Ignite()
     expect(boiler.Pressure).toBeCloseTo(15.52)
+  })
+})
+
+describe('Main steam valve', () => {
+  test('open = use steam = lower water level', () => {
+    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    boiler.Temperature = startTemp
+    boiler.FuelIntakeValve.Open()
+    boiler.Thick()
+    boiler.Ignite()
+    boiler.Thick()
+    boiler.MainSteamValve.Open()
+
+    boiler.Thick()
+    expect(boiler.WaterTank.Removing).toBeTruthy()
+    expect(boiler.WaterTank.RemoveEachStep).toBe(CstSteamSys.Boiler.MainSteamValveWaterDrain)
+    expect(boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.MainSteamValveWaterDrain)
+    boiler.Thick()
+    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.MainSteamValveWaterDrain * 2)
+  })
+  test('main steam valve + drain open', () => {
+    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    boiler.Temperature = startTemp
+    boiler.FuelIntakeValve.Open()
+    boiler.Thick()
+    boiler.Ignite()
+    boiler.Thick()
+    boiler.MainSteamValve.Open()
+    boiler.Thick()
+    boiler.WaterDrainValve.Open()
+    boiler.Thick()
+    expect(boiler.WaterTank.RemoveEachStep).toBe(CstSteamSys.Boiler.MainSteamValveWaterDrain + CstChanges.DrainStep)
+    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.MainSteamValveWaterDrain * 2 - CstChanges.DrainStep)
+  })
+  test('drain open the open main steam valve', () => {
+    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    boiler.Temperature = startTemp
+    boiler.FuelIntakeValve.Open()
+    boiler.Thick()
+    boiler.Ignite()
+    boiler.Thick()
+    boiler.WaterDrainValve.Open()
+    boiler.Thick()
+    boiler.MainSteamValve.Open()
+    boiler.Thick()
+    expect(boiler.WaterTank.RemoveEachStep).toBe(CstSteamSys.Boiler.MainSteamValveWaterDrain + CstChanges.DrainStep)
+    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.MainSteamValveWaterDrain - CstChanges.DrainStep * 2)
+  })
+  test('re-close previous open drain while  main steam valve remains open', () => {
+    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    boiler.Temperature = startTemp
+    boiler.FuelIntakeValve.Open()
+    boiler.Thick()
+    boiler.Ignite()
+    boiler.Thick()
+    boiler.WaterDrainValve.Open()
+    boiler.Thick()
+    boiler.MainSteamValve.Open()
+    boiler.Thick()
+    boiler.WaterDrainValve.Close()
+    boiler.Thick()
+    expect(boiler.WaterTank.RemoveEachStep).toBeCloseTo(CstSteamSys.Boiler.MainSteamValveWaterDrain)
+    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.MainSteamValveWaterDrain * 2 - CstChanges.DrainStep * 2)
+  })
+  test('re-close previous open main steam valve while  drain  valve remains open', () => {
+    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    boiler.Temperature = startTemp
+    boiler.FuelIntakeValve.Open()
+    boiler.Thick()
+    boiler.Ignite()
+    boiler.Thick()
+    boiler.WaterDrainValve.Open()
+    boiler.Thick()
+    boiler.MainSteamValve.Open()
+    boiler.Thick()
+    boiler.MainSteamValve.Close()
+    boiler.Thick()
+    expect(boiler.WaterTank.RemoveEachStep).toBeCloseTo(CstChanges.DrainStep)
+    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.MainSteamValveWaterDrain - CstChanges.DrainStep * 3)
   })
 })

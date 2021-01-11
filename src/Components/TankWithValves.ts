@@ -28,7 +28,7 @@ export default class TankWithValves implements Item {
       if (sourceValve.isOpen) {
         this.Tank.Adding = true
         const Source = sourceValve.Source as Tank
-        Source.Removing = true
+        Source.AmountRemovers += 1
       }
     }
     // inlet valve closed
@@ -36,13 +36,13 @@ export default class TankWithValves implements Item {
     this.IntakeValve.cbNowClosed = () => {
       this.Tank.Adding = false
       const Source = sourceValve.Source as Tank
-      Source.Removing = false
+      Source.AmountRemovers -= 1
     }
 
     // Drain Valve
     this.DrainValve.cbNowOpen = () => {
       this.Tank.RemoveEachStep += CstChanges.DrainStep
-      this.Tank.Removing = true
+      this.Tank.AmountRemovers += 1
       if (this.DrainTarget) {
         this.DrainTarget.AddEachStep = CstChanges.DrainStep
         this.DrainTarget.Adding = true
@@ -50,8 +50,7 @@ export default class TankWithValves implements Item {
     }
     this.DrainValve.cbNowClosed = () => {
       this.Tank.RemoveEachStep -= CstChanges.DrainStep
-      // only stop removing is outlet valve is also closed
-      this.Tank.Removing = this.OutletValve.isOpen
+      this.Tank.AmountRemovers += 1
     }
   }
   get Content() { return this.Tank.Content }
