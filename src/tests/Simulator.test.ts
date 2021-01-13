@@ -269,8 +269,9 @@ describe('Sea water system', () => {
 
 describe('Steam', () => {
   test('Ignite boiler', () => {
-    const { FuelSys: { DsService }, SteamSys: { Boiler, FeedWaterSupply, FeedWaterPump } } = simulator
-    const { PowerSys: { MainBus1, MainBreaker1 } } = simulator
+    const { FuelSys: { DsService },
+      SteamSys: { Boiler, FeedWaterSupply, FeedWaterPump, FuelPump },
+      PowerSys: { MainBus1, MainBreaker1 } } = simulator
     // fake Main bus has voltage via shore breaker
     simulator.PowerSys.ConnectShore()
     simulator.Thick()
@@ -283,7 +284,7 @@ describe('Steam', () => {
     DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
     DsService.OutletValve.Open()
 
-    // fill boiler wit water until there is enough for ignition
+    // fill boiler with water until there is enough for ignition
     FeedWaterSupply.OutletValve.Open()
     simulator.Thick()
 
@@ -299,10 +300,26 @@ describe('Steam', () => {
       simulator.Thick()
     } while (!Boiler.hasEnoughWaterForFlame)
 
+    // provide fuel
     Boiler.FuelIntakeValve.Open()
     simulator.Thick()
+    FuelPump.Start()
+    simulator.Thick()
+    expect(Boiler.hasFuel).toBeTruthy()
+
+    // ignite boiler
     Boiler.Ignite()
     simulator.Thick()
     expect(Boiler.hasFlame).toBeTruthy()
+
+    // burn fuel
+    expect(DsService.Tank.Removing).toBeTruthy()
+    expect(DsService.Tank.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(DsService.Tank.Content).toBeCloseTo(
+      CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.SteamBoiler.Consumption)
+
+    simulator.Thick()
+    expect(DsService.Tank.Content).toBeCloseTo(
+      CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.SteamBoiler.Consumption * 2)
   })
 })

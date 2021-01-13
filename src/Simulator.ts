@@ -38,7 +38,9 @@ export default class Simulator {
       this.CoolingSys.DsGen1LubCooler
     )
 
-    this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.FuelSys.DsService)
+    this.SteamSys = new SteamSystem(this.PowerSys.MainBus1,
+      this.FuelSys.DsService.OutletValve,
+      this.FuelSys.DsService.Tank)
 
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
     this.AirSys.StartAirCompressor1.Bus = this.PowerSys.MainBus1
@@ -52,11 +54,11 @@ export default class Simulator {
 
   Thick() {
     this.PowerSys.Thick()
-    this.FuelSys.Thick()
     this.LubSys.Thick()
     this.AirSys.Thick()
     this.CoolingSys.Thick()
     this.SteamSys.Thick()
+    this.FuelSys.Thick()  //must be evaluated last to consume fuel form other systems
   }
 
   Start() {

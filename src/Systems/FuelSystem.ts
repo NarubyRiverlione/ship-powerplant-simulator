@@ -43,7 +43,7 @@ export default class FuelSystem {
       // only transfer from storage to service tank
       // if this outlet and service inlet valve are both is open
       if (this.DsService.IntakeValve.isOpen) {
-        this.DsStorage.Tank.Removing = true
+        this.DsStorage.Tank.AmountRemovers += 1
         this.DsService.Tank.Adding = true
       }
     }
@@ -51,12 +51,12 @@ export default class FuelSystem {
     // both storage outlet & service intake needs to be open for transfer
     // may be still removin via drain valve
     this.DsStorage.OutletValve.cbNowClosed = () => {
-      this.DsStorage.Tank.Removing = this.DsStorage.DrainValve.isOpen
-      this.DsService.Tank.Adding = false
-      // if (this.DsService.IntakeValve.isOpen) {
-      //   // was transfering, stop now. May be still removing via drain valve
-      //   this.DsStorage.Tank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
-      // }
+      if (this.DsService.IntakeValve.isOpen) {
+        // was transfering, stop now. May be still removing via drain valve
+        this.DsStorage.Tank.AmountRemovers -= 1
+        this.DsService.Tank.Adding = false
+        //   this.DsStorage.Tank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
+      }
     }
     // Alarms
     this.DsStorage.Tank.AlarmSystem = alarmSys
@@ -78,7 +78,7 @@ export default class FuelSystem {
     // outlet valve closes,stop removing from service tank
     // may be continue removing via drain valve
     this.DsService.OutletValve.cbNowClosed = () => {
-      this.DsService.Tank.Removing = this.DsStorage.DrainValve.isOpen
+      this.DsService.Tank.AmountRemovers -= 1
       // this.DsService.Tank.RemoveEachStep -= CstFuelSys.RatioStorageServiceTanks
     }
 

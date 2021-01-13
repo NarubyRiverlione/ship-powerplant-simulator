@@ -2,7 +2,7 @@ import Item from './Item'
 import Tank from './Tank'
 import Valve from './Valve'
 import CstTxt from '../CstTxt'
-import { CstChanges, CstSteamSys } from '../Cst'
+import { CstChanges, CstSteamSys, CstFuelSys } from '../Cst'
 import CalcPressureViaTemp from '../../src/CalcPressureTemp'
 import { makeAutoObservable } from 'mobx'
 const { SteamSysTxt } = CstTxt
@@ -28,8 +28,9 @@ export default class Boiler implements Item {
   MainSteamValve: Valve
   Temperature: number
   Pressure: number
+  FuelSourceTank: Tank
 
-  constructor(name: string, waterSource: Item, fuelSource: Item) {
+  constructor(name: string, waterSource: Item, fuelSource: Item, fuelSourceTank: Tank) {
     this.Name = name
     //#region Water supply
     this.WaterIntakeValve = new Valve(SteamSysTxt.Boiler.WaterIntakeValve, waterSource)
@@ -64,6 +65,8 @@ export default class Boiler implements Item {
     //#endregion
     this.Temperature = CstSteamSys.Boiler.StartTemp
     this.Pressure = 0
+
+    this.FuelSourceTank = fuelSourceTank
     makeAutoObservable(this)
   }
   get WaterLevel(): number { return this.WaterTank.Content }
@@ -73,20 +76,30 @@ export default class Boiler implements Item {
 
 
   CheckFlame() {
+    if (!this.hasFlame) return
     // keep flame is there is still fuel && water
     // no water = auto trip
-    this.hasFlame = this.hasFuel && this.hasFlame
-      && this.hasEnoughWaterForFlame
+    if (!this.hasFuel || !this.hasEnoughWaterForFlame) this.Exting()
   }
 
   Ignite() {
     // ignite if there is fuel and enough water
     this.hasFlame = this.hasFuel && this.hasEnoughWaterForFlame
+    if (this.hasFlame) {
+      // ignition succesfull = start burning fuel
 
+      this.FuelSourceTank.AmountRemovers += 1
+      this.FuelSourceTank.RemoveEachStep += CstFuelSys.SteamBoiler.Consumption
+    }
   }
   Exting() {
+    // kill flame & stop burning fuel
     this.hasFlame = false
+
+    this.FuelSourceTank.AmountRemovers -= 1
+    this.FuelSourceTank.RemoveEachStep -= CstFuelSys.SteamBoiler.Consumption
   }
+
   CheckTemp() {
     // TODO, no flame but not at start temp = cooling down
     if (!this.hasFlame) return

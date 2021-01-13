@@ -1,14 +1,15 @@
 import Boiler from '../../Components/Boiler'
-import { CstChanges, CstSteamSys } from '../../Cst'
+import { CstChanges, CstSteamSys, CstFuelSys } from '../../Cst'
 import mockTank from '../mocks/mockTank'
+import mockValve from '../mocks/mockValve'
 
 let boiler: Boiler
-const dummyWaterSource = new mockTank('dummy feed water source', 100, 100)
-const dummyFuelSource = new mockTank('dummy fuel source', 100, 100)
-
 
 beforeEach(() => {
-  boiler = new Boiler('test boiler', dummyWaterSource, dummyFuelSource)
+  const dummyWaterSource = new mockTank('dummy feed water source', 100, 100)
+  const dummyFuelSourceTank = new mockTank('dummy fuel source', 100, 100)
+  const dummyFuelSourceOutletValve = new mockValve('dummy fuel valve', dummyFuelSourceTank)
+  boiler = new Boiler('test boiler', dummyWaterSource, dummyFuelSourceOutletValve, dummyFuelSourceTank)
 })
 
 describe('Init', () => {
@@ -37,23 +38,25 @@ describe('Init', () => {
 
 describe('water level', () => {
   test('open intake valve = fill boiler', () => {
-    const waterSource = 45
-    dummyWaterSource.Inside = waterSource
+    const water = 45
+    const waterSource = boiler.WaterIntakeValve.Source as mockTank
+    waterSource.Inside = water
     boiler.WaterIntakeValve.Open()
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(waterSource)
+    expect(boiler.WaterLevel).toBe(water)
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(waterSource * 2)
+    expect(boiler.WaterLevel).toBe(water * 2)
   })
   test('re-close previous open intake valve = stop fill boiler', () => {
-    const waterSource = 45
-    dummyWaterSource.Inside = waterSource
+    const water = 45
+    const waterSource = boiler.WaterIntakeValve.Source as mockTank
+    waterSource.Inside = water
     boiler.WaterIntakeValve.Open()
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(waterSource)
+    expect(boiler.WaterLevel).toBe(water)
     boiler.WaterIntakeValve.Close()
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(waterSource)
+    expect(boiler.WaterLevel).toBe(water)
   })
   test('drain open = remove water from boiler', () => {
     const startVolume = 87
@@ -100,18 +103,27 @@ describe('Ignition / flame', () => {
     boiler.Ignite()
     expect(boiler.hasEnoughWaterForFlame).toBeFalsy()
     expect(boiler.hasFlame).toBeFalsy()
+
+    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
-  test('has fuel + ignite = has flame', () => {
+  test('has fuel + ignite = has flame = burn fuel', () => {
     boiler.FuelIntakeValve.Open()
     boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
     boiler.Thick()
     boiler.Ignite()
     expect(boiler.hasFlame).toBeTruthy()
+
+    expect(boiler.FuelSourceTank.AmountRemovers).toBe(1)
+    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
   test('no fuel + ignite = no flame', () => {
     expect(boiler.FuelIntakeValve.isOpen).toBeFalsy()
     boiler.Ignite()
     expect(boiler.hasFlame).toBeFalsy()
+
+    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has flame but now not enough water = no flame', () => {
     boiler.FuelIntakeValve.Open()
@@ -123,6 +135,9 @@ describe('Ignition / flame', () => {
     boiler.Thick()
     expect(boiler.hasEnoughWaterForFlame).toBeFalsy()
     expect(boiler.hasFlame).toBeFalsy()
+
+    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has flame + close fuel valve = no flame', () => {
     boiler.FuelIntakeValve.Open()
@@ -133,6 +148,9 @@ describe('Ignition / flame', () => {
     boiler.FuelIntakeValve.Close()
     boiler.Thick()
     expect(boiler.hasFlame).toBeFalsy()
+
+    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has flame + exting = no flame', () => {
     boiler.FuelIntakeValve.Open()
@@ -142,6 +160,9 @@ describe('Ignition / flame', () => {
     expect(boiler.hasFlame).toBeTruthy()
     boiler.Exting()
     expect(boiler.hasFlame).toBeFalsy()
+
+    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
 })
 

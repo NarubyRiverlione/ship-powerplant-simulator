@@ -92,10 +92,10 @@ export default class CoolingSystem {
     }
     this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve, this.FwExpandTank)
     this.FwDrainValve.cbNowOpen = () => {
-      this.FwExpandTank.Removing = true
+      this.FwExpandTank.AmountRemovers += 1
     }
     this.FwDrainValve.cbNowClosed = () => {
-      this.FwExpandTank.Removing = false
+      this.FwExpandTank.AmountRemovers -= 1
     }
     // #endregion
     // #region DsGen 1 Lubrication cooler (secundaire FW circuit)

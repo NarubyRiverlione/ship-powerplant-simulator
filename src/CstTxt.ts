@@ -54,6 +54,7 @@ export default {
     FeedWaterSupply: 'Feed water supply',
     FeedWaterPump: 'Feed water pump',
     FuelPump: 'Fuel pump',
+    FuelSourceValve: 'Fuel source valve',
     Boiler: {
       Name: 'Oil fired boiler',
       WaterIntakeValve: 'Water intake valve',

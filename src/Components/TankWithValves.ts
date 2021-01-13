@@ -36,7 +36,7 @@ export default class TankWithValves implements Item {
     this.IntakeValve.cbNowClosed = () => {
       this.Tank.Adding = false
       const Source = sourceValve.Source as Tank
-      Source.AmountRemovers -= 1
+      if (Source.AmountRemovers > 0) Source.AmountRemovers -= 1
     }
 
     // Drain Valve
