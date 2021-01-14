@@ -149,10 +149,12 @@ export default class CoolingSystem {
     this.DsGen1LubCooler.CoolingProviders = this.FwExpandTank.Content
     this.DsGen1LubCooler.isCooling = this.DsGen1LubCooler.isCooling && this.FwCoolerDsGen1.hasCooling
     this.DsGen1LubCooler.Thick()
+    this.FwCoolerDsGen1.HotCircuitComplete = this.DsGen1LubCooler.hasCooling
 
     // hot side of Fw DsGen 2 cooler is complete  if Lub cooler has cooling (has fresh water)
     this.DsGen2LubCooler.CoolingProviders = this.FwExpandTank.Content
     this.DsGen2LubCooler.isCooling = this.DsGen2LubCooler.isCooling && this.FwCoolerDsGen2.hasCooling
     this.DsGen2LubCooler.Thick()
+    this.FwCoolerDsGen2.HotCircuitComplete = this.DsGen2LubCooler.hasCooling
   }
 }

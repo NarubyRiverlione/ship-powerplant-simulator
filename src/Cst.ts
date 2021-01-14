@@ -1,3 +1,7 @@
+export const CstChanges = {
+  Interval: 1000,
+  DrainStep: 2
+}
 export const CstPowerSys = {
   Voltage: 440,
   Shore: 1000, // 10 kW
@@ -12,11 +16,6 @@ export const CstPowerSys = {
       MinForLubrication: 40
     }
   }
-}
-
-export const CstChanges = {
-  Interval: 1000,
-  DrainStep: 2
 }
 export const CstLubSys = {
   ShoreVolume: 1e6,

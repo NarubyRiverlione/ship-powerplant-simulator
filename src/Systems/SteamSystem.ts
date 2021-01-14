@@ -1,12 +1,11 @@
 import { makeAutoObservable } from 'mobx'
 import TankWithValves from "../Components/TankWithValves";
 import Tank from "../Components/Tank";
-import Item from "../Components/Item";
 import Valve from "../Components/Valve";
 import Pump from "../Components/ElectricPump";
 import PowerBus from "../Components/PowerBus";
 import Boiler from "../Components/Boiler";
-import { CstChanges, CstFuelSys, CstSteamSys } from '../Cst'
+import { CstChanges, CstSteamSys } from '../Cst'
 import CstTxt from '../CstTxt'
 const { SteamSysTxt } = CstTxt
 
@@ -16,7 +15,7 @@ Fuel diagram
                                           |
                                           | ==<== Fuel intake valve
                                                    |
-                                                    |==<== (fuelSourceValve = Diesel Service Outlet Valve)  
+                                                   |==<== (fuelSourceValve = Diesel Service Outlet Valve)  
 Water diagram
  BOILER   -<- Water Intake Valve ==<== Feed Water Pump 
                                         |==<== Feed Water Supply Outlet Valve 
@@ -31,10 +30,10 @@ export default class SteamSystem {
   FeedWaterPump: Pump
   Boiler: Boiler
   FuelPump: Pump
+  FuelSource: TankWithValves
   FuelSourceValve: Valve
-  FuelSourceTank: Tank
 
-  constructor(mainBus1: PowerBus, fuelSource: Valve, fuelSourceTank: Tank) {
+  constructor(mainBus1: PowerBus, fuelSource: TankWithValves) {
     //#region Feed Water
     const FeedWaterMakeup = new Tank('dummy feed water makeup tank', 1e6, 1e6)
     const FeedWaterMakeUpValve = new Valve('dummy feed water makeup valve, always open', FeedWaterMakeup)
@@ -44,17 +43,16 @@ export default class SteamSystem {
 
     this.FeedWaterPump = new Pump(SteamSysTxt.FeedWaterPump, mainBus1, CstSteamSys.FeedWaterPump)
     //#endregion
-    this.FuelSourceTank = fuelSourceTank
-    this.FuelSourceValve = new Valve(SteamSysTxt.FuelSourceValve, fuelSource)
+    this.FuelSource = fuelSource
+    this.FuelSourceValve = new Valve(SteamSysTxt.FuelSourceValve, fuelSource.OutletValve)
     this.FuelPump = new Pump(SteamSysTxt.FuelPump, mainBus1, CstSteamSys.FuelPump)
     this.Boiler = new Boiler(SteamSysTxt.Boiler.Name, this.FeedWaterPump,
-      this.FuelPump, fuelSourceTank)
+      this.FuelPump, fuelSource.Tank)
 
     makeAutoObservable(this)
   }
 
   Thick() {
-
     this.FeedWaterPump.Providers = this.FeedWaterSupply.OutletValve.Content
     this.FeedWaterPump.Thick()
 
@@ -73,9 +71,11 @@ export default class SteamSystem {
     }
     this.FeedWaterSupply.Thick()
 
-    const fuelSourceOutlet = this.FuelSourceValve.Source as Valve
-    const fuelSource = fuelSourceOutlet.Source as Tank
-    this.FuelPump.Providers = fuelSource.Content
+
+    this.FuelPump.Providers = this.FuelSourceValve.Content !== 0
+      ? this.FuelPump.Providers = this.FuelSource.Tank.Content
+      : 0
+
     this.FuelPump.Thick()
 
     this.Boiler.Thick()

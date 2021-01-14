@@ -4,15 +4,21 @@ import { CstPowerSys, CstSteamSys, CstFuelSys, CstChanges } from '../../Cst'
 import mockTank from '../mocks/mockTank'
 import mockValve from '../mocks/mockValve'
 import Boiler from '../../Components/Boiler'
+import TankWithValves from '../../Components/TankWithValves'
 let steamSys: SteamSystem
 
 const dummyMainBus = new mockPowerBus('dummy main bus 1')
 dummyMainBus.Voltage = CstPowerSys.Voltage
 
 beforeEach(() => {
-  const dummyFuelSourceTank = new mockTank('dummy fuel source', 100, 100)
-  const dummyFuelSourceOutletValve = new mockValve('dummy fuel valve', dummyFuelSourceTank)
-  steamSys = new SteamSystem(dummyMainBus, dummyFuelSourceOutletValve, dummyFuelSourceTank)
+  const dummyFuelStortageTank = new mockTank('dummy fuel source', 100, 100)
+  const dummyFuelSourceValve = new mockValve('dummy fuel valve', dummyFuelStortageTank)
+
+  const dummyFuelSource = new TankWithValves('dummy fuel source', 100, 100, dummyFuelSourceValve)
+  dummyFuelSource.OutletValve.Open()
+  dummyFuelSource.Thick()
+
+  steamSys = new SteamSystem(dummyMainBus, dummyFuelSource)
 })
 
 describe('init', () => {
@@ -121,8 +127,20 @@ describe('Feed water', () => {
 })
 
 describe('Fuel', () => {
+  test('Fuel pump cannot run with closed fuel source valve', () => {
+    const { FuelPump, FuelSourceValve } = steamSys
+    expect(FuelSourceValve.Content).toBe(0)
+    FuelPump.Start()
+    steamSys.Thick()
+    expect(FuelPump.CheckPower).toBeTruthy()
+    expect(FuelPump.Providers).toBe(0)
+    expect(FuelPump.isRunning).toBeFalsy()
+  })
   test('Fuel pump running without flame = not burn fuel form FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
+    FuelSourceValve.Open()
+    steamSys.Thick()
+    expect(FuelSourceValve.Content).toBe(100)
     FuelPump.Start()
     steamSys.Thick()
     expect(FuelPump.CheckPower).toBeTruthy()
@@ -137,6 +155,7 @@ describe('Fuel', () => {
   })
   test('Fuel pump running & flame = burn fuel form FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
+    FuelSourceValve.Open()
     FuelPump.Start()
     steamSys.Thick()
 
@@ -161,6 +180,7 @@ describe('Fuel', () => {
   })
   test('Stop a running Fuel pump  = not burning fuel form FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
+    FuelSourceValve.Open()
     FuelPump.Start()
     steamSys.Thick()
     expect(FuelPump.isRunning).toBeTruthy()
@@ -182,6 +202,7 @@ describe('Fuel', () => {
   })
   test('running Fuel pump  but exting flame = not burning fuel form FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
+    FuelSourceValve.Open()
     FuelPump.Start()
     steamSys.Thick()
     expect(FuelPump.isRunning).toBeTruthy()

@@ -3,7 +3,7 @@ import Tank from './Tank'
 import Valve from './Valve'
 import CstTxt from '../CstTxt'
 import { CstChanges, CstSteamSys, CstFuelSys } from '../Cst'
-import CalcPressureViaTemp from '../../src/CalcPressureTemp'
+import CalcPressureViaTemp from '../CalcPressureTemp'
 import { makeAutoObservable } from 'mobx'
 const { SteamSysTxt } = CstTxt
 

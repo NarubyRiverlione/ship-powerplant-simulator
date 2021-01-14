@@ -23,8 +23,9 @@ export default class Cooler implements iCooler {
 
   constructor(name: string, coolingInputRate: number) {
     this.Name = name
-    this.isCooling = false // cooling circuit & rate is ok
-    this.hasCooling = false // isCooling && hot circuit is ok
+    this.isCooling = false // isCooling && hot circuit is ok
+    this.hasCooling = false // cooling circuit & rate is ok
+
     this.CoolingInputRate = coolingInputRate
     this.CoolingProviders = 0
 

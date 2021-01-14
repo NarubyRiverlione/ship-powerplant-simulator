@@ -198,8 +198,9 @@ describe('Diesel service tank', () => {
     const contentTank = 2000
     fuelSys.DsStorage.Tank.Inside = contentTank
     fuelSys.DsService.IntakeValve.Open()
-    fuelSys.DsStorage.OutletValve.Open()
+    fuelSys.Thick()
 
+    fuelSys.DsStorage.OutletValve.Open()
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.RemoveEachStep)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
@@ -212,12 +213,14 @@ describe('Diesel service tank', () => {
       .toBeCloseTo(contentTank - CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks * 2)
     expect(fuelSys.DsService.Tank.Content).toBe(CstFuelSys.DsServiceTank.TankAddStep * 2)
   })
-  test('First open storage outlet, then close diesel service intake valve = transfer', () => {
+  test('First open storage outlet, then open diesel service intake valve = transfer', () => {
     const contentTank = 2000
     fuelSys.DsStorage.Tank.Inside = contentTank
     fuelSys.DsStorage.OutletValve.Open()
-    fuelSys.DsService.IntakeValve.Open()
+    expect(fuelSys.DsService.IntakeValve.isOpen).toBeFalsy()
+    fuelSys.Thick()
 
+    fuelSys.DsService.IntakeValve.Open()
     fuelSys.Thick()
     expect(fuelSys.DsStorage.Tank.RemoveEachStep)
       .toBe(CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks)
