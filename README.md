@@ -22,9 +22,13 @@ Diesel generator 1 -->  Breaker Diesel Gen 1
 ```
 ### Diesel generator 1
 ```
--- (Diesel service tank) ----------->-- Diesel oil intake valve
--- (Emergency start air receiver) -->-- Start air intake valve
--- (Lubrication service tank) ------>-- Lubrication intake valve
+-- (Diesel service tank) ----------->-- Diesel oil intake valve =======>====== |------------------| ===>=== (Breaker Diesel generator)
+-- (Emergency start air receiver) -->-- Start air intake valve  =======>====== | Diesel generator |
+-- (Lubrication service tank) -->-- Lubrication intake valve ==>== Slump ==>== |------------------| 
+                                                                    |                        |     
+                                                                    |==<== Lub. cooler ==<== |
+                                                                            |       |
+                                                                        (Fresh water cooler)
 ```
 
 
