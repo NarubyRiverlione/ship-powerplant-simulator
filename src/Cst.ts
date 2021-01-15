@@ -87,3 +87,12 @@ export const CstSteamSys = {
     MainSteamValveWaterDrain: 0.1
   }
 }
+export const CstStartConditions = {
+  SetFuelTanksFull: 'SetFuelTanksFull',
+  SetLubTanksFull: 'SetLubTanksFull',
+  SetEmergencyStartAir: 'SetEmergencyStartAir',
+  SetEmergencyPower: 'SetEmergencyPower',
+  SetSeawaterCoolingAuxRunning: 'SetSeawaterCoolingAuxRunning',
+  SetFreshwaterCooling: 'SetFreshwaterCooling',
+  RunningDsGen1: 'RunningDsGen1'
+}

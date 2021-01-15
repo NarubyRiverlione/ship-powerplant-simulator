@@ -1,7 +1,16 @@
 export default {
   SimulationTxt: {
     Stopped: 'Simulation not running',
-    Started: 'Simulation is running'
+    Started: 'Simulation is running',
+    StartConditionsTxt: {
+      SetFuelTanksFull: 'Full fuel tanks',
+      SetLubTanksFull: 'Full lubrication tank',
+      SetEmergencyStartAir: 'Emergency start air available',
+      SetEmergencyPower: 'Emergency power available',
+      SetSeawaterCoolingAuxRunning: 'Sea water cooling via aux. pump',
+      SetFreshwaterCooling: 'Fresh water cooling available',
+      RunningDsGen1: 'Diesel generator 1 is providing power for the main bus'
+    }
   },
   PowerTxt: {
     DieselGen1: 'Diesel generator 1',

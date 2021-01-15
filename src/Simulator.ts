@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-
-import { CstChanges } from './Cst'
+import { CstChanges, CstStartConditions } from './Cst'
 import PowerSystem from './Systems/PowerSystem'
 import FuelSystem from './Systems/FuelSystem'
 import AirSystem from './Systems/AirSystem'
@@ -8,7 +7,10 @@ import CoolingSystem from './Systems/CoolingSystem'
 import LubricationSystem from './Systems/LubricationSystem'
 import AlarmSystem from './Systems/AlarmSystem'
 import SteamSystem from './Systems/SteamSystem'
+import * as StartCondition from './Startups'
+import CstTxt from './CstTxt'
 
+const { SimulationTxt: { StartConditionsTxt } } = CstTxt
 
 export default class Simulator {
   Running?: NodeJS.Timeout // ref setInterval
@@ -74,5 +76,35 @@ export default class Simulator {
   Toggle() {
     if (this.Running) this.Stop()
     else this.Start()
+  }
+  SetStartConditions(condition: string) {
+    switch (condition) {
+      case CstStartConditions.SetFuelTanksFull:
+        StartCondition.SetFuelTanksFull(this)
+        break
+      case CstStartConditions.SetLubTanksFull:
+        StartCondition.SetLubTanksFull(this)
+        break
+      case CstStartConditions.SetEmergencyStartAir:
+        StartCondition.SetEmergencyStartAir(this)
+        break
+      case CstStartConditions.SetEmergencyPower:
+        StartCondition.SetEmergencyPower(this)
+        break
+      case CstStartConditions.SetSeawaterCoolingAuxRunning:
+        StartCondition.SetSeawaterCoolingAuxRunning(this)
+        break
+      case CstStartConditions.SetFreshwaterCooling:
+        StartCondition.SetFreshwaterCooling(this)
+        break
+      case CstStartConditions.RunningDsGen1:
+        StartCondition.RunningDsGen1(this)
+        break
+      default:
+        throw new Error('Unknown start condition: ' + condition)
+    }
+  }
+  GetStartConditions() {
+    return StartConditionsTxt
   }
 }
