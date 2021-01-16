@@ -70,17 +70,12 @@ export default class FuelSystem {
     // filled from the storage outlet valve
     this.DsService = new TankWithValves(FuelSysTxt.DsServiceTank,
       CstFuelSys.DsServiceTank.TankVolume, 0, this.DsStorage.OutletValve)
-    // //  drain valve can also be open and continue removing
-    // this.DsService.Tank.cbFull = () => {
-    //   this.DsStorage.Tank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
-    // }
 
-    // outlet valve closes,stop removing from service tank
-    // may be continue removing via drain valve
-    this.DsService.OutletValve.cbNowClosed = () => {
-      this.DsService.Tank.AmountRemovers -= 1
-      // this.DsService.Tank.RemoveEachStep -= CstFuelSys.RatioStorageServiceTanks
-    }
+    // // outlet valve closes,stop removing from service tank
+    // // may be continue removing via drain valve
+    // this.DsService.OutletValve.cbNowClosed = () => {
+    //   this.DsService.Tank.AmountRemovers -= 1
+    //  }
 
     // Alarms
     this.DsService.Tank.AlarmSystem = alarmSys

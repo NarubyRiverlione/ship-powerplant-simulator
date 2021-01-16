@@ -96,16 +96,18 @@ export default class PowerSystem {
     this.DsGen1.Thick()
 
     // #region Providers
-    /* Also recalculate Providers form zero  */
-    // emergency generator connect to Providers
-    this.Providers = this.EmergencyGen.isRunning ? this.EmergencyGen.Output : 0
+    this.Providers = 0
     // shore connects to Providers
     this.Providers += this.ShoreBreaker.isOpen ? 0 : CstPowerSys.Shore
     // breaker diesel generator 1 connect to Providers
     this.Providers += this.DsGenBreaker1.isOpen ? 0 : this.DsGen1.Output
-    // emergency bus takes from shore or emergency generator
-    // TODO takes also for diesel generator(s)
-    this.EmergencyBus.Providers = this.Providers
+
+    // emergency bus takes from shore or emergency generator or diesel gen
+    this.EmergencyBus.Providers = 0
+    this.EmergencyBus.Providers += this.EmergencyGen.isRunning ? this.EmergencyGen.Output : 0
+    this.EmergencyBus.Providers += this.ShoreBreaker.isOpen ? 0 : CstPowerSys.Shore
+    this.EmergencyBus.Providers += this.DsGenBreaker1.isOpen ? 0 : this.DsGen1.Output
+
     this.EmergencyBus.Thick()
 
     // #endregion

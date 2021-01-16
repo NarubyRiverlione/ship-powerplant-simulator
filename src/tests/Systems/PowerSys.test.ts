@@ -110,8 +110,9 @@ describe('Emergency generator', () => {
     powerSys.EmergencyGen.Start()
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeTruthy()
-    expect(powerSys.Providers).toBe(CstPowerSys.EmergencyGen.RatedFor)
     expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
+    powerSys.MainBreaker1.Close()
+    powerSys.Thick()
     expect(powerSys.MainBus1.Content).toBe(0)
   })
   test('After connecting shore emergency generator stops', () => {
@@ -121,6 +122,7 @@ describe('Emergency generator', () => {
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
     expect(powerSys.Providers).toBe(CstPowerSys.Shore)
+    expect(powerSys.EmergencyBus.Providers).toBe(CstPowerSys.Shore)
     expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
   })
   test('already connected to shore & starting emergency generator --> trip = stops', () => {
