@@ -16,7 +16,7 @@ export default class Breaker implements Item {
     this.Providers = 0
     makeAutoObservable(this)
   }
-  get Content() { return this.Load }
+  get Content() { return this.isOpen ? 0 : this.Providers }
   // Load > RatedFor
   TestLoad() {
     if (this.Load > this.RatedFor) { this.isOpen = true }

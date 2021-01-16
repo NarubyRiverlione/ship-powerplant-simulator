@@ -36,6 +36,7 @@ describe('Breaker loaded', () => {
     expect(breaker.isOpen).toBeFalsy()
     breaker.Thick()
     expect(breaker.isOpen).toBeFalsy()
+    expect(breaker.Content).toBe(breaker.Providers)
   })
   test('Closed with load > RatedFor --> open', () => {
     breaker.RatedFor = 400
@@ -59,10 +60,12 @@ describe('Toggle breaker', () => {
   test('toggle open --> closed', () => {
     breaker.Toggle()
     expect(breaker.isOpen).toBeFalsy()
+    expect(breaker.Content).toBe(breaker.Providers)
   })
   test('toggle closed --> open', () => {
     breaker.Close()
     breaker.Toggle()
     expect(breaker.isOpen).toBeTruthy()
+    expect(breaker.Content).toBe(0)
   })
 })
