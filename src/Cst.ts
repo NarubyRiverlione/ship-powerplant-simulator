@@ -81,8 +81,8 @@ export const CstSteamSys = {
   Boiler: {
     WaterVolume: 100,
     StartTemp: 25,
-    OperatingTemp: 200,
-    TempAddStep: 2,
+    OperatingTemp: 180,
+    TempAddStep: 0.2,
     MinWaterLvlForFlame: 20,
     MainSteamValveWaterDrain: 0.1
   }
