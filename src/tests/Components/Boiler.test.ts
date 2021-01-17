@@ -36,7 +36,7 @@ describe('Init', () => {
   })
 })
 
-describe('water level', () => {
+describe('Water level', () => {
   test('open intake valve = fill boiler', () => {
     const water = 45
     const waterSource = boiler.WaterIntakeValve.Source as mockTank
@@ -152,13 +152,13 @@ describe('Ignition / flame', () => {
     expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
-  test('has flame + exting = no flame', () => {
+  test('has flame + Extinguishing = no flame', () => {
     boiler.FuelIntakeValve.Open()
     boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
     boiler.Thick()
     boiler.Ignite()
     expect(boiler.hasFlame).toBeTruthy()
-    boiler.Exting()
+    boiler.Extinguishing()
     expect(boiler.hasFlame).toBeFalsy()
 
     expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
@@ -181,17 +181,27 @@ describe('Temperature', () => {
   })
   test('has flame = raising until operational temp', () => {
     boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
-    const startTemp = CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.TempAddStep
-    boiler.Temperature = startTemp
+    const startTestTemp = CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.TempAddStep
+    boiler.Temperature = startTestTemp
     boiler.FuelIntakeValve.Open()
     boiler.Thick()
     boiler.Ignite()
-
     boiler.Thick()
+    boiler.Thick()
+    expect(boiler.hasFlame).toBeTruthy()
     expect(boiler.Temperature).toBe(CstSteamSys.Boiler.OperatingTemp)
 
     boiler.Thick()
     expect(boiler.Temperature).toBe(CstSteamSys.Boiler.OperatingTemp)
+  })
+  test('no flame = cool down until start temp', () => {
+    boiler.Temperature = CstSteamSys.Boiler.StartTemp + CstSteamSys.Boiler.TempCoolingStep * 2
+    boiler.Thick()
+    expect(boiler.Temperature).toBeCloseTo(CstSteamSys.Boiler.StartTemp + CstSteamSys.Boiler.TempCoolingStep)
+    boiler.Thick()
+    expect(boiler.Temperature).toBeCloseTo(CstSteamSys.Boiler.StartTemp)
+    boiler.Thick()
+    expect(boiler.Temperature).toBeCloseTo(CstSteamSys.Boiler.StartTemp)
   })
 })
 
@@ -204,13 +214,13 @@ describe('Pressure', () => {
     boiler.Ignite()
     expect(boiler.Pressure).toBeCloseTo(1.01)
   })
-  test('at operational temperature 200°C = 15.5 bar pressure', () => {
-    const startTemp = 200
+  test('at operational temperature  = operational pressure', () => {
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
     boiler.Temperature = startTemp
     boiler.FuelIntakeValve.Open()
     boiler.Thick()
     boiler.Ignite()
-    expect(boiler.Pressure).toBeCloseTo(15.52)
+    expect(boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure)
   })
 })
 

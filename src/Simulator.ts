@@ -101,7 +101,7 @@ export default class Simulator {
         StartCondition.RunningDsGen1(this)
         break
       default:
-        throw new Error('Unknown start condition: ' + condition)
+        throw new Error(StartConditionsTxt.Undefined + condition)
     }
   }
   GetStartConditions() {

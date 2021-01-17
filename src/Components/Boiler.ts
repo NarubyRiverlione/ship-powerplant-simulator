@@ -79,7 +79,7 @@ export default class Boiler implements Item {
     if (!this.hasFlame) return
     // keep flame is there is still fuel && water
     // no water = auto trip
-    if (!this.hasFuel || !this.hasEnoughWaterForFlame) this.Exting()
+    if (!this.hasFuel || !this.hasEnoughWaterForFlame) this.Extinguishing()
   }
 
   Ignite() {
@@ -92,7 +92,7 @@ export default class Boiler implements Item {
       this.FuelSourceTank.RemoveEachStep += CstFuelSys.SteamBoiler.Consumption
     }
   }
-  Exting() {
+  Extinguishing() {
     // kill flame & stop burning fuel
     this.hasFlame = false
 
@@ -101,12 +101,18 @@ export default class Boiler implements Item {
   }
 
   CheckTemp() {
-    // TODO, no flame but not at start temp = cooling down
-    if (!this.hasFlame) return
-
-    // flame heats boiler until at operation temp (flame has no indefinitely energy)
-    this.Temperature += CstSteamSys.Boiler.TempAddStep
-    if (this.Temperature > CstSteamSys.Boiler.OperatingTemp) this.Temperature = CstSteamSys.Boiler.OperatingTemp
+    //  no flame but not at start temp = cooling down
+    if (!this.hasFlame && this.Temperature > CstSteamSys.Boiler.StartTemp) {
+      this.Temperature -= CstSteamSys.Boiler.TempCoolingStep
+      return
+    }
+    if (this.hasFlame) {
+      // flame heats boiler until at operation temp (flame has no indefinitely energy)
+      this.Temperature += CstSteamSys.Boiler.TempAddStep
+      this.Temperature = this.Temperature >= CstSteamSys.Boiler.OperatingTemp
+        ? CstSteamSys.Boiler.OperatingTemp
+        : this.Temperature
+    }
   }
   CheckPressure() {
     this.Pressure = CalcPressureViaTemp(this.Temperature)

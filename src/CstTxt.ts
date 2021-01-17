@@ -9,7 +9,8 @@ export default {
       SetEmergencyPower: 'Emergency power available',
       SetSeawaterCoolingAuxRunning: 'Sea water cooling via aux. pump',
       SetFreshwaterCooling: 'Fresh water cooling available',
-      RunningDsGen1: 'Diesel generator 1 is providing power for the main bus'
+      RunningDsGen1: 'Diesel generator 1 is providing power for the main bus',
+      Undefined: 'Unknown start condition: '
     }
   },
   PowerTxt: {

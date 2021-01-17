@@ -15,6 +15,16 @@ describe('Get available start conditions', () => {
   })
 })
 describe('Use start conditions', () => {
+  test('Undefined start condition', () => {
+    const tryCondition = 'Undefined'
+    try {
+      sim.SetStartConditions(tryCondition)
+    }
+    catch (error) {
+      expect(error.message).toBe(CstTxt.SimulationTxt.StartConditionsTxt.Undefined + tryCondition)
+    }
+  })
+
   test('Full fuel tanks , diesel available via open service outlet valves', () => {
     sim.SetStartConditions(CstStartConditions.SetFuelTanksFull)
     sim.Thick()

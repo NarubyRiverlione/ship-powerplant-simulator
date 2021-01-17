@@ -200,7 +200,7 @@ describe('Fuel', () => {
     expect(fuelSource.Removing).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
-  test('running Fuel pump  but exting flame = not burning fuel form FuelProviderTank', () => {
+  test('running Fuel pump  but Extinguishing flame = not burning fuel form FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
     FuelSourceValve.Open()
     FuelPump.Start()
@@ -217,7 +217,7 @@ describe('Fuel', () => {
     const fuelSource = fuelSourceOutlet.Source as mockTank
     expect(fuelSource.Removing).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
-    Boiler.Exting()
+    Boiler.Extinguishing()
     steamSys.Thick()
     expect(fuelSource.Removing).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
