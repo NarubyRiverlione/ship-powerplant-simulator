@@ -12,7 +12,7 @@ Start air compressor 1 - outlet valve  ------ (intake valve) Start air receiver 
                                                               (drain)
 
 Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (outlet valve)
-                                                              (drain)
+       | safety                                                     (drain)
 */
 
 export default class AirSystem {
@@ -66,12 +66,20 @@ export default class AirSystem {
   }
 
   Thick() {
+    //  compressor running with valves closed = has no receiver -> open safety
+    this.StartAirCompressor1.HasReceiver = this.StartAirCompressor1.OutletValve.isOpen && this.StartAirReceiver1.IntakeValve.isOpen
     this.StartAirCompressor1.Thick()
     this.StartAirReceiver1.Thick()
     this.StartAirCompressor1.OutletValve.Source = this.StartAirCompressor1
 
+    // emergency compressor running with valves closed = has no receiver -> open safety
+    // todo also look at emergencyReceiver is full
+    this.EmergencyCompressor.HasReceiver = this.EmergencyCompressor.OutletValve.isOpen && this.EmergencyReceiver.IntakeValve.isOpen
+
     this.EmergencyCompressor.Thick()
     this.EmergencyReceiver.Thick()
     // this.EmergencyCompressor.OutletValve.Source = this.EmergencyCompressor
+
+
   }
 }

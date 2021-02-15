@@ -9,6 +9,7 @@ beforeEach(() => {
   testBus.Voltage = ratedFor
 
   comp = new Compressor('test', testBus, ratedFor)
+  comp.HasReceiver = true
 })
 
 describe('Init', () => {
@@ -22,6 +23,9 @@ describe('Init', () => {
   test('outlet valve is closed', () => {
     expect(comp.OutletValve.isOpen).toBeFalsy()
     expect(comp.OutletValve.Content).toBe(0)
+  })
+  test('safety is closed', () => {
+    expect(comp.SafetyOpen).toBeFalsy()
   })
 })
 
@@ -52,14 +56,33 @@ describe('running', () => {
     expect(comp.Output).toBe(0)
     expect(comp.Content).toBe(0)
   })
+  test('running compressor without receiver =  open safety =no output', () => {
+    comp.Start()
+    expect(comp.isRunning).toBeTruthy()
+    comp.Thick()
+    comp.HasReceiver = false
+    comp.Thick()
+    expect(comp.isRunning).toBeTruthy()
+    expect(comp.Output).toBe(0)
+    expect(comp.Content).toBe(0)
+  })
 })
 
 describe('output via outlet valve', () => {
   test('running + closed outlet = valve has no content', () => {
     comp.Start()
-    expect(comp.isRunning).toBeTruthy()
+    comp.HasReceiver = false
     comp.Thick()
     expect(comp.OutletValve.Content).toBe(0)
+    expect(comp.SafetyOpen).toBeTruthy()
+  })
+  test('running + closed outlet , then open outlet = valve has content', () => {
+    comp.Start()
+    comp.Thick()
+    comp.OutletValve.Open()
+    comp.Thick()
+    expect(comp.SafetyOpen).toBeFalsy()
+    expect(comp.OutletValve.Content).toBe(ratedFor)
   })
   test('running + open outlet = valve has  content', () => {
     comp.Start()
