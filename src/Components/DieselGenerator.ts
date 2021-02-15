@@ -51,10 +51,7 @@ export default class DieselGenerator extends Generator {
     this.LubCooler = lubCooler
 
     makeObservable(this, {
-      CheckAir: computed,
-      Start: action,
-      Stop: action,
-      Thick: action
+      CheckAir: computed
     })
   }
 

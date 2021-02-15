@@ -19,7 +19,7 @@ export default class Compressor extends Appliance {
     this.SafetyOpen = false
     this.HasReceiver = false
     this.OutletValve = new Valve(name + ' - outlet valve', this)
-    makeObservable(this, { Output: observable, Thick: action, Content: computed })
+    makeObservable(this, { Output: observable, Content: computed })
   }
 
   get Content() { return this.Output }

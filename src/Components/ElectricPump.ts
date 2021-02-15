@@ -14,7 +14,7 @@ export default class ElectricPump extends Appliance {
     this.RatedFor = rate
     this.Output = 0
     this.Providers = 0
-    makeObservable(this, { Output: observable, Thick: action, Content: computed })
+    makeObservable(this, { Output: observable, Content: computed })
   }
 
   get Content() { return this.Output }

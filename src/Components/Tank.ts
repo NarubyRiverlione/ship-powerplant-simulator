@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import AlarmSystem from '../Systems/AlarmSystem'
 import Item from "./Item"
 
@@ -57,7 +57,19 @@ export default class Tank implements iTank {
     this.LowLevelAlarmCode = 0
     this.LowLevelAlarm = 0
     this.EmptyAlarmCode = 0
-    makeAutoObservable(this)
+
+    makeObservable(this, {
+      Inside: observable,
+      Volume: observable,
+      Name: observable,
+      Adding: observable,
+      AmountRemovers: observable,
+      AddEachStep: observable,
+      RemoveEachStep: observable,
+      Add: action,
+      Remove: action,
+      Thick: action
+    })
   }
   get Removing() { return this.AmountRemovers !== 0 }
   get Content() {

@@ -1,15 +1,14 @@
 import Item from './Item'
 import Tank from "./Tank"
-import { makeAutoObservable } from 'mobx'
-import Compressor from "./Compressor"
+import { action, computed, makeObservable, observable } from 'mobx'
 
 
 export interface iValve extends Item {
   isOpen: boolean
   Name: string
   Source: Item
-  cbNowOpen?: () => void
-  cbNowClosed?: () => void
+  cbNowOpen: () => void
+  cbNowClosed: () => void
 }
 
 export default class Valve implements iValve {
@@ -25,7 +24,15 @@ export default class Valve implements iValve {
     this.cbNowClosed = () => { }
     this.Source = source
     this.Name = name
-    makeAutoObservable(this)
+    makeObservable(this, {
+      isOpen: observable,
+      Source: observable,
+      Open: action,
+      Close: action,
+      Content: computed,
+      Toggle: action,
+      Thick: action
+    })
   }
 
   Open() {
