@@ -43,9 +43,11 @@ export default class SteamSystem {
 
     this.FeedWaterPump = new Pump(SteamSysTxt.FeedWaterPump, mainBus1, CstSteamSys.FeedWaterPump)
     //#endregion
+    //#region  Fuel
     this.FuelSource = fuelSource
     this.FuelSourceValve = new Valve(SteamSysTxt.FuelSourceValve, fuelSource.OutletValve)
     this.FuelPump = new Pump(SteamSysTxt.FuelPump, mainBus1, CstSteamSys.FuelPump)
+    //#endregion
     this.Boiler = new Boiler(SteamSysTxt.Boiler.Name, this.FeedWaterPump,
       this.FuelPump, fuelSource.Tank)
 
