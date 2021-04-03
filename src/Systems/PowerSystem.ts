@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 
 import { CstPowerSys, CstFuelSys } from '../Cst'
+import CstTxt from '../CstTxt'
 import Generator from '../Components/Generator'
 import DieselGenerator from '../Components/DieselGenerator'
 import Breaker from '../Components/Breaker'
@@ -9,9 +10,10 @@ import Valve from '../Components/Valve'
 import Cooler from '../Components/Cooler'
 import Tank from '../Components/Tank'
 
+const { PowerTxt } = CstTxt
 /*
 ** Switchboard **
-Diesel generator 1 -->  Breaker DsGen 1
+Diesel generator -->  Breaker DsGen 
                                   |         ShoreBreaker <-- Shore
                                   |                |       |-<--- Emergency generator
 ==== PROVIDERS  ============================================
@@ -35,38 +37,38 @@ export default class PowerSystem {
   MainBus1: PowerBus
   EmergencyBus: PowerBus
   EmergencyGen: Generator
-  DsGen1: DieselGenerator
-  DsGenBreaker1: Breaker
+  DsGen: DieselGenerator
+  DsGenBreaker: Breaker
 
   constructor(DsGen1FuelValve: Valve,
-    DsGen1LubValve: Valve,
-    DsGen1AirValve: Valve,
+    DsGenLubValve: Valve,
+    DsGenAirValve: Valve,
     LubCooler: Cooler) {
 
     this.Providers = 0 // sum of all providers, can be connected to main busses
     //  Shore power
-    this.ShoreBreaker = new Breaker('Shore breaker')
+    this.ShoreBreaker = new Breaker(PowerTxt.ShoreBreaker)
     this.ShoreBreaker.Providers = CstPowerSys.Shore
     this.ShoreBreaker.RatedFor = CstPowerSys.Shore + 2000 // TODO use case rated for in breaker?
 
     // Mainbus & breaker
-    this.MainBreaker1 = new Breaker('Main bus 1 breaker')
-    this.MainBus1 = new PowerBus('Main bus 1')
+    this.MainBreaker1 = new Breaker(PowerTxt.MainBreaker1)
+    this.MainBus1 = new PowerBus(PowerTxt.MainBus1)
 
     //  Emergency Generator
-    this.EmergencyBus = new PowerBus('Emergency bus')
+    this.EmergencyBus = new PowerBus(PowerTxt.EmergencyBus)
     // TODO emergency generator needs fuel ?
     const dummyEmergencyFuel = new Tank('dummy emergency fuel', 1e6, 1e6)
-    this.EmergencyGen = new Generator('Emergency generator', CstPowerSys.EmergencyGen.RatedFor, dummyEmergencyFuel)
+    this.EmergencyGen = new Generator(PowerTxt.EmergencyGen, CstPowerSys.EmergencyGen.RatedFor, dummyEmergencyFuel)
     // emergency generator doesn't need cooling nor lubrication
     this.EmergencyGen.HasCooling = true; this.EmergencyGen.HasLubrication = true
     this.EmergencyGen.HasFuel = true
 
-    // Diesel Generator 1
-    this.DsGen1 = new DieselGenerator('Diesel generator 1',
-      CstPowerSys.DsGen1.RatedFor, DsGen1FuelValve, DsGen1LubValve, DsGen1AirValve, LubCooler)
-    this.DsGen1.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
-    this.DsGenBreaker1 = new Breaker('Breaker diesel generator 1 ')
+    // Diesel Generator 
+    this.DsGen = new DieselGenerator(PowerTxt.DieselGen,
+      CstPowerSys.DsGen.RatedFor, DsGen1FuelValve, DsGenLubValve, DsGenAirValve, LubCooler)
+    this.DsGen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
+    this.DsGenBreaker = new Breaker(PowerTxt.DsGenBreaker)
 
     makeAutoObservable(this)
   }
@@ -87,26 +89,26 @@ export default class PowerSystem {
     // already connected to Shore  and start emergency generator --> emergency generator trips
     if (!this.ShoreBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
     // DsGen is running and breaker is closed and start emergency generator --> emergency generator trips
-    if (this.DsGen1.isRunning && !this.DsGenBreaker1.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
+    if (this.DsGen.isRunning && !this.DsGenBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
     // DsGen is stopped --> trip generator breaker
-    if (!this.DsGen1.isRunning && !this.DsGenBreaker1.isOpen) this.DsGenBreaker1.Open()
+    if (!this.DsGen.isRunning && !this.DsGenBreaker.isOpen) this.DsGenBreaker.Open()
 
     // Check generators
     this.EmergencyGen.Thick()
-    this.DsGen1.Thick()
+    this.DsGen.Thick()
 
     // #region Providers
     this.Providers = 0
     // shore connects to Providers
     this.Providers += this.ShoreBreaker.isOpen ? 0 : CstPowerSys.Shore
     // breaker diesel generator 1 connect to Providers
-    this.Providers += this.DsGenBreaker1.isOpen ? 0 : this.DsGen1.Output
+    this.Providers += this.DsGenBreaker.isOpen ? 0 : this.DsGen.Output
 
     // emergency bus takes from shore or emergency generator or diesel gen
     this.EmergencyBus.Providers = 0
     this.EmergencyBus.Providers += this.EmergencyGen.isRunning ? this.EmergencyGen.Output : 0
     this.EmergencyBus.Providers += this.ShoreBreaker.isOpen ? 0 : CstPowerSys.Shore
-    this.EmergencyBus.Providers += this.DsGenBreaker1.isOpen ? 0 : this.DsGen1.Output
+    this.EmergencyBus.Providers += this.DsGenBreaker.isOpen ? 0 : this.DsGen.Output
 
     this.EmergencyBus.Thick()
 

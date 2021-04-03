@@ -6,40 +6,48 @@ import Compressor from '../Components/Compressor'
 
 import { CstAirSys } from '../Cst'
 import CstTxt from '../CstTxt'
+import Cooler from '../Components/Cooler'
 const { AirSysTxt } = CstTxt
 /*
-Start air compressor 1 - outlet valve  ------ (intake valve) Start air receiver 1 (outlet valve)
-                                                              (drain)
+Start air compressor 1 - outlet valve  --- FW air compress cooler --- (intake valve) Start air receiver 1 (outlet valve)
+                                                                                        | (drain)
 
 Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (outlet valve)
-       | safety                                                     (drain)
+       | safety                                                    | (drain)
 */
 
 export default class AirSystem {
-  StartAirCompressor1: Compressor
-  StartAirReceiver1: TankWithValves
+  StartAirCompressor: Compressor
+  StartAirCooler: Cooler
+  StartAirReceiver: TankWithValves
   EmergencyCompressor: Compressor
   EmergencyReceiver: TankWithValves
 
-  constructor(mainBus = new PowerBus('dummy mainBus'), emergencyBus = new PowerBus('dummy emergency power bus')) {
+  constructor(
+    _startAirCooler: Cooler,
+    mainBus = new PowerBus('dummy mainBus'),
+    emergencyBus = new PowerBus('dummy emergency power bus')) {
+
     // #region  Compressor 1
-    this.StartAirCompressor1 = new Compressor(AirSysTxt.Compressor1,
+    this.StartAirCompressor = new Compressor(AirSysTxt.Compressor1,
       mainBus, CstAirSys.StartAirCompressor1.AddStep)
 
-    this.StartAirCompressor1.OutletValve.cbNowOpen = () => {
-      if (this.StartAirReceiver1.IntakeValve.isOpen) {
-        this.StartAirReceiver1.Tank.Adding = true
+    this.StartAirCompressor.OutletValve.cbNowOpen = () => {
+      if (this.StartAirReceiver.IntakeValve.isOpen) {
+        this.StartAirReceiver.Tank.Adding = true
       }
     }
-    this.StartAirCompressor1.OutletValve.cbNowClosed = () => {
-      this.StartAirReceiver1.Tank.Adding = false
+    this.StartAirCompressor.OutletValve.cbNowClosed = () => {
+      this.StartAirReceiver.Tank.Adding = false
     }
 
-    this.StartAirReceiver1 = new TankWithValves(AirSysTxt.StartAirReceiver1,
-      CstAirSys.StartAirReceiver1.TankPressure, 0,
-      this.StartAirCompressor1.OutletValve)
+    this.StartAirCooler = _startAirCooler
 
-    this.StartAirReceiver1.Tank.AddEachStep = CstAirSys.StartAirCompressor1.AddStep
+    this.StartAirReceiver = new TankWithValves(AirSysTxt.StartAirReceiver1,
+      CstAirSys.StartAirReceiver1.TankPressure, 0,
+      this.StartAirCompressor.OutletValve)
+
+    this.StartAirReceiver.Tank.AddEachStep = CstAirSys.StartAirCompressor1.AddStep
     // #endregion
 
     // #region Emergency compressor
@@ -66,11 +74,14 @@ export default class AirSystem {
   }
 
   Thick() {
-    //  compressor running with valves closed = has no receiver -> open safety
-    this.StartAirCompressor1.HasReceiver = this.StartAirCompressor1.OutletValve.isOpen && this.StartAirReceiver1.IntakeValve.isOpen
-    this.StartAirCompressor1.Thick()
-    this.StartAirReceiver1.Thick()
-    this.StartAirCompressor1.OutletValve.Source = this.StartAirCompressor1
+    // start air compressor running with valves closed = has no receiver -> open safety
+    this.StartAirCompressor.HasReceiver = this.StartAirCompressor.OutletValve.isOpen && this.StartAirReceiver.IntakeValve.isOpen
+    // start air compress cannot run without cooling
+    if (!this.StartAirCooler.isCooling && this.StartAirCompressor.isRunning) this.StartAirCompressor.Stop()
+
+    this.StartAirCompressor.Thick()
+    this.StartAirReceiver.Thick()
+    this.StartAirCompressor.OutletValve.Source = this.StartAirCompressor
 
     // emergency compressor running with valves closed = has no receiver -> open safety
     // todo also look at emergencyReceiver is full

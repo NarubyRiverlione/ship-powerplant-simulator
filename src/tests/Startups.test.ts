@@ -51,14 +51,14 @@ describe('Use start conditions', () => {
   test('Sea water cooling available via Aux pump', () => {
     sim.SetStartConditions(CstStartConditions.SetSeawaterCoolingAuxRunning)
     sim.Thick()
-    const { CoolingSys: { FwCoolerDsGen1, FwCoolerDsGen2 } } = sim
+    const { CoolingSys: { FwCoolerDsGen: FwCoolerDsGen1, FwCoolerStartAir: FwCoolerDsGen2 } } = sim
     expect(FwCoolerDsGen1.hasCooling).toBeTruthy()
     expect(FwCoolerDsGen2.hasCooling).toBeTruthy()
   })
   test('Fresh water cooling available', () => {
     sim.SetStartConditions(CstStartConditions.SetFreshwaterCooling)
     sim.Thick()
-    const { CoolingSys: { DsGen1LubCooler, DsGen2LubCooler } } = sim
+    const { CoolingSys: { DsGenLubCooler: DsGen1LubCooler, StartAirCooler: DsGen2LubCooler } } = sim
     expect(DsGen1LubCooler.isCooling).toBeTruthy()
     expect(DsGen2LubCooler.hasCooling).toBeTruthy()
   })

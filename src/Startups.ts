@@ -44,9 +44,9 @@ export const RunningDsGen1 = (sim: Simulator) => {
   SetSeawaterCoolingAuxRunning(sim)
   SetFreshwaterCooling(sim)
   const { PowerSys } = sim
-  const { DsGen1, MainBreaker1, DsGenBreaker1 } = PowerSys
+  const { DsGen: DsGen1, MainBreaker1, DsGenBreaker: DsGenBreaker1 } = PowerSys
 
-  DsGen1.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
+  DsGen1.LubSlump.Inside = CstPowerSys.DsGen.Slump.MinForLubrication
   DsGen1.FuelIntakeValve.Open()
   DsGen1.AirIntakeValve.Open()
   DsGen1.Start()

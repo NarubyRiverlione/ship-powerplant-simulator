@@ -14,9 +14,14 @@ export default {
     }
   },
   PowerTxt: {
-    DieselGen1: 'Diesel generator 1',
+    ShoreBreaker: 'Shore breaker',
+    MainBreaker1: 'Main bus 1 breaker',
+    MainBus1: 'Main bus 1',
+    EmergencyBus: 'Emergency bus',
+    DsGenBreaker: 'Breaker diesel generator',
     EmergencyGen: 'Emergency genertor',
-    DsGen1_FuelIntake: 'Diesel generator 1 - fuel intake valve'
+    DieselGen: 'Diesel generator',
+    DsGen_FuelIntake: 'Diesel generator - fuel intake valve'
   },
   FuelSysTxt: {
     DsStorageTank: 'Diesel storage tank',
@@ -33,7 +38,6 @@ export default {
   },
   AirSysTxt: {
     StartAirReceiver1: 'Start air receiver 1',
-    StartAirReceiver2: 'Start air receiver 2',
     EmergencyReceiver: 'Emergency  start air receiver',
     EmergencyCompressor: 'Emergency compressor',
     Compressor1: 'Start air compressor 1'
@@ -45,14 +49,14 @@ export default {
     AuxSuctionPump: 'Sea water Auxiliary suction pump',
     SuctionPump1: 'Sea water Suction pump 1',
     SuctionPump2: 'Sea water Suction pump 2',
-    FwCoolerDsGen1: 'Fresh water cooler diesel generator 1',
-    FwCoolerDsGen2: 'Fresh water cooler diesel generator 2',
+    FwCoolerDsGen: 'Fresh water cooler diesel generator 1',
+    FwCoolerStartAir: 'Fresh water cooler start air',
     SteamCondensor: 'Steam condensor',
     FwIntakeValve: 'Fresh water expand tank intake valve',
     FwDrainValve: 'Fresh water expand tank drain valve',
     FwExpandTank: 'Fresh water expand tank',
-    DsGen1LubCooler: 'Diesel generator 1 lubrication cooler',
-    DsGen2LubCooler: 'Diesel generator 2 lubrication cooler'
+    DsGenLubCooler: 'Diesel generator  lubrication cooler',
+    StartAirCooler: 'Start air cooler',
   },
   DieselGeneratorTxt: {
     FuelIntakeValve: ' - fuel intake valve',

@@ -20,16 +20,18 @@ Sea chest low  - suction valve -> -|
 ** Fresh water cooling circuits**
 Fresh water Expand tank
 |
-|->- Fresh water cooler Diesel generator 1 ->-|
+|->- Fresh water Start Air cooler->-|
 |                                             |
-|-<- Lubrication cooler diesel generator 1 -<-|
+|-<- Fresh water Diesel generator Lubrication cooler -<-|
 
 */
 /* eslint-enable max-len */
 
+
 export default class CoolingSystem {
-  FwCoolerDsGen1: Cooler
-  FwCoolerDsGen2: Cooler
+  // Sea water cools the Fresh water coolers
+  FwCoolerDsGen: Cooler
+  FwCoolerStartAir: Cooler
   SteamCondensor: Cooler
 
   SeaChestLowSuctionIntakeValve: Valve
@@ -44,8 +46,9 @@ export default class CoolingSystem {
   FwIntakeValve: Valve
   FwDrainValve: Valve
 
-  DsGen1LubCooler: Cooler
-  DsGen2LubCooler: Cooler
+  // Fresh water coolers cools a system
+  DsGenLubCooler: Cooler
+  StartAirCooler: Cooler
 
   constructor(mainBus = new PowerBus('dummy mainBus'), emergencyBus = new PowerBus('dummy emergency power bus')) {
     this.SwAvailable = new Tank('virtual tank that combines the possible outputs of AuxPump, SuctionPump 1 & 2', 1e6, 0)
@@ -60,20 +63,20 @@ export default class CoolingSystem {
     this.SuctionPump2 = new Pump(CoolantSysTxt.SuctionPump2, mainBus, CstCoolantSys.SuctionPumps)
     // #endregion
     // #region primair FW circuit
-    this.FwCoolerDsGen1 = new Cooler(CoolantSysTxt.FwCoolerDsGen1, CstCoolantSys.FwCoolerDsGen1.coolingRate)
-    this.FwCoolerDsGen2 = new Cooler(CoolantSysTxt.FwCoolerDsGen2, CstCoolantSys.FwCoolerDsGen2.coolingRate)
+    this.FwCoolerDsGen = new Cooler(CoolantSysTxt.FwCoolerDsGen, CstCoolantSys.FwCoolerDsGen.coolingRate)
+    this.FwCoolerStartAir = new Cooler(CoolantSysTxt.FwCoolerStartAir, CstCoolantSys.FwCoolerStartAir.coolingRate)
     this.SteamCondensor = new Cooler(CoolantSysTxt.SteamCondensor, CstCoolantSys.SteamCondensor.coolingRate)
     // #endregion
     // #region Over board dump valve
     this.OverboardDumpValve = new Valve(CoolantSysTxt.OverboardDumpValve, this.SwAvailable)
     this.OverboardDumpValve.cbNowOpen = () => {
-      this.FwCoolerDsGen1.CoolingCircuitComplete = true
-      this.FwCoolerDsGen2.CoolingCircuitComplete = true
+      this.FwCoolerDsGen.CoolingCircuitComplete = true
+      this.FwCoolerStartAir.CoolingCircuitComplete = true
       this.SteamCondensor.CoolingCircuitComplete = true
     }
     this.OverboardDumpValve.cbNowClosed = () => {
-      this.FwCoolerDsGen1.CoolingCircuitComplete = false
-      this.FwCoolerDsGen2.CoolingCircuitComplete = false
+      this.FwCoolerDsGen.CoolingCircuitComplete = false
+      this.FwCoolerStartAir.CoolingCircuitComplete = false
       this.SteamCondensor.CoolingCircuitComplete = false
     }
     // #endregion
@@ -98,17 +101,17 @@ export default class CoolingSystem {
       this.FwExpandTank.AmountRemovers -= 1
     }
     // #endregion
-    // #region DsGen 1 Lubrication cooler (secundaire FW circuit)
-    this.DsGen1LubCooler = new Cooler(CoolantSysTxt.DsGen1LubCooler, CstCoolantSys.DsGenLubCooler.coolingRate)
-    this.DsGen1LubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
+    // #region DsGen  Lubrication cooler (secundaire FW circuit)
+    this.DsGenLubCooler = new Cooler(CoolantSysTxt.DsGenLubCooler, CstCoolantSys.DsGenLubCooler.coolingRate)
+    this.DsGenLubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
     // TODO set (via Simulator Thick?): if DsGen 1 slump has lub,circulation valve is open, (filter  is selected)
-    this.DsGen1LubCooler.HotCircuitComplete = true
+    this.DsGenLubCooler.HotCircuitComplete = true
     // #endregion
-    // #region DsGen 2 Lubrication cooler (secundaire FW circuit)
-    this.DsGen2LubCooler = new Cooler(CoolantSysTxt.DsGen2LubCooler, CstCoolantSys.DsGenLubCooler.coolingRate)
-    this.DsGen2LubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
+    // #region Start air cooler (secundaire FW circuit)
+    this.StartAirCooler = new Cooler(CoolantSysTxt.StartAirCooler, CstCoolantSys.StartAirCooler.coolingRate)
+    this.StartAirCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
     // TODO set (via Simulator Thick?): if DsGen 1 slump has lub,circulation valve is open, (filter  is selected)
-    this.DsGen2LubCooler.HotCircuitComplete = true
+    this.StartAirCooler.HotCircuitComplete = true
     // #endregion
     makeAutoObservable(this)
   }
@@ -132,13 +135,13 @@ export default class CoolingSystem {
 
     this.OverboardDumpValve.Source = this.SwAvailable
 
-    this.FwCoolerDsGen1.CoolingProviders = this.SwAvailable.Inside
-    this.FwCoolerDsGen1.HotCircuitComplete = this.DsGen1LubCooler.hasCooling
-    this.FwCoolerDsGen1.Thick()
+    this.FwCoolerDsGen.CoolingProviders = this.SwAvailable.Inside
+    this.FwCoolerDsGen.HotCircuitComplete = this.DsGenLubCooler.hasCooling
+    this.FwCoolerDsGen.Thick()
 
-    this.FwCoolerDsGen2.CoolingProviders = this.SwAvailable.Inside
-    this.FwCoolerDsGen2.HotCircuitComplete = this.DsGen2LubCooler.hasCooling
-    this.FwCoolerDsGen2.Thick()
+    this.FwCoolerStartAir.CoolingProviders = this.SwAvailable.Inside
+    this.FwCoolerStartAir.HotCircuitComplete = this.StartAirCooler.hasCooling
+    this.FwCoolerStartAir.Thick()
 
     this.SteamCondensor.CoolingProviders = this.SwAvailable.Inside
     this.SteamCondensor.Thick()
@@ -146,15 +149,15 @@ export default class CoolingSystem {
     this.FwExpandTank.Thick()
 
     // hot side of Fw DsGen 1 cooler is complete  if Lub cooler has cooling (has fresh water)
-    this.DsGen1LubCooler.CoolingProviders = this.FwExpandTank.Content
-    this.DsGen1LubCooler.isCooling = this.DsGen1LubCooler.isCooling && this.FwCoolerDsGen1.hasCooling
-    this.DsGen1LubCooler.Thick()
-    this.FwCoolerDsGen1.HotCircuitComplete = this.DsGen1LubCooler.hasCooling
+    this.DsGenLubCooler.CoolingProviders = this.FwExpandTank.Content
+    this.DsGenLubCooler.isCooling = this.DsGenLubCooler.isCooling && this.FwCoolerDsGen.hasCooling
+    this.DsGenLubCooler.Thick()
+    this.FwCoolerDsGen.HotCircuitComplete = this.DsGenLubCooler.hasCooling
 
     // hot side of Fw DsGen 2 cooler is complete  if Lub cooler has cooling (has fresh water)
-    this.DsGen2LubCooler.CoolingProviders = this.FwExpandTank.Content
-    this.DsGen2LubCooler.isCooling = this.DsGen2LubCooler.isCooling && this.FwCoolerDsGen2.hasCooling
-    this.DsGen2LubCooler.Thick()
-    this.FwCoolerDsGen2.HotCircuitComplete = this.DsGen2LubCooler.hasCooling
+    this.StartAirCooler.CoolingProviders = this.FwExpandTank.Content
+    this.StartAirCooler.isCooling = this.StartAirCooler.isCooling && this.FwCoolerStartAir.hasCooling
+    this.StartAirCooler.Thick()
+    this.FwCoolerStartAir.HotCircuitComplete = this.StartAirCooler.hasCooling
   }
 }

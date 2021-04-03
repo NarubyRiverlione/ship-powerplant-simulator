@@ -31,19 +31,19 @@ export default class Simulator {
     this.FuelSys = new FuelSystem(this.AlarmSys)
     this.LubSys = new LubricationSystem(this.AlarmSys)
     this.CoolingSys = new CoolingSystem()
-    this.AirSys = new AirSystem()
+    this.AirSys = new AirSystem(this.CoolingSys.StartAirCooler)
 
     this.PowerSys = new PowerSystem(
       this.FuelSys.DsService.OutletValve,
       this.LubSys.Storage.OutletValve,
       this.AirSys.EmergencyReceiver.OutletValve,
-      this.CoolingSys.DsGen1LubCooler
+      this.CoolingSys.DsGenLubCooler
     )
 
     this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.FuelSys.DsService)
 
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
-    this.AirSys.StartAirCompressor1.Bus = this.PowerSys.MainBus1
+    this.AirSys.StartAirCompressor.Bus = this.PowerSys.MainBus1
 
     this.CoolingSys.SuctionPump1.Bus = this.PowerSys.MainBus1
     this.CoolingSys.SuctionPump2.Bus = this.PowerSys.MainBus1

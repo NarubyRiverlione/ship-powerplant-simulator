@@ -1,6 +1,7 @@
 import AirSystem from '../../Systems/AirSystem'
-import { CstAirSys } from '../../Cst'
+import { CstAirSys, CstCoolantSys } from '../../Cst'
 import mockPowerBus from '../mocks/mockPowerBus'
+import mockCooler from '../mocks/mockCooler'
 
 let airSys: AirSystem
 const dummyMainBus = new mockPowerBus('dummy main bus')
@@ -9,25 +10,27 @@ dummyMainBus.Voltage = 440
 const dummyEmergencyBus = new mockPowerBus('dummy emergency bus')
 dummyEmergencyBus.Voltage = 440
 
+const dummyStartAirCooler = new mockCooler('dummy start air cooler', CstCoolantSys.StartAirCooler.coolingRate)
+
 beforeEach(() => {
-  airSys = new AirSystem(dummyMainBus, dummyEmergencyBus)
+  airSys = new AirSystem(dummyStartAirCooler, dummyMainBus, dummyEmergencyBus)
 })
 
 describe('Init', () => {
-  test('Compressor 1 air receiver is empty', () => {
-    expect(airSys.StartAirReceiver1.Tank.Content).toBe(0)
-    expect(airSys.StartAirReceiver1.IntakeValve.isOpen).toBeFalsy()
-    expect(airSys.StartAirReceiver1.OutletValve.isOpen).toBeFalsy()
-    expect(airSys.StartAirReceiver1.Tank.Volume).toBe(CstAirSys.StartAirReceiver1.TankPressure)
+  test('Compressor  air receiver is empty', () => {
+    expect(airSys.StartAirReceiver.Tank.Content).toBe(0)
+    expect(airSys.StartAirReceiver.IntakeValve.isOpen).toBeFalsy()
+    expect(airSys.StartAirReceiver.OutletValve.isOpen).toBeFalsy()
+    expect(airSys.StartAirReceiver.Tank.Volume).toBe(CstAirSys.StartAirReceiver1.TankPressure)
   })
-  test('Compressor 1 compressor not running', () => {
-    expect(airSys.StartAirCompressor1.isRunning).toBeFalsy()
-    expect(airSys.StartAirCompressor1.Content).toBe(0)
+  test('Compressor  compressor not running', () => {
+    expect(airSys.StartAirCompressor.isRunning).toBeFalsy()
+    expect(airSys.StartAirCompressor.Content).toBe(0)
   })
-  test('Compressor 1 outlet valve closed, source set as emergency compressor', () => {
-    expect(airSys.StartAirCompressor1.OutletValve.isOpen).toBeFalsy()
-    expect(airSys.StartAirCompressor1.OutletValve.Source.Content)
-      .toBe(airSys.StartAirCompressor1.Content)
+  test('Compressor 1outlet valve closed, source set as emergency compressor', () => {
+    expect(airSys.StartAirCompressor.OutletValve.isOpen).toBeFalsy()
+    expect(airSys.StartAirCompressor.OutletValve.Source.Content)
+      .toBe(airSys.StartAirCompressor.Content)
   })
   test('Emergency air receiver is empty', () => {
     expect(airSys.EmergencyReceiver.Tank.Content).toBe(0)
@@ -121,77 +124,102 @@ describe('Emergency compressor', () => {
   })
 })
 
-describe('Start air compressor 1', () => {
-  test('Open compressor outlet valve & intake valve but not running = not filling receiver', () => {
-    expect(airSys.StartAirCompressor1.Content).toBe(0)
-    airSys.StartAirCompressor1.OutletValve.Close()
-    airSys.StartAirReceiver1.IntakeValve.Close()
+describe('Start air compressor ', () => {
+  test('Air compressor star but no cooling = stop compressor', () => {
+    airSys.StartAirCompressor.Start()
+    airSys.StartAirCooler.isCooling = false
     airSys.Thick()
-    expect(airSys.StartAirCompressor1.OutletValve.Content).toBe(0)
-    expect(airSys.StartAirReceiver1.IntakeValve.Content).toBe(0)
-    expect(airSys.StartAirReceiver1.Tank.Adding).toBeFalsy()
-    expect(airSys.StartAirReceiver1.Tank.Content).toBe(0)
+    expect(airSys.StartAirCompressor.isRunning).toBeFalsy()
+  })
+  test('Air compressor starr with  cooling = start compressor', () => {
+    airSys.StartAirCompressor.Start()
+    airSys.StartAirCooler.isCooling = true
+    airSys.Thick()
+    expect(airSys.StartAirCompressor.isRunning).toBeTruthy()
+  })
+  test('Air compressor running with  cooling -> stop cooling = stop compressor', () => {
+    airSys.StartAirCompressor.Start()
+    airSys.StartAirCooler.isCooling = true
+    airSys.Thick()
+    airSys.StartAirCooler.isCooling = false
+    airSys.Thick()
+    expect(airSys.StartAirCompressor.isRunning).toBeFalsy()
+  })
+
+  test('Open compressor outlet valve & intake valve but not running = not filling receiver', () => {
+    expect(airSys.StartAirCompressor.Content).toBe(0)
+    airSys.StartAirCompressor.OutletValve.Close()
+    airSys.StartAirReceiver.IntakeValve.Close()
+    airSys.Thick()
+    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(0)
+    expect(airSys.StartAirReceiver.IntakeValve.Content).toBe(0)
+    expect(airSys.StartAirReceiver.Tank.Adding).toBeFalsy()
+    expect(airSys.StartAirReceiver.Tank.Content).toBe(0)
   })
   test('Open compressor outlet valve &  running but closed intake valve = not filling receiver', () => {
-    airSys.StartAirCompressor1.Start()
-    airSys.StartAirCompressor1.OutletValve.Open()
+    airSys.StartAirCompressor.Start()
+    airSys.StartAirCompressor.OutletValve.Open()
+    airSys.StartAirCooler.isCooling = true
     airSys.Thick()
-    expect(airSys.StartAirCompressor1.Content).toBe(0)
-    expect(airSys.StartAirCompressor1.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor1.OutletValve.Content).toBe(0)
+    expect(airSys.StartAirCompressor.Content).toBe(0)
+    expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
+    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(0)
 
-    airSys.StartAirReceiver1.IntakeValve.Close()
+    airSys.StartAirReceiver.IntakeValve.Close()
     airSys.Thick()
-    expect(airSys.StartAirCompressor1.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirReceiver1.IntakeValve.Content).toBe(0)
-    expect(airSys.StartAirReceiver1.Tank.Adding).toBeFalsy()
-    expect(airSys.StartAirReceiver1.Tank.Content).toBe(0)
+    expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
+    expect(airSys.StartAirReceiver.IntakeValve.Content).toBe(0)
+    expect(airSys.StartAirReceiver.Tank.Adding).toBeFalsy()
+    expect(airSys.StartAirReceiver.Tank.Content).toBe(0)
   })
   test('open intake valve & running but closed compressor outlet valve = not filling receiver', () => {
-    airSys.StartAirReceiver1.IntakeValve.Open()
-    airSys.StartAirCompressor1.Start()
-    airSys.StartAirCompressor1.OutletValve.Close()
+    airSys.StartAirReceiver.IntakeValve.Open()
+    airSys.StartAirCompressor.Start()
+    airSys.StartAirCompressor.OutletValve.Close()
+    airSys.StartAirCooler.isCooling = true
     airSys.Thick()
-    expect(airSys.StartAirCompressor1.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor1.Content).toBe(0)
-    expect(airSys.StartAirCompressor1.OutletValve.Content).toBe(0)
+    expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
+    expect(airSys.StartAirCompressor.Content).toBe(0)
+    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(0)
 
-    expect(airSys.StartAirReceiver1.IntakeValve.Content).toBe(0)
-    expect(airSys.StartAirReceiver1.Tank.Adding).toBeFalsy()
-    expect(airSys.StartAirReceiver1.Tank.Content).toBe(0)
+    expect(airSys.StartAirReceiver.IntakeValve.Content).toBe(0)
+    expect(airSys.StartAirReceiver.Tank.Adding).toBeFalsy()
+    expect(airSys.StartAirReceiver.Tank.Content).toBe(0)
   })
   test('Open outlet valve & running = fill receiver', () => {
-    airSys.StartAirCompressor1.Start()
+    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCompressor.Start()
     airSys.Thick()
-    expect(airSys.StartAirCompressor1.isRunning).toBeTruthy()
-    expect(airSys.StartAirCompressor1.RatedFor).toBe(CstAirSys.StartAirCompressor1.AddStep)
-    expect(airSys.StartAirCompressor1.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor1.Output).toBe(0)
-    expect(airSys.StartAirCompressor1.Content).toBe(0)
+    expect(airSys.StartAirCompressor.isRunning).toBeTruthy()
+    expect(airSys.StartAirCompressor.RatedFor).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
+    expect(airSys.StartAirCompressor.Output).toBe(0)
+    expect(airSys.StartAirCompressor.Content).toBe(0)
 
-    airSys.StartAirCompressor1.OutletValve.Open()
+    airSys.StartAirCompressor.OutletValve.Open()
     airSys.Thick()
-    expect(airSys.StartAirCompressor1.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor1.OutletValve.Content).toBe(0)
+    expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
+    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(0)
 
-    airSys.StartAirReceiver1.IntakeValve.Open()
+    airSys.StartAirReceiver.IntakeValve.Open()
     airSys.Thick()
-    expect(airSys.StartAirCompressor1.SafetyOpen).toBeFalsy()
-    expect(airSys.StartAirReceiver1.IntakeValve.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
-    expect(airSys.StartAirReceiver1.Tank.Adding).toBeTruthy()
-    expect(airSys.StartAirReceiver1.Tank.AddEachStep).toBe(CstAirSys.StartAirCompressor1.AddStep)
-    expect(airSys.StartAirReceiver1.Tank.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirCompressor.SafetyOpen).toBeFalsy()
+    expect(airSys.StartAirReceiver.IntakeValve.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirReceiver.Tank.Adding).toBeTruthy()
+    expect(airSys.StartAirReceiver.Tank.AddEachStep).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirReceiver.Tank.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
   })
   test('first open inlet receiver, then outlet compressor = fill receiver', () => {
-    airSys.StartAirReceiver1.IntakeValve.Open()
-    airSys.StartAirCompressor1.OutletValve.Open()
-    airSys.StartAirCompressor1.Start()
+    airSys.StartAirReceiver.IntakeValve.Open()
+    airSys.StartAirCompressor.OutletValve.Open()
+    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCompressor.Start()
     airSys.Thick()
 
-    expect(airSys.StartAirCompressor1.isRunning).toBeTruthy()
-    expect(airSys.StartAirReceiver1.Tank.Adding).toBeTruthy()
-    expect(airSys.StartAirReceiver1.Tank.AddEachStep).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirCompressor.isRunning).toBeTruthy()
+    expect(airSys.StartAirReceiver.Tank.Adding).toBeTruthy()
+    expect(airSys.StartAirReceiver.Tank.AddEachStep).toBe(CstAirSys.StartAirCompressor1.AddStep)
 
-    expect(airSys.StartAirReceiver1.Tank.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
+    expect(airSys.StartAirReceiver.Tank.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
   })
 })

@@ -8,7 +8,7 @@ export const CstPowerSys = {
   EmergencyGen: {
     RatedFor: 1 // 1 kW
   },
-  DsGen1: {
+  DsGen: {
     RatedFor: 1000, // 10 kW
     Slump: {
       TankVolume: 100,
@@ -43,7 +43,7 @@ export const CstFuelSys = {
 }
 export const CstAirSys = {
   StartAirCompressor1: {
-    AddStep: 1
+    AddStep: 0.5
   },
   EmergencyCompressor: {
     AddStep: 1
@@ -60,15 +60,16 @@ export const CstCoolantSys = {
   SeaChest: 1e6,
   AuxSuctionPump: 1200,
   SuctionPumps: 10000,
-  FwCoolerDsGen1: { coolingRate: 1000 },
-  FwCoolerDsGen2: { coolingRate: 1000 },
+  FwCoolerDsGen: { coolingRate: 1000 },
+  FwCoolerStartAir: { coolingRate: 1000 },
   SteamCondensor: { coolingRate: 5000 },
   FwMakeUp: 1e6,
   FwExpandTank: {
     TankVolume: 100,
     TankAddStep: 1
   },
-  DsGenLubCooler: { coolingRate: 10 }
+  DsGenLubCooler: { coolingRate: 10 },
+  StartAirCooler: { coolingRate: 10 }
 
 }
 export const CstSteamSys = {

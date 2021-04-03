@@ -24,9 +24,9 @@ beforeEach(() => {
   powerSys = new PowerSystem(dummyFuelOutletValve, dummyLubOutletValve, dummyAirOutletValve,
     dummyLubCooler)
 
-  powerSys.DsGen1.FuelIntakeValve.Open()
-  powerSys.DsGen1.LubSlump.Inside = CstPowerSys.DsGen1.Slump.MinForLubrication
-  powerSys.DsGen1.AirIntakeValve.Open()
+  powerSys.DsGen.FuelIntakeValve.Open()
+  powerSys.DsGen.LubSlump.Inside = CstPowerSys.DsGen.Slump.MinForLubrication
+  powerSys.DsGen.AirIntakeValve.Open()
 })
 
 describe('Init power', () => {
@@ -45,14 +45,14 @@ describe('Init power', () => {
     expect(powerSys.MainBus1.Content).toBe(0)
     expect(powerSys.EmergencyBus.Content).toBe(0)
   })
-  test('Diesel generator 1 not running, breaker open, fuel provider & consumption', () => {
+  test('Diesel generator  not running, breaker open, fuel provider & consumption', () => {
     powerSys.Thick()
-    expect(powerSys.DsGen1.isRunning).toBeFalsy()
-    expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
-    // expect(powerSys.DsGen1.FuelProvider).toEqual(fuelSource)
-    expect(powerSys.DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
+    expect(powerSys.DsGen.isRunning).toBeFalsy()
+    expect(powerSys.DsGenBreaker.isOpen).toBeTruthy()
+    // expect(powerSys.DsGen.FuelProvider).toEqual(fuelSource)
+    expect(powerSys.DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
     // valve only has content of opened, so test here source
-    expect(powerSys.DsGen1.FuelIntakeValve.Source.Content).toBe(startFuelAmount)
+    expect(powerSys.DsGen.FuelIntakeValve.Source.Content).toBe(startFuelAmount)
   })
 })
 describe('Shore power', () => {
@@ -135,53 +135,53 @@ describe('Emergency generator', () => {
     expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
   })
   test('already DsGen 1 running & starting emergency generator --> trip = stops', () => {
-    powerSys.DsGen1.Start()
-    powerSys.DsGenBreaker1.isOpen = false
+    powerSys.DsGen.Start()
+    powerSys.DsGenBreaker.isOpen = false
     powerSys.Thick()
-    expect(powerSys.DsGen1.isRunning).toBeTruthy()
+    expect(powerSys.DsGen.isRunning).toBeTruthy()
     powerSys.EmergencyGen.Start()
     powerSys.Thick()
     expect(powerSys.EmergencyGen.isRunning).toBeFalsy()
-    expect(powerSys.Providers).toBe(CstPowerSys.DsGen1.RatedFor)
+    expect(powerSys.Providers).toBe(CstPowerSys.DsGen.RatedFor)
     expect(powerSys.EmergencyBus.Content).toBe(CstPowerSys.Voltage)
   })
 })
-describe('Diesel generator 1', () => {
-  test('Start DS 1, leave breaker open --> nothing provided', () => {
-    powerSys.DsGen1.Start()
+describe('Diesel generator ', () => {
+  test('Start DS, leave breaker open --> nothing provided', () => {
+    powerSys.DsGen.Start()
     powerSys.Thick()
-    expect(powerSys.DsGen1.isRunning).toBeTruthy()
-    expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
+    expect(powerSys.DsGen.isRunning).toBeTruthy()
+    expect(powerSys.DsGenBreaker.isOpen).toBeTruthy()
     expect(powerSys.Providers).toBe(0)
   })
-  test('Start DS 1, close breaker  -->  providing', () => {
-    powerSys.DsGen1.Start()
+  test('Start DS, close breaker  -->  providing', () => {
+    powerSys.DsGen.Start()
     powerSys.Thick()
-    powerSys.DsGenBreaker1.Close()
+    powerSys.DsGenBreaker.Close()
     powerSys.Thick()
-    expect(powerSys.DsGen1.isRunning).toBeTruthy()
-    expect(powerSys.DsGenBreaker1.isOpen).toBeFalsy()
-    expect(powerSys.Providers).toBe(CstPowerSys.DsGen1.RatedFor)
+    expect(powerSys.DsGen.isRunning).toBeTruthy()
+    expect(powerSys.DsGenBreaker.isOpen).toBeFalsy()
+    expect(powerSys.Providers).toBe(CstPowerSys.DsGen.RatedFor)
   })
   test('Stop a running generator --> trip generator breaker', () => {
-    powerSys.DsGen1.Start()
+    powerSys.DsGen.Start()
     powerSys.Thick()
-    expect(powerSys.DsGen1.isRunning).toBeTruthy()
-    powerSys.DsGenBreaker1.Close()
+    expect(powerSys.DsGen.isRunning).toBeTruthy()
+    powerSys.DsGenBreaker.Close()
     powerSys.Thick()
 
-    powerSys.DsGen1.Stop()
+    powerSys.DsGen.Stop()
     powerSys.Thick()
-    expect(powerSys.DsGenBreaker1.isOpen).toBeTruthy()
+    expect(powerSys.DsGenBreaker.isOpen).toBeTruthy()
   })
-  test('Running DS 1, consume fuel = set fuel consumption', () => {
-    const { DsGen1 } = powerSys
+  test('Running DS, consume fuel = set fuel consumption', () => {
+    const { DsGen } = powerSys
 
-    DsGen1.Start()
-    expect(DsGen1.isRunning).toBeTruthy()
-    expect(DsGen1.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
+    DsGen.Start()
+    expect(DsGen.isRunning).toBeTruthy()
+    expect(DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
 
     powerSys.Thick()
-    expect(DsGen1.FuelProvider.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
+    expect(DsGen.FuelProvider.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
   })
 })

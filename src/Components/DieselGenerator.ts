@@ -37,14 +37,14 @@ export default class DieselGenerator extends Generator {
     }
     this.LubIntakeValve.cbNowClosed = () => {
       this.LubSlump.Adding = false
-      this.LubProvider.RemoveEachStep = CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
+      this.LubProvider.RemoveEachStep = CstPowerSys.DsGen.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
       this.LubProvider.AmountRemovers -= 1
     }
 
-    this.LubSlump = new Tank(DieselGeneratorTxt.LubSlump, CstPowerSys.DsGen1.Slump.TankVolume)
+    this.LubSlump = new Tank(DieselGeneratorTxt.LubSlump, CstPowerSys.DsGen.Slump.TankVolume)
     // this.LubSlump.Source = this.LubIntakeValve.Source as Tank
-    this.LubSlump.AddEachStep = CstPowerSys.DsGen1.Slump.TankAddStep
-    this.LubSlump.RemoveEachStep = CstPowerSys.DsGen1.Slump.TankAddStep
+    this.LubSlump.AddEachStep = CstPowerSys.DsGen.Slump.TankAddStep
+    this.LubSlump.RemoveEachStep = CstPowerSys.DsGen.Slump.TankAddStep
 
     this.AirIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.AirIntakeValve}`, airValve)
 
@@ -60,7 +60,7 @@ export default class DieselGenerator extends Generator {
   }
 
   CheckLubrication() {
-    this.HasLubrication = this.LubSlump.Content >= CstPowerSys.DsGen1.Slump.MinForLubrication
+    this.HasLubrication = this.LubSlump.Content >= CstPowerSys.DsGen.Slump.MinForLubrication
   }
 
   CheckCooling() {
@@ -80,8 +80,8 @@ export default class DieselGenerator extends Generator {
     this.LubSlump.AddEachStep = 0
     if (this.LubSlump.Adding && this.LubIntakeValve.Source.Content !== 0) {
       // only  fill slump tank if lub source is not empty
-      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen1.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
-      this.LubSlump.AddEachStep = CstPowerSys.DsGen1.Slump.TankAddStep
+      this.LubProvider.RemoveEachStep += CstPowerSys.DsGen.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump
+      this.LubSlump.AddEachStep = CstPowerSys.DsGen.Slump.TankAddStep
     }
 
     this.LubSlump.Thick()
