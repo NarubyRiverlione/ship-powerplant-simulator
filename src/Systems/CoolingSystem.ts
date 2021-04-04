@@ -101,7 +101,7 @@ export default class CoolingSystem {
       this.FwExpandTank.AmountRemovers -= 1
     }
     // #endregion
-    // #region DsGen  Lubrication cooler (secundaire FW circuit)
+    // #region DsGen Lubrication cooler (secundaire FW circuit)
     this.DsGenLubCooler = new Cooler(CoolantSysTxt.DsGenLubCooler, CstCoolantSys.DsGenLubCooler.coolingRate)
     this.DsGenLubCooler.CoolingCircuitComplete = true // TODO check if no Fw outlet valve is needed
     // TODO set (via Simulator Thick?): if DsGen 1 slump has lub,circulation valve is open, (filter  is selected)
@@ -148,13 +148,13 @@ export default class CoolingSystem {
 
     this.FwExpandTank.Thick()
 
-    // hot side of Fw DsGen 1 cooler is complete  if Lub cooler has cooling (has fresh water)
+    // hot side of Fw DsGen cooler is complete if Lub cooler has cooling (has fresh water)
     this.DsGenLubCooler.CoolingProviders = this.FwExpandTank.Content
     this.DsGenLubCooler.isCooling = this.DsGenLubCooler.isCooling && this.FwCoolerDsGen.hasCooling
     this.DsGenLubCooler.Thick()
     this.FwCoolerDsGen.HotCircuitComplete = this.DsGenLubCooler.hasCooling
 
-    // hot side of Fw DsGen 2 cooler is complete  if Lub cooler has cooling (has fresh water)
+    // hot side of Fw Start Air cooler is complete if Start air cooler has cooling (has fresh water)
     this.StartAirCooler.CoolingProviders = this.FwExpandTank.Content
     this.StartAirCooler.isCooling = this.StartAirCooler.isCooling && this.FwCoolerStartAir.hasCooling
     this.StartAirCooler.Thick()

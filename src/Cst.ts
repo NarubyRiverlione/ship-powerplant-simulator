@@ -61,8 +61,8 @@ export const CstCoolantSys = {
   AuxSuctionPump: 1200,
   SuctionPumps: 10000,
   FwCoolerDsGen: { coolingRate: 1000 },
-  FwCoolerStartAir: { coolingRate: 1000 },
-  SteamCondensor: { coolingRate: 5000 },
+  FwCoolerStartAir: { coolingRate: 2000 },  // Start Air cooler doesn't works on aux pump
+  SteamCondensor: { coolingRate: 5000 },    // Steam Condensor cooler doesn't works on aux pump
   FwMakeUp: 1e6,
   FwExpandTank: {
     TankVolume: 100,
