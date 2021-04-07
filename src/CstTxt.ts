@@ -57,6 +57,8 @@ export default {
     FwExpandTank: 'Fresh water expand tank',
     DsGenLubCooler: 'Diesel generator  lubrication cooler',
     StartAirCooler: 'Start air cooler',
+    FwPumpDsGen: 'Fresh water pump diesel generator cooler',
+    FwPumpStartAir: 'Fresh water pump start air cooler'
   },
   DieselGeneratorTxt: {
     FuelIntakeValve: ' - fuel intake valve',

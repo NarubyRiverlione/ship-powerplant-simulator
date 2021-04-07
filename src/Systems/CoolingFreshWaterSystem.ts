@@ -12,11 +12,15 @@ import PowerBus from '../Components/PowerBus'
 /* eslint-disable max-len */
 /*
 ** Fresh water cooling circuits**
-Fresh water Expand tank
-|
-|->- Fresh water Start Air cooler->-|
-|                                             |
-|-<- Fresh water Diesel generator Lubrication cooler -<-|
+                                  Fresh water Expand tank
+                                      |         |
+  |->- Start Air compressor  cooler->-|         |->- Diesel generator Lubrication cooler -<-|
+  |                                   |         |                                           |
+Pump FW Air cooler (Main bus)         |        Pump Diesel generator cooler (Emergency Bus) |
+  |                                   |         |                                           |
+  |-<- Fresh water Start Air cooler-<-|         |-<- Fresh water Diesel generator cooler -<-|
+              ||                                            ||
+              Sea water cooling Systems                     Sea water cooling system       
 
 */
 /* eslint-enable max-len */
@@ -26,14 +30,16 @@ export default class CoolingFreshWaterSystem {
   // Sea water cools the Fresh water coolers
   FwCoolerDsGen: Cooler
   FwCoolerStartAir: Cooler
-
+  // Fresh water supply
   FwExpandTank: Tank
   FwIntakeValve: Valve
   FwDrainValve: Valve
-
-  // Fresh water coolers cools a system
+  // system coolers
   DsGenLubCooler: Cooler
   StartAirCooler: Cooler
+  // Fresh water pumps
+  FwPumpDsGen: Pump
+  FwPumpStartAir: Pump
 
   constructor(
     _FwCoolerDsGen: Cooler,
@@ -72,23 +78,31 @@ export default class CoolingFreshWaterSystem {
     this.StartAirCooler = new Cooler(CoolantSysTxt.StartAirCooler)
     this.StartAirCooler.HotCircuitComplete = true
 
-    // TODO pump between FW dsgen cooler and Ds gen Lub cooler via emergency bus
+    //  pump between FW dsgen cooler and Ds gen Lub cooler via emergency bus
+    this.FwPumpDsGen = new Pump(CoolantSysTxt.FwPumpDsGen, emergencyBus, CstCoolantSys.FwPumpDsGen)
 
-    // TODO pump between FW start air cooler and Start air cooler via main bus
-
+    //  pump between FW start air cooler and Start air cooler via main bus
+    this.FwPumpStartAir = new Pump(CoolantSysTxt.FwCoolerStartAir, mainBus, CstCoolantSys.FwPumpStartAir
+    )
     makeAutoObservable(this)
   }
 
   Thick() {
     this.FwExpandTank.Thick()
 
-    // FW Ds Gen needs enough fresh water in hot circuit to be cooling
-    this.FwCoolerDsGen.HotCircuitComplete = this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling
+    this.FwPumpDsGen.Providers = this.FwExpandTank.Content
+    this.FwPumpDsGen.Thick()
+
+    this.FwPumpStartAir.Providers = this.FwExpandTank.Content
+    this.FwPumpStartAir.Thick()
+
+    // FW Ds Gen needs pump running and enough fresh water in hot circuit to be cooling
+    this.FwCoolerDsGen.HotCircuitComplete = this.FwPumpDsGen.isRunning && this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling
     // Lub DsGen cooler cool circuit is ok if  FW cooler ds gen is cooling
     this.DsGenLubCooler.CoolCircuitComplete = this.FwCoolerDsGen.IsCooling
 
-    // FW Start air Gen needs enough fresh water in hot circuit to be cooling
-    this.FwCoolerStartAir.HotCircuitComplete = this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling
+    // FW Start air Gen needs pump running and enough fresh water in hot circuit to be cooling
+    this.FwCoolerStartAir.HotCircuitComplete = this.FwPumpStartAir.isRunning && this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling
     // Lub Start air cooler cool circuit is ok if  FW cooler start air is cooling
     this.StartAirCooler.CoolCircuitComplete = this.FwCoolerStartAir.IsCooling
   }

@@ -55,8 +55,8 @@ export default class Simulator {
     this.CoolingSeaWaterSys.SuctionPump2.Bus = this.PowerSys.MainBus1
     this.CoolingSeaWaterSys.AuxPump.Bus = this.PowerSys.EmergencyBus
 
-    // TODO set EmergencyBus bus for lub cooler pump
-    // TODO set Main bus for start air cooler pump
+    this.CoolingFreshWaterSys.FwPumpDsGen.Bus = this.PowerSys.EmergencyBus
+    this.CoolingFreshWaterSys.FwPumpStartAir.Bus = this.PowerSys.MainBus1
 
     this.Running = undefined
   }

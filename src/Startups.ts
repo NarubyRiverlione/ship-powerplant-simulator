@@ -32,9 +32,11 @@ export const SetSeawaterCoolingAuxRunning = (sim: Simulator) => {
   AuxPump.Start()
 }
 export const SetFreshwaterCooling = (sim: Simulator) => {
-  const { CoolingFreshWaterSys: { FwExpandTank } } = sim
-  FwExpandTank.Inside = CstCoolantSys.FwExpandTank.TankVolume
+  const { CoolingFreshWaterSys: { FwExpandTank, FwPumpDsGen } } = sim
+  SetEmergencyPower(sim)
   SetSeawaterCoolingAuxRunning(sim)
+  FwExpandTank.Inside = CstCoolantSys.FwExpandTank.TankVolume
+  FwPumpDsGen.Start()
   sim.Thick()
 }
 export const RunningDsGen1 = (sim: Simulator) => {

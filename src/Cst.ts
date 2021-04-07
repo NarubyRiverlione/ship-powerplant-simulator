@@ -63,15 +63,16 @@ export const CstCoolantSys = {
   // FwCoolerDsGen: { coolingRate: 1000 },
   // FwCoolerStartAir: { coolingRate: 2000 },  // Start Air cooler doesn't works on aux pump
   // SteamCondensor: { coolingRate: 5000 },    // Steam Condensor cooler doesn't works on aux pump
+  // DsGenLubCooler: { coolingRate: 10 },
+  // StartAirCooler: { coolingRate: 10 }
   FwMakeUp: 1e6,
   FwExpandTank: {
     TankVolume: 100,
     TankAddStep: 1,
     MinForCooling: 25
   },
-
-  // DsGenLubCooler: { coolingRate: 10 },
-  // StartAirCooler: { coolingRate: 10 }
+  FwPumpDsGen: 1000,
+  FwPumpStartAir: 2000
 
 }
 export const CstSteamSys = {

@@ -1,5 +1,5 @@
 import Simulator from '../Simulator'
-import { CstAirSys, CstFuelSys, CstLubSys, CstPowerSys, CstStartConditions } from '../Cst'
+import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys, CstStartConditions } from '../Cst'
 import CstTxt from '../CstTxt'
 
 let sim: Simulator
@@ -58,7 +58,10 @@ describe('Use start conditions', () => {
   test('Fresh water cooling available', () => {
     sim.SetStartConditions(CstStartConditions.SetFreshwaterCooling)
     sim.Thick()
-    const { CoolingFreshWaterSys: { DsGenLubCooler, FwCoolerDsGen } } = sim
+    const { CoolingFreshWaterSys: { DsGenLubCooler, FwCoolerDsGen, FwPumpDsGen, FwExpandTank } } = sim
+    expect(FwPumpDsGen.CheckPower).toBeTruthy()
+    expect(FwPumpDsGen.Providers).toBe(CstCoolantSys.FwExpandTank.TankVolume)
+    expect(FwPumpDsGen.isRunning).toBeTruthy()
     expect(FwCoolerDsGen.IsCooling).toBeTruthy()
     expect(DsGenLubCooler.CoolCircuitComplete).toBeTruthy()
 
@@ -67,8 +70,6 @@ describe('Use start conditions', () => {
     sim.SetStartConditions(CstStartConditions.RunningDsGen1)
     sim.Thick()
     const { PowerSys: { MainBus1, DsGen } } = sim
-    expect(DsGen.isRunning).toBeTruthy()
-    expect(DsGen.isRunning).toBeTruthy()
     expect(DsGen.isRunning).toBeTruthy()
     expect(MainBus1.Content).toBe(CstPowerSys.Voltage)
   })

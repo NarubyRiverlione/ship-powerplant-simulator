@@ -75,6 +75,7 @@ export default class DieselGenerator extends Generator {
 
   get CheckAir() {
     return this.AirIntakeValve.Content >= CstAirSys.DieselGenerator.MinPressure
+    // TODO remove air from emergency receiver
   }
 
   Start() {

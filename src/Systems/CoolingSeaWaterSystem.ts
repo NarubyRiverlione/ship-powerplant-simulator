@@ -12,10 +12,12 @@ import PowerBus from '../Components/PowerBus'
 /* eslint-disable max-len */
 /*
 ** Sea water cooling circuit **
-|- Suction pump 1 (main bus) --|     |- Fresh water cooler Diesel generator 1 (aux capable) ->-|
-Sea chest high  - suction Valve ->-|     |- Suction pump 2 (main bus) --|==>==|- Fresh water cooler Diesel generator 2 (aux capable) ->-|==>== over board dump valve
-|==>==|- Aux pump (emergency bus)----|     |- Steam condensor (cannot work not on aux pump) ------->-|
-Sea chest low  - suction valve -> -|
+
+Sea chest high  - suction Valve ->- |  
+                                    | - Suction pump 1 (main bus) --|     |- Steam condensor                                    -->-|
+                                    | - Suction pump 2 (main bus) --|==>==|- Fresh water cooler Start Air compressor             ->-|==>== over board dump valve
+                                    | - Aux pump (emergency bus)  --|     |- Fresh water cooler Diesel generator 1 (aux capable) ->-|
+Sea chest low  - suction valve ->-  |
 */
 /* eslint-enable max-len */
 
@@ -57,11 +59,6 @@ export default class CoolingSeaWaterSystem {
     // #endregion
     // #region Over board dump valve
     this.OverboardDumpValve = new Valve(CoolantSysTxt.OverboardDumpValve, this.SwAvailable)
-    // this.OverboardDumpValve.cbNowOpen = () => {
-    //   this.FwCoolerDsGen.CoolCircuitComplete = true
-    //   this.FwCoolerStartAir.CoolCircuitComplete = true
-    //   this.SteamCondensor.CoolCircuitComplete = true
-    // }
     this.OverboardDumpValve.cbNowClosed = () => {
       this.FwCoolerDsGen.CoolCircuitComplete = false
       this.FwCoolerStartAir.CoolCircuitComplete = false
