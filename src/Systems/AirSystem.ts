@@ -42,6 +42,7 @@ export default class AirSystem {
     }
 
     this.StartAirCooler = _startAirCooler
+    this.StartAirCooler.HotCircuitComplete = true
 
     this.StartAirReceiver = new TankWithValves(AirSysTxt.StartAirReceiver1,
       CstAirSys.StartAirReceiver1.TankPressure, 0,
@@ -74,10 +75,11 @@ export default class AirSystem {
   }
 
   Thick() {
+
     // start air compressor running with valves closed = has no receiver -> open safety
     this.StartAirCompressor.HasReceiver = this.StartAirCompressor.OutletValve.isOpen && this.StartAirReceiver.IntakeValve.isOpen
     // start air compress cannot run without cooling
-    if (!this.StartAirCooler.isCooling && this.StartAirCompressor.isRunning) this.StartAirCompressor.Stop()
+    if (!this.StartAirCooler.IsCooling && this.StartAirCompressor.isRunning) this.StartAirCompressor.Stop()
 
     this.StartAirCompressor.Thick()
     this.StartAirReceiver.Thick()

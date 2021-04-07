@@ -10,7 +10,7 @@ dummyMainBus.Voltage = 440
 const dummyEmergencyBus = new mockPowerBus('dummy emergency bus')
 dummyEmergencyBus.Voltage = 440
 
-const dummyStartAirCooler = new mockCooler('dummy start air cooler', CstCoolantSys.StartAirCooler.coolingRate)
+const dummyStartAirCooler = new mockCooler('dummy start air cooler')
 
 beforeEach(() => {
   airSys = new AirSystem(dummyStartAirCooler, dummyMainBus, dummyEmergencyBus)
@@ -127,21 +127,21 @@ describe('Emergency compressor', () => {
 describe('Start air compressor ', () => {
   test('Air compressor star but no cooling = stop compressor', () => {
     airSys.StartAirCompressor.Start()
-    airSys.StartAirCooler.isCooling = false
+    airSys.StartAirCooler.CoolCircuitComplete = false
     airSys.Thick()
     expect(airSys.StartAirCompressor.isRunning).toBeFalsy()
   })
   test('Air compressor starr with  cooling = start compressor', () => {
     airSys.StartAirCompressor.Start()
-    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.Thick()
     expect(airSys.StartAirCompressor.isRunning).toBeTruthy()
   })
   test('Air compressor running with  cooling -> stop cooling = stop compressor', () => {
     airSys.StartAirCompressor.Start()
-    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.Thick()
-    airSys.StartAirCooler.isCooling = false
+    airSys.StartAirCooler.CoolCircuitComplete = false
     airSys.Thick()
     expect(airSys.StartAirCompressor.isRunning).toBeFalsy()
   })
@@ -159,7 +159,7 @@ describe('Start air compressor ', () => {
   test('Open compressor outlet valve &  running but closed intake valve = not filling receiver', () => {
     airSys.StartAirCompressor.Start()
     airSys.StartAirCompressor.OutletValve.Open()
-    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.Thick()
     expect(airSys.StartAirCompressor.Content).toBe(0)
     expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
@@ -176,7 +176,7 @@ describe('Start air compressor ', () => {
     airSys.StartAirReceiver.IntakeValve.Open()
     airSys.StartAirCompressor.Start()
     airSys.StartAirCompressor.OutletValve.Close()
-    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.Thick()
     expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
     expect(airSys.StartAirCompressor.Content).toBe(0)
@@ -187,7 +187,7 @@ describe('Start air compressor ', () => {
     expect(airSys.StartAirReceiver.Tank.Content).toBe(0)
   })
   test('Open outlet valve & running = fill receiver', () => {
-    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.StartAirCompressor.Start()
     airSys.Thick()
     expect(airSys.StartAirCompressor.isRunning).toBeTruthy()
@@ -212,7 +212,7 @@ describe('Start air compressor ', () => {
   test('first open inlet receiver, then outlet compressor = fill receiver', () => {
     airSys.StartAirReceiver.IntakeValve.Open()
     airSys.StartAirCompressor.OutletValve.Open()
-    airSys.StartAirCooler.isCooling = true
+    airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.StartAirCompressor.Start()
     airSys.Thick()
 

@@ -5,28 +5,16 @@ import { iCooler } from '../../Components/Cooler'
 export default class mockCooler implements iCooler {
 
   Name: string
-  isCooling: boolean
-  hasCooling: boolean
-  CoolingInputRate: number
-  CoolingProviders: number
-  CoolingCircuitComplete: boolean
   HotCircuitComplete: boolean
+  CoolCircuitComplete: boolean
 
-  constructor(name: string, coolingInputRate: number) {
+  constructor(name: string) {
     this.Name = name
-    this.isCooling = true  // mock cooler : cooling circuit & rate is ok
-    this.hasCooling = false // isCooling && hot circuit is ok
-    this.CoolingInputRate = coolingInputRate
-    this.CoolingProviders = 0
-
-    this.CoolingCircuitComplete = false
     this.HotCircuitComplete = false
+    this.CoolCircuitComplete = false
 
   }
+  get IsCooling() { return this.HotCircuitComplete && this.CoolCircuitComplete }
   Thick() { }
-  get Content() { return this.isCooling ? 1 : 0 }
-
-  get CheckCoolingRate() {
-    return this.CoolingProviders >= this.CoolingInputRate
-  }
+  get Content() { return this.IsCooling ? 1 : 0 }
 }

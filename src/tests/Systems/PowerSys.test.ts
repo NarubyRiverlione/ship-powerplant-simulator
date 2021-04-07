@@ -19,7 +19,8 @@ beforeEach(() => {
   const dummyLubOutletValve = new mockValve('dummy lub source valve', lubSource)
   const dummyAirOutletValve = new mockValve('dummy air source valve', airSource)
 
-  const dummyLubCooler = new mockCooler('dummy FW cooler', 1e6)
+  const dummyLubCooler = new mockCooler('dummy FW cooler')
+  dummyLubCooler.CoolCircuitComplete = true
 
   powerSys = new PowerSystem(dummyFuelOutletValve, dummyLubOutletValve, dummyAirOutletValve,
     dummyLubCooler)

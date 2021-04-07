@@ -64,7 +64,13 @@ export default class DieselGenerator extends Generator {
   }
 
   CheckCooling() {
-    this.HasCooling = this.LubCooler.isCooling
+    // lub cooler only works 
+    // with enough lubrication (hot side Ok)
+    // and fresh water cooling (cool side Ok)
+    this.LubCooler.HotCircuitComplete = this.HasLubrication
+
+    // generator has cooling of lub cooler is cooling
+    this.HasCooling = this.LubCooler.IsCooling
   }
 
   get CheckAir() {

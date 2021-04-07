@@ -1,96 +1,42 @@
 import Cooler from '../../Components/Cooler'
 
-const coolingRate = 123
 let cooler: Cooler
 
 beforeEach(() => {
-  cooler = new Cooler('test cooler', coolingRate)
+  cooler = new Cooler('test cooler')
 })
 
 describe('Init', () => {
   test('does\'t have cooling', () => {
-    expect(cooler.hasCooling).toBeFalsy()
-    expect(cooler.isCooling).toBeFalsy()
-    expect(cooler.Content).toBe(0)
-  })
-  test('Cooling input rate', () => {
-    expect(cooler.CoolingInputRate).toBe(coolingRate)
-  })
-  test('no hot circuit ', () => {
     expect(cooler.HotCircuitComplete).toBeFalsy()
-  })
-  test('no cool circuit', () => {
-    expect(cooler.CoolingCircuitComplete).toBeFalsy()
-  })
-})
-
-describe('Cooling rate checks', () => {
-  test('Cooling input > cooling rate = is cooling', () => {
-    const coolInput = 789
-    cooler.CoolingProviders = coolInput
-    expect(cooler.CheckCoolingRate).toBeTruthy()
-
-  })
-  test('Cooling input < cooling rate = no cooling', () => {
-    const coolInput = 122
-    cooler.CoolingProviders = coolInput
-    expect(cooler.CheckCoolingRate).toBeFalsy()
-  })
-})
-
-describe('Has cooling', () => {
-  test('Circuit ok & providers > rate =  has cooling', () => {
-    cooler.CoolingCircuitComplete = true
-    cooler.CoolingProviders = 456
-    cooler.Thick()
-    expect(cooler.hasCooling).toBeTruthy()
-  })
-  test('Circuit ok & providers < rae = has no cooling', () => {
-    cooler.CoolingCircuitComplete = true
-    cooler.CoolingProviders = 2
-    cooler.Thick()
-    expect(cooler.hasCooling).toBeFalsy()
-  })
-  test('Circuit nok & providers > rate = has no cooling', () => {
-    cooler.CoolingCircuitComplete = false
-    cooler.CoolingProviders = 2895
-    cooler.Thick()
-    expect(cooler.hasCooling).toBeFalsy()
-  })
-  test('Circuit nok & providers < rate = has no cooling', () => {
-    cooler.CoolingCircuitComplete = false
-    cooler.CoolingProviders = 56
-    cooler.Thick()
-    expect(cooler.hasCooling).toBeFalsy()
+    expect(cooler.CoolCircuitComplete).toBeFalsy()
+    expect(cooler.IsCooling).toBeFalsy()
+    expect(cooler.Content).toBe(0)
   })
 })
 
 describe('Is cooling', () => {
   test('has cooling but no hot circuit = not cooling', () => {
-    cooler.CoolingProviders = 546
-    cooler.Thick()
-    expect(cooler.isCooling).toBeFalsy()
+    cooler.CoolCircuitComplete = true
+    cooler.HotCircuitComplete = false
+    expect(cooler.IsCooling).toBeFalsy()
   })
   test('hot circuit but no has no cooling = not cooling', () => {
     cooler.HotCircuitComplete = true
-    cooler.CoolingCircuitComplete = false
-    cooler.Thick()
-    expect(cooler.isCooling).toBeFalsy()
+    cooler.CoolCircuitComplete = false
+    expect(cooler.IsCooling).toBeFalsy()
   })
   test('has cooling and hot circuit = cooling', () => {
-    cooler.CoolingProviders = 127
     cooler.HotCircuitComplete = true
-    cooler.CoolingCircuitComplete = true
-    cooler.Thick()
-    expect(cooler.isCooling).toBeTruthy()
+    cooler.CoolCircuitComplete = true
+    expect(cooler.IsCooling).toBeTruthy()
     expect(cooler.Content).toBe(1)
   })
-  test('not enough cooling and hot circuit = not cooling', () => {
-    cooler.CoolingProviders = 7
+  test('cooling but cool circuit stops  = not cooling anymore', () => {
     cooler.HotCircuitComplete = true
-    cooler.CoolingCircuitComplete = true
-    cooler.Thick()
-    expect(cooler.hasCooling).toBeFalsy()
-    expect(cooler.isCooling).toBeFalsy()
+    cooler.CoolCircuitComplete = true
+    expect(cooler.IsCooling).toBeTruthy()
+    cooler.CoolCircuitComplete = false
+    expect(cooler.IsCooling).toBeFalsy()
   })
 })

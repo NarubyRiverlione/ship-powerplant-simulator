@@ -23,8 +23,8 @@ export const SetEmergencyPower = (sim: Simulator) => {
   EmergencyGen.Start()
 }
 export const SetSeawaterCoolingAuxRunning = (sim: Simulator) => {
-  const { CoolingSys } = sim
-  const { SeaChestLowSuctionIntakeValve, AuxPump, OverboardDumpValve } = CoolingSys
+  const { CoolingSeaWaterSys } = sim
+  const { SeaChestLowSuctionIntakeValve, AuxPump, OverboardDumpValve } = CoolingSeaWaterSys
   SetEmergencyPower(sim)
   OverboardDumpValve.Open()
   SeaChestLowSuctionIntakeValve.Open()
@@ -32,7 +32,7 @@ export const SetSeawaterCoolingAuxRunning = (sim: Simulator) => {
   AuxPump.Start()
 }
 export const SetFreshwaterCooling = (sim: Simulator) => {
-  const { CoolingSys: { FwExpandTank } } = sim
+  const { CoolingFreshWaterSys: { FwExpandTank } } = sim
   FwExpandTank.Inside = CstCoolantSys.FwExpandTank.TankVolume
   SetSeawaterCoolingAuxRunning(sim)
   sim.Thick()

@@ -3,7 +3,8 @@ import { CstChanges, CstStartConditions } from './Cst'
 import PowerSystem from './Systems/PowerSystem'
 import FuelSystem from './Systems/FuelSystem'
 import AirSystem from './Systems/AirSystem'
-import CoolingSystem from './Systems/CoolingSystem'
+import CoolingFreshWaterSystem from './Systems/CoolingFreshWaterSystem'
+import CoolingSeaWaterSystem from './Systems/CoolingSeaWaterSystem'
 import LubricationSystem from './Systems/LubricationSystem'
 import AlarmSystem from './Systems/AlarmSystem'
 import SteamSystem from './Systems/SteamSystem'
@@ -19,7 +20,8 @@ export default class Simulator {
   LubSys!: LubricationSystem
   AirSys!: AirSystem
   PowerSys!: PowerSystem
-  CoolingSys!: CoolingSystem
+  CoolingSeaWaterSys!: CoolingSeaWaterSystem
+  CoolingFreshWaterSys!: CoolingFreshWaterSystem
   SteamSys!: SteamSystem
 
   constructor() {
@@ -30,14 +32,18 @@ export default class Simulator {
     this.AlarmSys = new AlarmSystem()
     this.FuelSys = new FuelSystem(this.AlarmSys)
     this.LubSys = new LubricationSystem(this.AlarmSys)
-    this.CoolingSys = new CoolingSystem()
-    this.AirSys = new AirSystem(this.CoolingSys.StartAirCooler)
+    this.CoolingSeaWaterSys = new CoolingSeaWaterSystem()
+    this.CoolingFreshWaterSys = new CoolingFreshWaterSystem(
+      this.CoolingSeaWaterSys.FwCoolerDsGen, this.CoolingSeaWaterSys.FwCoolerStartAir
+    )
+
+    this.AirSys = new AirSystem(this.CoolingFreshWaterSys.StartAirCooler)
 
     this.PowerSys = new PowerSystem(
       this.FuelSys.DsService.OutletValve,
       this.LubSys.Storage.OutletValve,
       this.AirSys.EmergencyReceiver.OutletValve,
-      this.CoolingSys.DsGenLubCooler
+      this.CoolingFreshWaterSys.DsGenLubCooler
     )
 
     this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.FuelSys.DsService)
@@ -45,9 +51,12 @@ export default class Simulator {
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
     this.AirSys.StartAirCompressor.Bus = this.PowerSys.MainBus1
 
-    this.CoolingSys.SuctionPump1.Bus = this.PowerSys.MainBus1
-    this.CoolingSys.SuctionPump2.Bus = this.PowerSys.MainBus1
-    this.CoolingSys.AuxPump.Bus = this.PowerSys.EmergencyBus
+    this.CoolingSeaWaterSys.SuctionPump1.Bus = this.PowerSys.MainBus1
+    this.CoolingSeaWaterSys.SuctionPump2.Bus = this.PowerSys.MainBus1
+    this.CoolingSeaWaterSys.AuxPump.Bus = this.PowerSys.EmergencyBus
+
+    // TODO set EmergencyBus bus for lub cooler pump
+    // TODO set Main bus for start air cooler pump
 
     this.Running = undefined
   }
@@ -56,7 +65,8 @@ export default class Simulator {
     this.PowerSys.Thick()
     this.LubSys.Thick()
     this.AirSys.Thick()
-    this.CoolingSys.Thick()
+    this.CoolingSeaWaterSys.Thick()
+    this.CoolingFreshWaterSys.Thick()
     this.SteamSys.Thick()
     this.FuelSys.Thick()  //must be evaluated last to consume fuel form other systems
   }

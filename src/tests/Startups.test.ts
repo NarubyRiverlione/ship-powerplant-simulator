@@ -51,22 +51,25 @@ describe('Use start conditions', () => {
   test('Sea water cooling available via Aux pump', () => {
     sim.SetStartConditions(CstStartConditions.SetSeawaterCoolingAuxRunning)
     sim.Thick()
-    const { CoolingSys: { FwCoolerDsGen, FwCoolerStartAir, SteamCondensor } } = sim
-    expect(FwCoolerDsGen.hasCooling).toBeTruthy()
-    expect(FwCoolerStartAir.hasCooling).toBeFalsy()
-    expect(SteamCondensor.hasCooling).toBeFalsy()
+    const { CoolingFreshWaterSys: { FwCoolerDsGen, FwCoolerStartAir } } = sim
+    expect(FwCoolerDsGen.CoolCircuitComplete).toBeTruthy()
+    expect(FwCoolerStartAir.CoolCircuitComplete).toBeFalsy()
   })
   test('Fresh water cooling available', () => {
     sim.SetStartConditions(CstStartConditions.SetFreshwaterCooling)
     sim.Thick()
-    const { CoolingSys: { DsGenLubCooler: DsGen1LubCooler, StartAirCooler: DsGen2LubCooler } } = sim
-    expect(DsGen1LubCooler.isCooling).toBeTruthy()
-    expect(DsGen2LubCooler.hasCooling).toBeTruthy()
+    const { CoolingFreshWaterSys: { DsGenLubCooler, FwCoolerDsGen } } = sim
+    expect(FwCoolerDsGen.IsCooling).toBeTruthy()
+    expect(DsGenLubCooler.CoolCircuitComplete).toBeTruthy()
+
   })
   test('Diesel generator 1 running', () => {
     sim.SetStartConditions(CstStartConditions.RunningDsGen1)
     sim.Thick()
-    const { PowerSys: { MainBus1 } } = sim
+    const { PowerSys: { MainBus1, DsGen } } = sim
+    expect(DsGen.isRunning).toBeTruthy()
+    expect(DsGen.isRunning).toBeTruthy()
+    expect(DsGen.isRunning).toBeTruthy()
     expect(MainBus1.Content).toBe(CstPowerSys.Voltage)
   })
 })
