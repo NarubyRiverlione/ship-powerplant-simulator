@@ -26,6 +26,8 @@ export default class Cooler implements iCooler {
 
   get Content() { return this.IsCooling ? 1 : 0 }
 
+  // Cooler is a passive appliance, no need for Thick testing
+  /* istanbul ignore next */
   Thick() {
   }
 }

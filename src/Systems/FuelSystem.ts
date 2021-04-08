@@ -51,6 +51,7 @@ export default class FuelSystem {
     // both storage outlet & service intake needs to be open for transfer
     // may be still removin via drain valve
     this.DsStorage.OutletValve.cbNowClosed = () => {
+      /* istanbul ignore else */
       if (this.DsService.IntakeValve.isOpen) {
         // was transfering, stop now. May be still removing via drain valve
         this.DsStorage.Tank.AmountRemovers -= 1
