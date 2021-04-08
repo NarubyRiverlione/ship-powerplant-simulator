@@ -8,7 +8,7 @@ let powerSys: PowerSystem
 
 const startFuelAmount = 10000
 const startLubAmount = 2000
-const startAirAmount = CstAirSys.DieselGenerator.MinPressure
+const startAirAmount = CstAirSys.DieselGenerator.StarAirConsumption
 
 beforeEach(() => {
   const fuelSource = new mockTank('dummy fuel source', 1e6, startFuelAmount)
@@ -51,7 +51,7 @@ describe('Init power', () => {
     expect(powerSys.DsGen.isRunning).toBeFalsy()
     expect(powerSys.DsGenBreaker.isOpen).toBeTruthy()
     // expect(powerSys.DsGen.FuelProvider).toEqual(fuelSource)
-    expect(powerSys.DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
+    expect(powerSys.DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
     // valve only has content of opened, so test here source
     expect(powerSys.DsGen.FuelIntakeValve.Source.Content).toBe(startFuelAmount)
   })
@@ -164,25 +164,27 @@ describe('Diesel generator ', () => {
     expect(powerSys.DsGenBreaker.isOpen).toBeFalsy()
     expect(powerSys.Providers).toBe(CstPowerSys.DsGen.RatedFor)
   })
-  test('Stop a running generator --> trip generator breaker', () => {
+  test('Stop a running generator --> trip generator & main breaker', () => {
     powerSys.DsGen.Start()
     powerSys.Thick()
     expect(powerSys.DsGen.isRunning).toBeTruthy()
     powerSys.DsGenBreaker.Close()
+    powerSys.MainBreaker1.Close()
     powerSys.Thick()
 
     powerSys.DsGen.Stop()
     powerSys.Thick()
     expect(powerSys.DsGenBreaker.isOpen).toBeTruthy()
+    expect(powerSys.MainBreaker1.isOpen).toBeTruthy()
   })
   test('Running DS, consume fuel = set fuel consumption', () => {
     const { DsGen } = powerSys
 
     DsGen.Start()
     expect(DsGen.isRunning).toBeTruthy()
-    expect(DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption)
+    expect(DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
 
     powerSys.Thick()
-    expect(DsGen.FuelProvider.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption)
+    expect(DsGen.FuelProvider.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
   })
 })

@@ -18,6 +18,7 @@ export default class DieselGenerator extends Generator {
   LubSlump: Tank
   LubProvider: Tank
   AirIntakeValve: Valve
+  AirProvider: Tank
   LubCooler: Cooler
 
   constructor(name: string, rate: number,
@@ -42,11 +43,11 @@ export default class DieselGenerator extends Generator {
     }
 
     this.LubSlump = new Tank(DieselGeneratorTxt.LubSlump, CstPowerSys.DsGen.Slump.TankVolume)
-    // this.LubSlump.Source = this.LubIntakeValve.Source as Tank
     this.LubSlump.AddEachStep = CstPowerSys.DsGen.Slump.TankAddStep
     this.LubSlump.RemoveEachStep = CstPowerSys.DsGen.Slump.TankAddStep
 
     this.AirIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.AirIntakeValve}`, airValve)
+    this.AirProvider = airValve.Source as Tank
 
     this.LubCooler = lubCooler
 
@@ -74,12 +75,16 @@ export default class DieselGenerator extends Generator {
   }
 
   get CheckAir() {
-    return this.AirIntakeValve.Content >= CstAirSys.DieselGenerator.MinPressure
-    // TODO remove air from emergency receiver
+    return this.AirIntakeValve.Content - CstAirSys.DieselGenerator.StarAirConsumption >= 0
   }
 
   Start() {
-    if (this.CheckAir) super.Start()
+    // only start when enough start air via open Air intake valve
+    if (this.CheckAir) {
+      //  remove air from emergency receiver
+      this.AirProvider.Inside -= CstAirSys.DieselGenerator.StarAirConsumption
+      super.Start()
+    }
   }
 
   Thick() {

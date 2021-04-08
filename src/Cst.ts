@@ -38,7 +38,7 @@ export const CstFuelSys = {
     TankVolume: 100,
     TankAddStep: 1
   },
-  DieselGenerator: { Consumption: 0.05 },
+  DieselGenerator: { Consumption: { Diesel: 0.05, } },
   SteamBoiler: { Consumption: 0.1 }
 }
 export const CstAirSys = {
@@ -54,17 +54,12 @@ export const CstAirSys = {
   EmergencyReceiver: {
     TankPressure: 100
   },
-  DieselGenerator: { MinPressure: 80 }
+  DieselGenerator: { StarAirConsumption: 60 }
 }
 export const CstCoolantSys = {
   SeaChest: 1e6,
   AuxSuctionPump: 1200,
   SuctionPumps: 10000,
-  // FwCoolerDsGen: { coolingRate: 1000 },
-  // FwCoolerStartAir: { coolingRate: 2000 },  // Start Air cooler doesn't works on aux pump
-  // SteamCondensor: { coolingRate: 5000 },    // Steam Condensor cooler doesn't works on aux pump
-  // DsGenLubCooler: { coolingRate: 10 },
-  // StartAirCooler: { coolingRate: 10 }
   FwMakeUp: 1e6,
   FwExpandTank: {
     TankVolume: 100,

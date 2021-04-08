@@ -67,7 +67,7 @@ export default class PowerSystem {
     // Diesel Generator 
     this.DsGen = new DieselGenerator(PowerTxt.DieselGen,
       CstPowerSys.DsGen.RatedFor, DsGen1FuelValve, DsGenLubValve, DsGenAirValve, LubCooler)
-    this.DsGen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption
+    this.DsGen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption.Diesel
     this.DsGenBreaker = new Breaker(PowerTxt.DsGenBreaker)
 
     makeAutoObservable(this)
@@ -90,8 +90,10 @@ export default class PowerSystem {
     if (!this.ShoreBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
     // DsGen is running and breaker is closed and start emergency generator --> emergency generator trips
     if (this.DsGen.isRunning && !this.DsGenBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
-    // DsGen is stopped --> trip generator breaker
+    // DsGen is stopped and generator breaker is closed --> trip generator breaker
     if (!this.DsGen.isRunning && !this.DsGenBreaker.isOpen) this.DsGenBreaker.Open()
+    // DsGen is stopped and main breaker is closed --> trip main breaker 
+    if (!this.DsGen.isRunning && this.ShoreBreaker.isOpen && !this.MainBreaker1.isOpen) this.MainBreaker1.Open()
 
     // Check generators
     this.EmergencyGen.Thick()
