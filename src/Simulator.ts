@@ -46,7 +46,8 @@ export default class Simulator {
       this.CoolingFreshWaterSys.DsGenLubCooler
     )
 
-    this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.FuelSys.DsService)
+    this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.FuelSys.DsService,
+      this.CoolingSeaWaterSys.SteamCondensor)
 
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
     this.AirSys.StartAirCompressor.Bus = this.PowerSys.MainBus1

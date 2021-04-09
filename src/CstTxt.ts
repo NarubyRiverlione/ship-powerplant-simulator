@@ -77,7 +77,8 @@ export default {
       WaterDrainValve: 'Water drain valve',
       FuelIntakeValve: 'Fuel intake valve',
       MainSteamValve: 'Main steam valve',
-      SafetyRelease: 'Safety release valve'
+      SafetyRelease: 'Safety release valve',
+      SteamVent: 'Steam vent valve'
     }
   }
 }

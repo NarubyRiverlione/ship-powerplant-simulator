@@ -80,16 +80,24 @@ export const CstSteamSys = {
   Boiler: {
     WaterVolume: 100,
     StartTemp: 25,
+
     OperatingTemp: 166,
     OperatingPressure: 7.179,
-    SafetyTemp: 180,
+
+    SafetyTemp: 182,
     SafetyPressure: 10,
+    WaterLossBySafetyRelease: 5,
+    TempLossBySafetyRelease: 1,
+
     TempAddStep: 0.5,
     TempCoolingStep: 0.3,
+
+    TempVentLoss: 0.1,
+    WaterVentLoss: 1,
+
     MinWaterLvlForFlame: 20,
     MainSteamValveWaterDrain: 0.1,
-    WaterLossBySafetyRelease: 10,
-    TempLossBySafetyRelease: 1,
+
     AutoEnableZone: 2 // temp zone + and - operation temp where auto can be enabled
   }
 }

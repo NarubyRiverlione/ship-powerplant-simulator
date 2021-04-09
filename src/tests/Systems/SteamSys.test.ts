@@ -3,7 +3,7 @@ import mockPowerBus from '../mocks/mockPowerBus'
 import { CstPowerSys, CstSteamSys, CstFuelSys, CstChanges } from '../../Cst'
 import mockTank from '../mocks/mockTank'
 import mockValve from '../mocks/mockValve'
-import Boiler from '../../Components/Boiler'
+import mockCooler from '../mocks/mockCooler'
 import TankWithValves from '../../Components/TankWithValves'
 let steamSys: SteamSystem
 
@@ -17,8 +17,8 @@ beforeEach(() => {
   const dummyFuelSource = new TankWithValves('dummy fuel source', 100, 100, dummyFuelSourceValve)
   dummyFuelSource.OutletValve.Open()
   dummyFuelSource.Thick()
-
-  steamSys = new SteamSystem(dummyMainBus, dummyFuelSource)
+  const dummySteamCondensor = new mockCooler('dummy steam condensor')
+  steamSys = new SteamSystem(dummyMainBus, dummyFuelSource, dummySteamCondensor)
 })
 
 describe('init', () => {

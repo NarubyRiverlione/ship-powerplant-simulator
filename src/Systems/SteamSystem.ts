@@ -4,6 +4,7 @@ import Tank from "../Components/Tank";
 import Valve from "../Components/Valve";
 import Pump from "../Components/ElectricPump";
 import PowerBus from "../Components/PowerBus";
+import Cooler from "../Components/Cooler";
 import Boiler from "../Components/Boiler";
 import { CstChanges, CstSteamSys } from '../Cst'
 import CstTxt from '../CstTxt'
@@ -22,7 +23,15 @@ Water diagram
                                         |
                                         |-<- Feed Water Supply Tank 
                                               |             |-<- Feed Water Inlet Valve -<- (Feed water Make up)
-                                        Drain valve                                     
+                                        Drain valve      
+                                        
+Steam diagram
+       |--> Safety Release valve 
+BOILER |
+       | ==> Main Steam valve ==>
+       |
+       |
+       |--> Steam Vent valve
 */
 
 export default class SteamSystem {
@@ -33,7 +42,7 @@ export default class SteamSystem {
   FuelSource: TankWithValves
   FuelSourceValve: Valve
 
-  constructor(mainBus1: PowerBus, fuelSource: TankWithValves) {
+  constructor(mainBus1: PowerBus, fuelSource: TankWithValves, condensor: Cooler) {
     //#region Feed Water
     const FeedWaterMakeup = new Tank('dummy feed water makeup tank', 1e6, 1e6)
     const FeedWaterMakeUpValve = new Valve('dummy feed water makeup valve, always open', FeedWaterMakeup)
@@ -49,7 +58,7 @@ export default class SteamSystem {
     this.FuelPump = new Pump(SteamSysTxt.FuelPump, mainBus1, CstSteamSys.FuelPump)
     //#endregion
     this.Boiler = new Boiler(SteamSysTxt.Boiler.Name, this.FeedWaterPump,
-      this.FuelPump, fuelSource.Tank)
+      this.FuelPump, fuelSource.Tank, condensor)
 
     makeAutoObservable(this)
   }
