@@ -92,7 +92,7 @@ export default class PowerSystem {
     if (this.DsGen.isRunning && !this.DsGenBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
     // DsGen is stopped and generator breaker is closed --> trip generator breaker
     if (!this.DsGen.isRunning && !this.DsGenBreaker.isOpen) this.DsGenBreaker.Open()
-    // DsGen is stopped and main breaker is closed --> trip main breaker 
+    // DsGen is stopped, without Shore power and main breaker is closed --> trip main breaker 
     if (!this.DsGen.isRunning && this.ShoreBreaker.isOpen && !this.MainBreaker1.isOpen) this.MainBreaker1.Open()
 
     // Check generators

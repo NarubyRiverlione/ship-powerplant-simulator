@@ -146,7 +146,7 @@ describe('Fuel', () => {
     expect(FuelPump.CheckPower).toBeTruthy()
     expect(FuelPump.Providers).not.toBe(0)
     expect(FuelPump.isRunning).toBeTruthy()
-    expect(Boiler.hasFlame).toBeFalsy()
+    expect(Boiler.HasFlame).toBeFalsy()
     expect(FuelPump.Content).toBe(CstSteamSys.FuelPump)
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
@@ -166,7 +166,7 @@ describe('Fuel', () => {
 
     Boiler.Ignite()
     steamSys.Thick()
-    expect(Boiler.hasFlame).toBeTruthy()
+    expect(Boiler.HasFlame).toBeTruthy()
     expect(FuelPump.Content).toBe(CstSteamSys.FuelPump)
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
@@ -189,7 +189,7 @@ describe('Fuel', () => {
     steamSys.Thick()
     Boiler.Ignite()
     steamSys.Thick()
-    expect(Boiler.hasFlame).toBeTruthy()
+    expect(Boiler.HasFlame).toBeTruthy()
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
@@ -211,7 +211,7 @@ describe('Fuel', () => {
     steamSys.Thick()
     Boiler.Ignite()
     steamSys.Thick()
-    expect(Boiler.hasFlame).toBeTruthy()
+    expect(Boiler.HasFlame).toBeTruthy()
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
