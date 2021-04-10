@@ -19,23 +19,21 @@ BOILER ==<== Fuel Intake Valve ==<==
 Water Drain Valve
   |
 */
-export default class Boiler implements Item {
+export default class SteamBoiler implements Item {
   Name: string
   WaterTank: Tank // virtual tank to hold the water inside the boiler
   WaterIntakeValve: Valve
   WaterDrainValve: Valve
   FuelIntakeValve: Valve
   HasFlame: boolean
-  MainSteamValve: Valve
   SafetyRelease: Valve
   SteamVent: Valve
   Temperature: number
-  // Pressure: number
   FuelSourceTank: Tank
   AutoFlame: boolean
-  Condensor: Cooler
 
-  constructor(name: string, waterSource: Item, fuelSource: Item, fuelSourceTank: Tank, condensor: Cooler) {
+
+  constructor(name: string, waterSource: Item, fuelSource: Item, fuelSourceTank: Tank) {
     this.Name = name
     //#region Water supply
     this.WaterIntakeValve = new Valve(SteamSysTxt.Boiler.WaterIntakeValve, waterSource)
@@ -57,26 +55,6 @@ export default class Boiler implements Item {
     this.FuelIntakeValve = new Valve(SteamSysTxt.Boiler.FuelIntakeValve, fuelSource)
     this.HasFlame = false
     //#endregion
-    //#region Main Steam valve
-    this.MainSteamValve = new Valve(SteamSysTxt.Boiler.MainSteamValve, this)
-    this.MainSteamValve.cbNowOpen = () => {
-      // no cooling = loss of steam == loss of water
-      if (!this.Condensor.CoolCircuitComplete) {
-        this.WaterTank.AmountRemovers += 1
-        this.WaterTank.RemoveEachStep += CstSteamSys.Boiler.MainSteamValveWaterDrain
-      }
-      // condensor has hot side if there is steam flow (open main steam valve)
-      this.Condensor.HotCircuitComplete = true
-    }
-    this.MainSteamValve.cbNowClosed = () => {
-      if (!this.Condensor.CoolCircuitComplete) {
-        this.WaterTank.RemoveEachStep -= CstSteamSys.Boiler.MainSteamValveWaterDrain
-        this.WaterTank.AmountRemovers -= 1
-      }
-      // no steam flow (close main steam valve) = condensor has no hot side
-      this.Condensor.HotCircuitComplete = false
-    }
-    //#endregion
     //#region Steam Vent valve
     this.SteamVent = new Valve(SteamSysTxt.Boiler.SteamVent, this)
     // open steam vent, loss some water
@@ -93,10 +71,8 @@ export default class Boiler implements Item {
     this.SafetyRelease = new Valve(SteamSysTxt.Boiler.SafetyRelease, this)
 
     this.Temperature = CstSteamSys.Boiler.StartTemp
-    // this.Pressure = 0
-    this.AutoFlame = false
 
-    this.Condensor = condensor
+    this.AutoFlame = false
 
     this.FuelSourceTank = fuelSourceTank
     makeAutoObservable(this)
@@ -123,7 +99,6 @@ export default class Boiler implements Item {
     this.HasFlame = this.HasFuel && this.HasEnoughWaterForFlame
     if (this.HasFlame) {
       // ignition succesfull = start burning fuel
-
       this.FuelSourceTank.AmountRemovers += 1
       this.FuelSourceTank.RemoveEachStep += CstFuelSys.SteamBoiler.Consumption
     }
@@ -131,7 +106,6 @@ export default class Boiler implements Item {
   Extinguishing() {
     // kill flame & stop burning fuel
     this.HasFlame = false
-
     this.FuelSourceTank.AmountRemovers -= 1
     this.FuelSourceTank.RemoveEachStep -= CstFuelSys.SteamBoiler.Consumption
   }
@@ -153,8 +127,8 @@ export default class Boiler implements Item {
     this.WaterTank.Thick()
     this.CheckFlame() // auto trip with fuel or not enough water
     this.CheckTemp()
-    // this.CheckPressure()
 
+    //#region safety release valve
     // open safety release valve and kill flame is pressure is to high
     if (this.Pressure >= CstSteamSys.Boiler.SafetyPressure && !this.SafetyRelease.isOpen) {
       this.SafetyRelease.Open()
@@ -168,26 +142,26 @@ export default class Boiler implements Item {
     if (this.Pressure < CstSteamSys.Boiler.SafetyPressure && this.SafetyRelease.isOpen) {
       this.SafetyRelease.Close()
     }
+    //#endregion
 
     // Steam vent valve, loose some heat and water
     if (this.SteamVent.isOpen) {
       this.Temperature -= CstSteamSys.Boiler.TempVentLoss
     }
-
+    //#region Auto flame
     // auto flame can only works inside operation zone (operational temp + / - autoEnableZoner)
     if (this.AutoFlame && !this.TempInsideAutoZone) this.AutoFlame = false
 
-
     // auto flame controls kills flame when pressure above operational
-    if (this.AutoFlame
+    if (this.AutoFlame && this.HasFlame
       && this.Temperature >= CstSteamSys.Boiler.OperatingTemp + CstSteamSys.Boiler.AutoEnableZone / 2)
       this.Extinguishing()
 
     // auto flame starts flame when pressure below operational
-    if (this.AutoFlame
+    if (this.AutoFlame && !this.HasFlame
       && this.Temperature <= CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.AutoEnableZone / 2)
       this.Ignite()
-
+    //#endregion
 
   }
 }

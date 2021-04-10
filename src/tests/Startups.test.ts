@@ -1,6 +1,7 @@
 import Simulator from '../Simulator'
-import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys, CstStartConditions } from '../Cst'
+import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys, CstStartConditions, CstSteamSys } from '../Cst'
 import CstTxt from '../CstTxt'
+import CoolingSeaWaterSystem from '../Systems/CoolingSeaWaterSystem'
 
 let sim: Simulator
 
@@ -72,5 +73,29 @@ describe('Use start conditions', () => {
     const { PowerSys: { MainBus1, DsGen } } = sim
     expect(DsGen.isRunning).toBeTruthy()
     expect(MainBus1.Content).toBe(CstPowerSys.Voltage)
+  })
+  test('Seawater suction pump 1 running , Aux pump stopped ', () => {
+    const { CoolingSeaWaterSys } = sim
+    sim.SetStartConditions(CstStartConditions.SeaWaterCoolingSupplyPump1Running)
+    expect(CoolingSeaWaterSys.SuctionPump1.isRunning).toBeTruthy()
+    expect(CoolingSeaWaterSys.AuxPump.isRunning).toBeFalsy()
+  })
+  test('Boiler has steam', () => {
+    const { SteamSys: { Boiler } } = sim
+    sim.SetStartConditions(CstStartConditions.BoilerOperational)
+    sim.Thick()
+    expect(Boiler.HasFlame).toBeTruthy()
+    expect(Boiler.AutoFlame).toBeTruthy()
+    expect(Boiler.Temperature).toBe(CstSteamSys.Boiler.OperatingTemp + CstSteamSys.Boiler.TempAddStep)
+    expect(Boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
+  })
+  test('Boiler delivers steam', () => {
+    const { SteamSys: { SteamCondensor, MainSteamValve } } = sim
+    sim.SetStartConditions(CstStartConditions.BoilerDeliversSteam)
+    sim.Thick()
+    expect(MainSteamValve.isOpen).toBeTruthy()
+    expect(MainSteamValve.Content).not.toBe(0)
+    expect(SteamCondensor.HotCircuitComplete).toBeTruthy()
+    expect(SteamCondensor.CoolCircuitComplete).toBeTruthy()
   })
 })

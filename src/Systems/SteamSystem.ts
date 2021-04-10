@@ -5,7 +5,7 @@ import Valve from "../Components/Valve";
 import Pump from "../Components/ElectricPump";
 import PowerBus from "../Components/PowerBus";
 import Cooler from "../Components/Cooler";
-import Boiler from "../Components/Boiler";
+import SteamBoiler from "../Components/SteamBoiler";
 import { CstChanges, CstSteamSys } from '../Cst'
 import CstTxt from '../CstTxt'
 const { SteamSysTxt } = CstTxt
@@ -28,19 +28,23 @@ Water diagram
 Steam diagram
        |--> Safety Release valve 
 BOILER |
-       | ==> Main Steam valve ==>
-       |
-       |
        |--> Steam Vent valve
+       |
+       |
+       |==>== Main Steam valve ==>==
+       |
+       |==<== Steam Condensor ==<==
 */
 
 export default class SteamSystem {
   FeedWaterSupply: TankWithValves
   FeedWaterPump: Pump
-  Boiler: Boiler
+  Boiler: SteamBoiler
   FuelPump: Pump
   FuelSource: TankWithValves
   FuelSourceValve: Valve
+  MainSteamValve: Valve
+  SteamCondensor: Cooler
 
   constructor(mainBus1: PowerBus, fuelSource: TankWithValves, condensor: Cooler) {
     //#region Feed Water
@@ -57,13 +61,29 @@ export default class SteamSystem {
     this.FuelSourceValve = new Valve(SteamSysTxt.FuelSourceValve, fuelSource.OutletValve)
     this.FuelPump = new Pump(SteamSysTxt.FuelPump, mainBus1, CstSteamSys.FuelPump)
     //#endregion
-    this.Boiler = new Boiler(SteamSysTxt.Boiler.Name, this.FeedWaterPump,
-      this.FuelPump, fuelSource.Tank, condensor)
+
+    this.Boiler = new SteamBoiler(SteamSysTxt.Boiler.Name, this.FeedWaterPump,
+      this.FuelPump, fuelSource.Tank)
+
+    this.SteamCondensor = condensor
+
+    //#region Main Steam valve
+    this.MainSteamValve = new Valve(SteamSysTxt.Boiler.MainSteamValve, this.Boiler)
+    this.MainSteamValve.cbNowOpen = () => {
+      // condensor has hot side if there is steam flow (open main steam valve)
+      this.SteamCondensor.HotCircuitComplete = true
+    }
+    this.MainSteamValve.cbNowClosed = () => {
+      // no steam flow (close main steam valve) = condensor has no hot side
+      this.SteamCondensor.HotCircuitComplete = false
+    }
+    //#endregion
 
     makeAutoObservable(this)
   }
 
   Thick() {
+    //#region Feed water
     this.FeedWaterPump.Providers = this.FeedWaterSupply.OutletValve.Content
     this.FeedWaterPump.Thick()
 
@@ -81,14 +101,21 @@ export default class SteamSystem {
       this.FeedWaterSupply.Tank.RemoveEachStep += CstChanges.DrainStep
     }
     this.FeedWaterSupply.Thick()
-
-
+    //#endregion
+    //#region  Fuel
     this.FuelPump.Providers = this.FuelSourceValve.Content !== 0
       ? this.FuelPump.Providers = this.FuelSource.Tank.Content
       : 0
 
     this.FuelPump.Thick()
+    //#endregion
 
     this.Boiler.Thick()
+
+    //  steam flow withou cooling = loss of steam == loss of water
+    if (this.MainSteamValve.Content && !this.SteamCondensor.CoolCircuitComplete) {
+      this.Boiler.WaterTank.Inside = this.Boiler.WaterTank.Inside - CstSteamSys.Boiler.WaterLossByNotCoolingSteam
+    }
+
   }
 }

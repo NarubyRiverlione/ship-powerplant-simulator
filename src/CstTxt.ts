@@ -10,6 +10,9 @@ export default {
       SetSeawaterCoolingAuxRunning: 'Sea water cooling via aux. pump',
       SetFreshwaterCooling: 'Fresh water cooling available',
       RunningDsGen1: 'Diesel generator 1 is providing power for the main bus',
+      SeaWaterCoolingSupplyPump1Running: 'Seawater supply pump 1 is running',
+      BoilerOperational: 'Boiler is operational',
+      BoilerDeliversSteam: 'Boiler is delivering steam',
       Undefined: 'Unknown start condition: '
     }
   },

@@ -111,6 +111,15 @@ export default class Simulator {
       case CstStartConditions.RunningDsGen1:
         StartCondition.RunningDsGen1(this)
         break
+      case CstStartConditions.SeaWaterCoolingSupplyPump1Running:
+        StartCondition.SeaWaterCoolingSupplyPump1Running(this)
+        break
+      case CstStartConditions.BoilerOperational:
+        StartCondition.BoilerOperational(this)
+        break
+      case CstStartConditions.BoilerDeliversSteam:
+        StartCondition.BoilerDeliversSteam(this)
+        break
       default:
         throw new Error(StartConditionsTxt.Undefined + condition)
     }

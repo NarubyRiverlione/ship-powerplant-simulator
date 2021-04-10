@@ -1,5 +1,5 @@
 
-import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys } from "./Cst"
+import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys, CstSteamSys } from "./Cst"
 import Simulator from "./Simulator"
 
 export const SetFuelTanksFull = (sim: Simulator) => {
@@ -55,4 +55,38 @@ export const RunningDsGen1 = (sim: Simulator) => {
   sim.Thick()
   DsGenBreaker1.Close()
   MainBreaker1.Close()
+}
+export const SeaWaterCoolingSupplyPump1Running = (sim: Simulator) => {
+  RunningDsGen1(sim)
+  sim.Thick()
+  const { CoolingSeaWaterSys } = sim
+  CoolingSeaWaterSys.SuctionPump1.Start()
+  sim.Thick()
+  CoolingSeaWaterSys.AuxPump.Stop()
+  sim.Thick()
+}
+export const BoilerOperational = (sim: Simulator) => {
+  RunningDsGen1(sim)
+  sim.Thick()
+  const { SteamSys, FuelSys } = sim
+  const { FeedWaterSupply, FuelPump, FuelSourceValve, Boiler } = SteamSys
+  const { FuelIntakeValve } = Boiler
+  FeedWaterSupply.Tank.Inside = CstSteamSys.FeedWaterSupply.TankVolume
+  Boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
+  FuelSys.DsService.OutletValve.Open()
+  FuelSourceValve.Open()
+  FuelIntakeValve.Open()
+  FuelPump.Start()
+  sim.Thick()
+  Boiler.Ignite()
+  Boiler.Temperature = CstSteamSys.Boiler.OperatingTemp
+  Boiler.AutoFlame = true
+}
+export const BoilerDeliversSteam = (sim: Simulator) => {
+  BoilerOperational(sim)
+  SeaWaterCoolingSupplyPump1Running(sim)
+  sim.Thick()
+  const { SteamSys } = sim
+  const { MainSteamValve } = SteamSys
+  MainSteamValve.Open()
 }

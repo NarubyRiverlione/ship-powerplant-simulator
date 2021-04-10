@@ -95,8 +95,8 @@ export const CstSteamSys = {
     TempVentLoss: 0.1,
     WaterVentLoss: 1,
 
-    MinWaterLvlForFlame: 20,
-    MainSteamValveWaterDrain: 0.1,
+    MinWaterLvlForFlame: 30,
+    WaterLossByNotCoolingSteam: 2,
 
     AutoEnableZone: 2 // temp zone + and - operation temp where auto can be enabled
   }
@@ -108,5 +108,8 @@ export const CstStartConditions = {
   SetEmergencyPower: 'SetEmergencyPower',
   SetSeawaterCoolingAuxRunning: 'SetSeawaterCoolingAuxRunning',
   SetFreshwaterCooling: 'SetFreshwaterCooling',
-  RunningDsGen1: 'RunningDsGen1'
+  RunningDsGen1: 'RunningDsGen1',
+  SeaWaterCoolingSupplyPump1Running: 'SeaWaterCoolingSupplyPump1Running',
+  BoilerOperational: 'BoilerOperational',
+  BoilerDeliversSteam: 'BoilerDeliversSteam'
 }

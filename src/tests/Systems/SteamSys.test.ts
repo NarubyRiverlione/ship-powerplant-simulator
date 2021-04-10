@@ -224,4 +224,137 @@ describe('Fuel', () => {
   })
 })
 
+describe('Main steam valve', () => {
+  test('main steam valve and not cooling + drain open = adding losses', () => {
+    const { Boiler, MainSteamValve } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    MainSteamValve.Open()
+    steamSys.Thick()
+    Boiler.WaterDrainValve.Open()
+    steamSys.Thick()
+    expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam * 2 - CstChanges.DrainStep)
+  })
+  test('drain open the open main steam valve', () => {
+    const { Boiler, MainSteamValve } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    Boiler.WaterDrainValve.Open()
+    steamSys.Thick()
+    MainSteamValve.Open()
+    steamSys.Thick()
+    expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam - CstChanges.DrainStep * 2)
+  })
+  test('re-close previous open drain while  main steam valve remains open', () => {
+    const { Boiler, MainSteamValve } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    Boiler.WaterDrainValve.Open()
+    steamSys.Thick()
+    MainSteamValve.Open()
+    steamSys.Thick()
+    Boiler.WaterDrainValve.Close()
+    steamSys.Thick()
+    expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam * 2 - CstChanges.DrainStep * 2)
+  })
+  test('re-close previous open main steam valve while  drain  valve remains open', () => {
+    const { Boiler, MainSteamValve } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    Boiler.WaterDrainValve.Open()
+    steamSys.Thick()
+    MainSteamValve.Open()
+    steamSys.Thick()
+    MainSteamValve.Close()
+    steamSys.Thick()
+    expect(Boiler.WaterTank.RemoveEachStep).toBeCloseTo(CstChanges.DrainStep)
+    expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam - CstChanges.DrainStep * 3)
+  })
+})
+
+describe('Steam condensor', () => {
+  test('steam valve is open = Condensor hot side complete', () => {
+    const { Boiler, MainSteamValve, SteamCondensor } = steamSys
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
+    Boiler.Temperature = startTemp
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
+    SteamCondensor.CoolCircuitComplete = true
+
+    Boiler.FuelIntakeValve.Open()
+    Boiler.Ignite()
+    MainSteamValve.Open()
+    steamSys.Thick()
+    expect(SteamCondensor.HotCircuitComplete).toBeTruthy()
+  })
+  test('steam valve is closed = Condensor has no hot side', () => {
+    const { Boiler, MainSteamValve, SteamCondensor } = steamSys
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
+    Boiler.Temperature = startTemp
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
+    SteamCondensor.CoolCircuitComplete = true
+
+    Boiler.FuelIntakeValve.Open()
+    Boiler.Ignite()
+    steamSys.Thick()
+    expect(SteamCondensor.HotCircuitComplete).toBeFalsy()
+  })
+  test('no cooling = loss steam = lower water level', () => {
+    const { Boiler, MainSteamValve, SteamCondensor } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    MainSteamValve.Open()
+
+    steamSys.Thick()
+    expect(Boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam)
+
+    steamSys.Thick()
+    expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam * 2)
+  })
+  test('is cooling = no loss steam = same water level', () => {
+    const { Boiler, MainSteamValve, SteamCondensor } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = 120
+    SteamCondensor.CoolCircuitComplete = true
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    MainSteamValve.Open()
+
+    steamSys.Thick()
+    expect(Boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume)
+  })
+})
 

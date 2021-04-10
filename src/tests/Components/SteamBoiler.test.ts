@@ -1,19 +1,18 @@
-import Boiler from '../../Components/Boiler'
+import SteamBoiler from '../../Components/SteamBoiler'
 import { CstChanges, CstSteamSys, CstFuelSys } from '../../Cst'
-import mockCooler from '../mocks/mockCooler'
+
 import mockTank from '../mocks/mockTank'
 import mockValve from '../mocks/mockValve'
 
-let boiler: Boiler
+let boiler: SteamBoiler
 
 beforeEach(() => {
   const dummyWaterSource = new mockTank('dummy feed water source', 100, 100)
   const dummyFuelSourceTank = new mockTank('dummy fuel source', 100, 100)
   const dummyFuelSourceOutletValve = new mockValve('dummy fuel valve', dummyFuelSourceTank)
-  const dummySteamCondensor = new mockCooler('dummy steam condensor')
-  boiler = new Boiler('test boiler', dummyWaterSource, dummyFuelSourceOutletValve, dummyFuelSourceTank, dummySteamCondensor)
-})
 
+  boiler = new SteamBoiler('test boiler', dummyWaterSource, dummyFuelSourceOutletValve, dummyFuelSourceTank)
+})
 describe('Init', () => {
   test('Boiler water level is zero', () => {
     expect(boiler.WaterLevel).toBe(0)
@@ -33,10 +32,7 @@ describe('Init', () => {
     expect(boiler.FuelIntakeValve.isOpen).toBeFalsy()
     expect(boiler.FuelIntakeValve.Source.Content).toBe(100)
   })
-  test('main steam  valve is closed', () => {
-    expect(boiler.MainSteamValve.isOpen).toBeFalsy()
-  })
-  test('saftey release valve is closed', () => {
+  test('safety release valve is closed', () => {
     expect(boiler.SafetyRelease.isOpen).toBeFalsy()
   })
   test('steam vent valve is closed', () => {
@@ -218,76 +214,7 @@ describe('Pressure', () => {
   })
 })
 
-describe('Main steam valve', () => {
-  test('main steam valve + drain open', () => {
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
-    boiler.Temperature = startTemp
-    boiler.FuelIntakeValve.Open()
-    boiler.Thick()
-    boiler.Ignite()
-    boiler.Thick()
-    boiler.MainSteamValve.Open()
-    boiler.Thick()
-    boiler.WaterDrainValve.Open()
-    boiler.Thick()
-    expect(boiler.WaterTank.RemoveEachStep).toBe(CstSteamSys.Boiler.MainSteamValveWaterDrain + CstChanges.DrainStep)
-    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.MainSteamValveWaterDrain * 2 - CstChanges.DrainStep)
-  })
-  test('drain open the open main steam valve', () => {
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
-    boiler.Temperature = startTemp
-    boiler.FuelIntakeValve.Open()
-    boiler.Thick()
-    boiler.Ignite()
-    boiler.Thick()
-    boiler.WaterDrainValve.Open()
-    boiler.Thick()
-    boiler.MainSteamValve.Open()
-    boiler.Thick()
-    expect(boiler.WaterTank.RemoveEachStep).toBe(CstSteamSys.Boiler.MainSteamValveWaterDrain + CstChanges.DrainStep)
-    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.MainSteamValveWaterDrain - CstChanges.DrainStep * 2)
-  })
-  test('re-close previous open drain while  main steam valve remains open', () => {
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
-    boiler.Temperature = startTemp
-    boiler.FuelIntakeValve.Open()
-    boiler.Thick()
-    boiler.Ignite()
-    boiler.Thick()
-    boiler.WaterDrainValve.Open()
-    boiler.Thick()
-    boiler.MainSteamValve.Open()
-    boiler.Thick()
-    boiler.WaterDrainValve.Close()
-    boiler.Thick()
-    expect(boiler.WaterTank.RemoveEachStep).toBeCloseTo(CstSteamSys.Boiler.MainSteamValveWaterDrain)
-    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.MainSteamValveWaterDrain * 2 - CstChanges.DrainStep * 2)
-  })
-  test('re-close previous open main steam valve while  drain  valve remains open', () => {
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
-    boiler.Temperature = startTemp
-    boiler.FuelIntakeValve.Open()
-    boiler.Thick()
-    boiler.Ignite()
-    boiler.Thick()
-    boiler.WaterDrainValve.Open()
-    boiler.Thick()
-    boiler.MainSteamValve.Open()
-    boiler.Thick()
-    boiler.MainSteamValve.Close()
-    boiler.Thick()
-    expect(boiler.WaterTank.RemoveEachStep).toBeCloseTo(CstChanges.DrainStep)
-    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.MainSteamValveWaterDrain - CstChanges.DrainStep * 3)
-  })
-})
+
 
 describe('Safety release valve', () => {
   test('Safety open if pressure is to high', () => {
@@ -437,65 +364,5 @@ describe('Auto flame', () => {
     const expectTemp = CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.AutoEnableZone / 2 + CstSteamSys.Boiler.TempAddStep
     expect(boiler.Temperature).toBeCloseTo(expectTemp, 0)
 
-  })
-})
-
-describe('Steam condensor', () => {
-  test('steam valve is open = Condensor hot side complete', () => {
-    const startTemp = CstSteamSys.Boiler.OperatingTemp
-    boiler.Temperature = startTemp
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
-    boiler.Condensor.CoolCircuitComplete = true
-
-    boiler.FuelIntakeValve.Open()
-    boiler.Ignite()
-    boiler.MainSteamValve.Open()
-    boiler.Thick()
-    expect(boiler.Condensor.HotCircuitComplete).toBeTruthy()
-  })
-  test('steam valve is closed = Condensor has no hot side', () => {
-    const startTemp = CstSteamSys.Boiler.OperatingTemp
-    boiler.Temperature = startTemp
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
-    boiler.Condensor.CoolCircuitComplete = true
-
-    boiler.FuelIntakeValve.Open()
-    boiler.Ignite()
-    boiler.Thick()
-    expect(boiler.Condensor.HotCircuitComplete).toBeFalsy()
-  })
-  test('no cooling = loss steam = lower water level', () => {
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
-    expect(boiler.Condensor.CoolCircuitComplete).toBeFalsy()
-    boiler.Temperature = startTemp
-    boiler.FuelIntakeValve.Open()
-    boiler.Thick()
-    boiler.Ignite()
-    boiler.Thick()
-    boiler.MainSteamValve.Open()
-
-    boiler.Thick()
-    expect(boiler.WaterTank.Removing).toBeTruthy()
-    expect(boiler.WaterTank.RemoveEachStep).toBe(CstSteamSys.Boiler.MainSteamValveWaterDrain)
-    expect(boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.MainSteamValveWaterDrain)
-    boiler.Thick()
-    expect(boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.MainSteamValveWaterDrain * 2)
-  })
-  test('is cooling = no loss steam = same water level', () => {
-    boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
-    boiler.Condensor.CoolCircuitComplete = true
-    boiler.Temperature = startTemp
-    boiler.FuelIntakeValve.Open()
-    boiler.Thick()
-    boiler.Ignite()
-    boiler.Thick()
-    boiler.MainSteamValve.Open()
-
-    boiler.Thick()
-    expect(boiler.WaterTank.Removing).toBeFalsy()
   })
 })
