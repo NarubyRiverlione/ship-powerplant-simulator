@@ -34,9 +34,10 @@ export const CstFuelSys = {
     TankVolume: 100,
     TankAddStep: 1
   },
+  DsHandpumpVolume: 10,
   DsServiceTank: {
     TankVolume: 100,
-    TankAddStep: 1
+    TankAddStep: 2
   },
   DieselGenerator: { Consumption: { Diesel: 0.05, } },
   SteamBoiler: { Consumption: 0.1 }
@@ -96,10 +97,11 @@ export const CstSteamSys = {
     WaterVentLoss: 1,
 
     MinWaterLvlForFlame: 30,
-    WaterLossByNotCoolingSteam: 2,
+    WaterLossByNotCoolingSteam: 0.5,
 
     AutoEnableZone: 2 // temp zone + and - operation temp where auto can be enabled
-  }
+  },
+  MinPressureForMainValve: 2
 }
 export const CstStartConditions = {
   SetFuelTanksFull: 'SetFuelTanksFull',

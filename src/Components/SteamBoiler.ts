@@ -163,5 +163,10 @@ export default class SteamBoiler implements Item {
       this.Ignite()
     //#endregion
 
+    if (this.WaterTank.Content < 0) {
+      console.warn('Boiler waterlevel negative! (readout < -50)')
+      this.WaterTank.Inside = 0
+    }
+
   }
 }

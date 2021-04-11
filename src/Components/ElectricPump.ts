@@ -1,5 +1,5 @@
 import {
-  makeObservable, observable, action, computed
+  makeObservable, observable, computed
 } from 'mobx'
 import Appliance from './Appliance'
 import PowerBus from './PowerBus'

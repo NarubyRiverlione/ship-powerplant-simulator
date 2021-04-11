@@ -225,10 +225,40 @@ describe('Fuel', () => {
 })
 
 describe('Main steam valve', () => {
-  test('main steam valve and not cooling + drain open = adding losses', () => {
+  test('main steam valve cannot open below min pressure', () => {
     const { Boiler, MainSteamValve } = steamSys
     Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
     const startTemp = 120
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    MainSteamValve.Open()
+    steamSys.Thick()
+    expect(MainSteamValve.isOpen).toBeFalsy()
+  })
+  test('main valve closes when pressure drops below min pressure', () => {
+    const { Boiler, MainSteamValve } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
+    Boiler.Temperature = startTemp
+    Boiler.FuelIntakeValve.Open()
+    steamSys.Thick()
+    Boiler.Ignite()
+    steamSys.Thick()
+    MainSteamValve.Open()
+    Boiler.WaterDrainValve.Open()
+    steamSys.Thick()
+    Boiler.Temperature = 120
+    steamSys.Thick()
+    expect(Boiler.Pressure).toBeLessThanOrEqual(CstSteamSys.MinPressureForMainValve)
+    expect(MainSteamValve.isOpen).toBeFalsy()
+  })
+  test('main steam valve and not cooling + drain open = adding losses', () => {
+    const { Boiler, MainSteamValve } = steamSys
+    Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
     Boiler.Temperature = startTemp
     Boiler.FuelIntakeValve.Open()
     steamSys.Thick()
@@ -244,7 +274,7 @@ describe('Main steam valve', () => {
   test('drain open the open main steam valve', () => {
     const { Boiler, MainSteamValve } = steamSys
     Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
     Boiler.Temperature = startTemp
     Boiler.FuelIntakeValve.Open()
     steamSys.Thick()
@@ -260,7 +290,7 @@ describe('Main steam valve', () => {
   test('re-close previous open drain while  main steam valve remains open', () => {
     const { Boiler, MainSteamValve } = steamSys
     Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
     Boiler.Temperature = startTemp
     Boiler.FuelIntakeValve.Open()
     steamSys.Thick()
@@ -278,7 +308,7 @@ describe('Main steam valve', () => {
   test('re-close previous open main steam valve while  drain  valve remains open', () => {
     const { Boiler, MainSteamValve } = steamSys
     Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
     Boiler.Temperature = startTemp
     Boiler.FuelIntakeValve.Open()
     steamSys.Thick()

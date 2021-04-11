@@ -112,6 +112,11 @@ export default class SteamSystem {
 
     this.Boiler.Thick()
 
+    // cannot open main steam valve below min pressure
+    if (this.MainSteamValve.isOpen && this.Boiler.Content < CstSteamSys.MinPressureForMainValve) {
+      this.MainSteamValve.Close()
+    }
+
     //  steam flow withou cooling = loss of steam == loss of water
     if (this.MainSteamValve.Content && !this.SteamCondensor.CoolCircuitComplete) {
       this.Boiler.WaterTank.Inside = this.Boiler.WaterTank.Inside - CstSteamSys.Boiler.WaterLossByNotCoolingSteam

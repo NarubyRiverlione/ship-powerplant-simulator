@@ -91,8 +91,5 @@ export default class AirSystem {
 
     this.EmergencyCompressor.Thick()
     this.EmergencyReceiver.Thick()
-    // this.EmergencyCompressor.OutletValve.Source = this.EmergencyCompressor
-
-
   }
 }

@@ -38,6 +38,15 @@ describe('Fuel system init', () => {
     // valve only has content of opened, so test here source
     expect(fuelSys.DsShoreValve.Source.Content).toBe(CstFuelSys.ShoreVolume)
   })
+  /*
+  test.skip('Handpump outlet valve is closed', () => {
+    expect(fuelSys.DsHandPumpOutletValve.isOpen).toBeFalsy()
+  })
+  test.skip('Handpump is not cranked', () => {
+    expect(fuelSys.DsHandpump.IsCranked).toBeFalsy()
+    expect(fuelSys.DsHandpump.Content).toBe(0)
+  })
+  */
 })
 
 describe('Diesel storage tank', () => {
@@ -141,7 +150,7 @@ describe('Diesel storage tank', () => {
     fuelSys.Thick()
     expect(DsStorage.Tank.Content).toBe(start - CstChanges.DrainStep * 2)
   })
-  test('Drain valve and already transfering to service tank', () => {
+  test.skip('Drain valve and already transfering to service tank', () => {
     const contentTank = 45
     fuelSys.DsStorage.Tank.Inside = contentTank
     fuelSys.DsStorage.OutletValve.Open()
@@ -178,7 +187,7 @@ describe('Diesel service tank', () => {
     expect(fuelSys.DsService.Tank.AddEachStep).toBe(0)
   })
   test('Closed diesel service intake valve + open storage outlet = no transfer', () => {
-    const contentTank = 2000
+    const contentTank = CstFuelSys.DsStorageTank.TankVolume
     fuelSys.DsStorage.Tank.Inside = contentTank
     fuelSys.DsService.IntakeValve.Open()
     expect(fuelSys.DsStorage.OutletValve.isOpen).toBeFalsy()

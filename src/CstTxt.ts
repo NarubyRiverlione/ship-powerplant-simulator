@@ -27,6 +27,7 @@ export default {
     DsGen_FuelIntake: 'Diesel generator - fuel intake valve'
   },
   FuelSysTxt: {
+    DsHandpump: 'Diesel handpump',
     DsStorageTank: 'Diesel storage tank',
     DsServiceTank: 'Diesel service tank',
     DsShoreFillValve: 'Diesel shore fill valve',

@@ -7,16 +7,27 @@ import CstTxt from '../CstTxt'
 import AlarmSystem from './AlarmSystem'
 import { CstFuelSys, CstChanges } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
+import HandPump from '../Components/HandPump'
+import MultiInputs from '../Components/MultiToOne'
 
 const { FuelSysTxt } = CstTxt
 /*
-Shore Valve --> (intake valve) DsStorage (outlet valve) --> (intake valve) DsService (outlet valve)
-                                (drain)                                     (drain)
+Shore Valve 
+    |
+(intake valve) DsStorage (outlet valve) 
+            --> Handpump --> handpump outlet valve                    --> |
+                                                                          | => MultiToOne ==> --> (intake valve) DsService (outlet valve)                                   
+                --> Purification (TODO) --> purification outlet valve --> |
+                                      
 */
 export default class FuelSystem {
   DsShoreValve: Valve
   DsStorage: TankWithValves
   DsService: TankWithValves
+  // DsHandpump: HandPump
+  // DsHandPumpOutletValve: Valve
+  // DsServiceMulti: MultiInputs
+  PurificationIsWorking: boolean // dummy replacement for purification unit 
 
   constructor(alarmSys: AlarmSystem) {
     // #region Intake valve from shore to diesel storage tank
@@ -56,7 +67,6 @@ export default class FuelSystem {
         // was transfering, stop now. May be still removing via drain valve
         this.DsStorage.Tank.AmountRemovers -= 1
         this.DsService.Tank.Adding = false
-        //   this.DsStorage.Tank.RemoveEachStep -= CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
       }
     }
     // Alarms
@@ -67,50 +77,67 @@ export default class FuelSystem {
 
     // #endregion
 
+    /*
+    this.DsHandpump = new HandPump(FuelSysTxt.DsHandpump, CstFuelSys.DsHandpumpVolume,
+      this.DsStorage.OutletValve)
+    this.DsHandPumpOutletValve = new Valve("handpump outlet valve", this.DsHandpump)
+
+    this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs")
+    this.DsServiceMulti.Inputs.push(this.DsHandPumpOutletValve)
+*/
+
+    // TODO add input for purification outlet valve
+    // this.DsServiceMulti.Inputs.push(this.Purification.OutletValve)
+
     // #region Diesel service tank,
     // filled from the storage outlet valve
     this.DsService = new TankWithValves(FuelSysTxt.DsServiceTank,
       CstFuelSys.DsServiceTank.TankVolume, 0, this.DsStorage.OutletValve)
+    //#endregion
 
-    // // outlet valve closes,stop removing from service tank
-    // // may be continue removing via drain valve
-    // this.DsService.OutletValve.cbNowClosed = () => {
-    //   this.DsService.Tank.AmountRemovers -= 1
-    //  }
-
-    // Alarms
+    // #region Alarms
     this.DsService.Tank.AlarmSystem = alarmSys
     this.DsService.Tank.LowLevelAlarmCode = AlarmCode.LowDsServiceTank
     this.DsService.Tank.EmptyAlarmCode = AlarmCode.EmptyDsServiceTank
     this.DsService.Tank.LowLevelAlarm = AlarmLevel.FuelSys.LowDsService
     // #endregion
 
+    this.PurificationIsWorking = true
+
+
+
     makeObservable(this, { Thick: action })
   }
 
   Thick() {
+    // this.DsServiceMulti.Thick()
+
     // reevaluate DsStorage removing each Tick, to may possibilities to catch in callback functions
     this.DsStorage.Tank.RemoveEachStep = 0
-    // remove from storage tank, DsStorage is Ratio bigger then DsService tank
-    if (this.DsStorage.OutletValve.isOpen && this.DsService.IntakeValve.isOpen) {
-      this.DsStorage.Tank.RemoveEachStep = CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
-      // DsSerivice is full, no transfer this thick,
-      // don't stop stop tranfer may be next tick DsServic isn't full any more
 
-      if (this.DsService.Tank.Content === CstFuelSys.DsServiceTank.TankVolume) {
-        this.DsStorage.Tank.RemoveEachStep = 0
+    if (this.PurificationIsWorking) {
+      // remove from storage tank, DsStorage is Ratio bigger then DsService tank
+      if (this.DsStorage.OutletValve.isOpen && this.DsService.IntakeValve.isOpen) {
+        this.DsStorage.Tank.RemoveEachStep = CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
+        // DsSerivice is full, no transfer this thick,
+        // don't stop stop tranfer may be next tick DsServic isn't full any more
+        if (this.DsService.Tank.Content === CstFuelSys.DsServiceTank.TankVolume) {
+          this.DsStorage.Tank.RemoveEachStep = 0
+        }
       }
+
+      this.DsService.Tank.AddEachStep = (this.DsStorage.Tank.Content !== 0 && this.DsService.Tank.Adding)
+        //  filling service tank if storage isn't empty
+        ? CstFuelSys.DsServiceTank.TankAddStep
+        // stop filling service tank if storage is empty
+        : 0
     }
+
     // also draining ?
     if (this.DsStorage.DrainValve.isOpen) {
       this.DsStorage.Tank.RemoveEachStep += CstChanges.DrainStep
     }
 
-    this.DsService.Tank.AddEachStep = (this.DsStorage.Tank.Content !== 0 && this.DsService.Tank.Adding)
-      //  filling service tank if storage isn't empty
-      ? CstFuelSys.DsServiceTank.TankAddStep
-      // stop filling service tank if storage is empty
-      : 0
 
     // service tank needs first to Thick to detect full
     // -> stop from removing from storage

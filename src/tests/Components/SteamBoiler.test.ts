@@ -84,6 +84,11 @@ describe('Water level', () => {
     expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainStep)
 
   })
+  test('Prevent negative level', () => {
+    boiler.WaterTank.Inside = -10
+    boiler.Thick()
+    expect(boiler.WaterTank.Inside).toBe(0)
+  })
 })
 
 describe('Fuel', () => {
@@ -195,7 +200,7 @@ describe('Temperature', () => {
   })
 })
 
-describe('Pressure', () => {
+describe('Pressure calculation', () => {
   test('Temperature 100°C = 1 bar pressure', () => {
     const startTemp = 100
     boiler.Temperature = startTemp
@@ -213,7 +218,6 @@ describe('Pressure', () => {
     expect(boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
   })
 })
-
 
 
 describe('Safety release valve', () => {
@@ -258,8 +262,8 @@ describe('Steam vent valve', () => {
   test('open steam vent loss temperture and water', () => {
     const { WaterTank, SteamVent } = boiler
     WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
-    const startTemp = 120
-    boiler.Temperature = startTemp
+    const startTemp = CstSteamSys.Boiler.OperatingTemp
+    boiler.Temperature = CstSteamSys.Boiler.OperatingTemp
     boiler.FuelIntakeValve.Open()
     boiler.Ignite()
     boiler.Thick()
