@@ -95,6 +95,7 @@ export default class SteamBoiler implements Item {
   }
 
   Ignite() {
+    if (this.HasFlame) return
     // ignite if there is fuel and enough water
     this.HasFlame = this.HasFuel && this.HasEnoughWaterForFlame
     if (this.HasFlame) {
@@ -104,6 +105,7 @@ export default class SteamBoiler implements Item {
     }
   }
   Extinguishing() {
+    if (!this.HasFlame) return
     // kill flame & stop burning fuel
     this.HasFlame = false
     this.FuelSourceTank.AmountRemovers -= 1
@@ -120,6 +122,13 @@ export default class SteamBoiler implements Item {
       // flame heats boiler 
       this.Temperature += CstSteamSys.Boiler.TempAddStep
     }
+  }
+  AutoFlameToggle() {
+    this.AutoFlame = !this.AutoFlame
+  }
+
+  Toggle() {
+    if (this.HasFlame) { this.Extinguishing() } else { this.Ignite() }
   }
 
   Thick() {
@@ -163,6 +172,7 @@ export default class SteamBoiler implements Item {
       this.Ignite()
     //#endregion
 
+    /* istanbul ignore if  */
     if (this.WaterTank.Content < 0) {
       console.warn('Boiler waterlevel negative! (readout < -50)')
       this.WaterTank.Inside = 0

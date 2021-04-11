@@ -359,7 +359,7 @@ describe('Diesel service tank', () => {
     expect(fuelSys.DsStorage.Tank.Content).toBeCloseTo(expectContentStorageTank)
   })
   test('storage tank empty, stop adding service tank', () => {
-    const contentDsTank = 0.4
+    const contentDsTank = CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
     fuelSys.DsStorage.Tank.Inside = contentDsTank
     fuelSys.DsStorage.OutletValve.Open()
     fuelSys.DsService.IntakeValve.Open()

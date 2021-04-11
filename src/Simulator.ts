@@ -90,6 +90,9 @@ export default class Simulator {
   }
   SetStartConditions(condition: string) {
     switch (condition) {
+      case CstStartConditions.ColdAndDark:
+        this.Reset()
+        break
       case CstStartConditions.SetFuelTanksFull:
         StartCondition.SetFuelTanksFull(this)
         break

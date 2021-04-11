@@ -29,7 +29,7 @@ export const CstLubSys = {
 export const CstFuelSys = {
   ShoreVolume: 1e6,
   // storage tank is Ratio bigger then service tank
-  RatioStorageServiceTanks: 10,
+  RatioStorageServiceTanks: 100,
   DsStorageTank: {
     TankVolume: 100,
     TankAddStep: 1
@@ -39,8 +39,8 @@ export const CstFuelSys = {
     TankVolume: 100,
     TankAddStep: 2
   },
-  DieselGenerator: { Consumption: { Diesel: 0.05, } },
-  SteamBoiler: { Consumption: 0.1 }
+  DieselGenerator: { Consumption: { Diesel: 0.01, } },
+  SteamBoiler: { Consumption: 0.05 }
 }
 export const CstAirSys = {
   StartAirCompressor1: {
@@ -76,7 +76,7 @@ export const CstSteamSys = {
     TankVolume: 100,
     TankAddStep: 5
   },
-  FeedWaterPump: 2,
+  FeedWaterPump: 1,
   FuelPump: 10,
   Boiler: {
     WaterVolume: 100,
@@ -104,6 +104,7 @@ export const CstSteamSys = {
   MinPressureForMainValve: 2
 }
 export const CstStartConditions = {
+  ColdAndDark: 'ColdAndDark',
   SetFuelTanksFull: 'SetFuelTanksFull',
   SetLubTanksFull: 'SetLubTanksFull',
   SetEmergencyStartAir: 'SetEmergencyStartAir',
