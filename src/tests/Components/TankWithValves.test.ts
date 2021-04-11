@@ -45,7 +45,9 @@ describe('Intake valve', () => {
   })
   test('open intake, closed source --> no filling', () => {
     tankV.IntakeValve.Open()
-    expect(tankV.IntakeValve.isOpen).toBeTruthy()
+    dummySourceValve.Close()
+    expect(dummySourceValve.isOpen).toBeFalsy()
+    expect(dummySourceValve.Content).toBe(0)
     expect(tankV.Tank.Adding).toBeFalsy()
   })
   test('closed intake, open source --> no filling', () => {

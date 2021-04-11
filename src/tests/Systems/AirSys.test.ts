@@ -1,5 +1,5 @@
 import AirSystem from '../../Systems/AirSystem'
-import { CstAirSys, CstCoolantSys } from '../../Cst'
+import { CstAirSys } from '../../Cst'
 import mockPowerBus from '../mocks/mockPowerBus'
 import mockCooler from '../mocks/mockCooler'
 
@@ -63,9 +63,9 @@ describe('Emergency compressor', () => {
     airSys.EmergencyCompressor.Start()
     airSys.EmergencyCompressor.OutletValve.Open()
     airSys.Thick()
-    expect(airSys.EmergencyCompressor.Content).toBe(0) // CstAirSys.EmergencyCompressor.AddStep
+    expect(airSys.EmergencyCompressor.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
     expect(airSys.EmergencyCompressor.SafetyOpen).toBeTruthy()
-    expect(airSys.EmergencyCompressor.OutletValve.Content).toBe(0) // CstAirSys.EmergencyCompressor.AddStep
+    expect(airSys.EmergencyCompressor.OutletValve.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
 
     airSys.EmergencyReceiver.IntakeValve.Close()
     airSys.Thick()
@@ -78,7 +78,7 @@ describe('Emergency compressor', () => {
     airSys.EmergencyCompressor.Start()
     airSys.EmergencyCompressor.OutletValve.Close()
     airSys.Thick()
-    expect(airSys.EmergencyCompressor.Content).toBe(0)
+    expect(airSys.EmergencyCompressor.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
     expect(airSys.EmergencyCompressor.OutletValve.Content).toBe(0)
     expect(airSys.EmergencyCompressor.SafetyOpen).toBeTruthy()
     expect(airSys.EmergencyReceiver.IntakeValve.Content).toBe(0)
@@ -106,20 +106,29 @@ describe('Emergency compressor', () => {
     expect(airSys.EmergencyCompressor.SafetyOpen).toBeTruthy()
     expect(airSys.EmergencyCompressor.isRunning).toBeTruthy()
     expect(airSys.EmergencyCompressor.RatedFor).toBe(CstAirSys.EmergencyCompressor.AddStep)
-    expect(airSys.EmergencyCompressor.Output).toBe(0)
-    expect(airSys.EmergencyCompressor.Content).toBe(0)
+    // expect(airSys.EmergencyCompressor.Output).toBe(0)
+    // expect(airSys.EmergencyCompressor.Content).toBe(0)
 
     airSys.EmergencyCompressor.OutletValve.Open()
     airSys.Thick()
     expect(airSys.EmergencyCompressor.SafetyOpen).toBeTruthy()
-    expect(airSys.EmergencyCompressor.OutletValve.Content).toBe(0)
+    // expect(airSys.EmergencyCompressor.OutletValve.Content).toBe(0)
 
     airSys.EmergencyReceiver.IntakeValve.Open()
     airSys.Thick()
+
     expect(airSys.EmergencyCompressor.SafetyOpen).toBeFalsy()
+    expect(airSys.EmergencyCompressor.OutletValve.isOpen).toBeTruthy()
+    expect(airSys.EmergencyCompressor.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
+    expect(airSys.EmergencyCompressor.OutletValve.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
+    expect(airSys.EmergencyCompressor.HasReceiver).toBeTruthy()
+
+    expect(airSys.EmergencyReceiver.IntakeValve.Source.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
+
+
     expect(airSys.EmergencyReceiver.IntakeValve.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
-    expect(airSys.EmergencyReceiver.Tank.Adding).toBeTruthy()
     expect(airSys.EmergencyReceiver.Tank.AddEachStep).toBe(CstAirSys.EmergencyCompressor.AddStep)
+    expect(airSys.EmergencyReceiver.Tank.Adding).toBeTruthy()
     expect(airSys.EmergencyReceiver.Tank.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
   })
 })
@@ -161,9 +170,9 @@ describe('Start air compressor ', () => {
     airSys.StartAirCompressor.OutletValve.Open()
     airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.Thick()
-    expect(airSys.StartAirCompressor.Content).toBe(0)
+    expect(airSys.StartAirCompressor.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
     expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(0)
+    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
 
     airSys.StartAirReceiver.IntakeValve.Close()
     airSys.Thick()
@@ -179,7 +188,7 @@ describe('Start air compressor ', () => {
     airSys.StartAirCooler.CoolCircuitComplete = true
     airSys.Thick()
     expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor.Content).toBe(0)
+    expect(airSys.StartAirCompressor.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
     expect(airSys.StartAirCompressor.OutletValve.Content).toBe(0)
 
     expect(airSys.StartAirReceiver.IntakeValve.Content).toBe(0)
@@ -193,13 +202,12 @@ describe('Start air compressor ', () => {
     expect(airSys.StartAirCompressor.isRunning).toBeTruthy()
     expect(airSys.StartAirCompressor.RatedFor).toBe(CstAirSys.StartAirCompressor1.AddStep)
     expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor.Output).toBe(0)
-    expect(airSys.StartAirCompressor.Content).toBe(0)
+    expect(airSys.StartAirCompressor.Output).toBe(CstAirSys.StartAirCompressor1.AddStep)
 
     airSys.StartAirCompressor.OutletValve.Open()
     airSys.Thick()
     expect(airSys.StartAirCompressor.SafetyOpen).toBeTruthy()
-    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(0)
+    expect(airSys.StartAirCompressor.OutletValve.Content).toBe(CstAirSys.StartAirCompressor1.AddStep)
 
     airSys.StartAirReceiver.IntakeValve.Open()
     airSys.Thick()

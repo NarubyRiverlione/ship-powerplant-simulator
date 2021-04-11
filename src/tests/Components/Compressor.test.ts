@@ -56,15 +56,15 @@ describe('running', () => {
     expect(comp.Output).toBe(0)
     expect(comp.Content).toBe(0)
   })
-  test('running compressor without receiver =  open safety =no output', () => {
+  test('running compressor without receiver =  open safety but output available', () => {
     comp.Start()
     expect(comp.isRunning).toBeTruthy()
     comp.Thick()
     comp.HasReceiver = false
     comp.Thick()
     expect(comp.isRunning).toBeTruthy()
-    expect(comp.Output).toBe(0)
-    expect(comp.Content).toBe(0)
+    expect(comp.Output).toBe(ratedFor)
+    expect(comp.Content).toBe(ratedFor)
   })
 })
 

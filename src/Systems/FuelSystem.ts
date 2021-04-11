@@ -9,6 +9,8 @@ import { CstFuelSys, CstChanges } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
 import HandPump from '../Components/HandPump'
 import MultiInputs from '../Components/MultiToOne'
+import PurificationUnit from '../Components/PurificationUnit'
+import PowerBus from '../Components/PowerBus'
 
 const { FuelSysTxt } = CstTxt
 /*
@@ -26,10 +28,10 @@ export default class FuelSystem {
   DsService: TankWithValves
   // DsHandpump: HandPump
   // DsHandPumpOutletValve: Valve
-  // DsServiceMulti: MultiInputs
-  PurificationIsWorking: boolean // dummy replacement for purification unit 
+  DsServiceMulti: MultiInputs
+  DsPurification: PurificationUnit
 
-  constructor(alarmSys: AlarmSystem) {
+  constructor(alarmSys: AlarmSystem, mainbus = new PowerBus('dummy powerbus')) {
     // #region Intake valve from shore to diesel storage tank
     const dummyShore = new Tank('Shore as tank', CstFuelSys.ShoreVolume, CstFuelSys.ShoreVolume)
     this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
@@ -81,10 +83,10 @@ export default class FuelSystem {
     this.DsHandpump = new HandPump(FuelSysTxt.DsHandpump, CstFuelSys.DsHandpumpVolume,
       this.DsStorage.OutletValve)
     this.DsHandPumpOutletValve = new Valve("handpump outlet valve", this.DsHandpump)
+    */
 
-    this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs")
-    this.DsServiceMulti.Inputs.push(this.DsHandPumpOutletValve)
-*/
+    this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs", this.DsStorage.Tank)
+    this.DsServiceMulti.Inputs.push(this.DsStorage.OutletValve)
 
     // TODO add input for purification outlet valve
     // this.DsServiceMulti.Inputs.push(this.Purification.OutletValve)
@@ -92,7 +94,7 @@ export default class FuelSystem {
     // #region Diesel service tank,
     // filled from the storage outlet valve
     this.DsService = new TankWithValves(FuelSysTxt.DsServiceTank,
-      CstFuelSys.DsServiceTank.TankVolume, 0, this.DsStorage.OutletValve)
+      CstFuelSys.DsServiceTank.TankVolume, 0, this.DsServiceMulti)
     //#endregion
 
     // #region Alarms
@@ -102,22 +104,19 @@ export default class FuelSystem {
     this.DsService.Tank.LowLevelAlarm = AlarmLevel.FuelSys.LowDsService
     // #endregion
 
-    this.PurificationIsWorking = true
-
-
+    this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification, mainbus, this.DsStorage.OutletValve)
 
     makeObservable(this, { Thick: action })
   }
 
   Thick() {
-    // this.DsServiceMulti.Thick()
-
     // reevaluate DsStorage removing each Tick, to may possibilities to catch in callback functions
     this.DsStorage.Tank.RemoveEachStep = 0
 
-    if (this.PurificationIsWorking) {
+    if (this.DsPurification.isRunning) {
       // remove from storage tank, DsStorage is Ratio bigger then DsService tank
       if (this.DsStorage.OutletValve.isOpen && this.DsService.IntakeValve.isOpen) {
+
         this.DsStorage.Tank.RemoveEachStep = CstFuelSys.DsServiceTank.TankAddStep / CstFuelSys.RatioStorageServiceTanks
         // DsSerivice is full, no transfer this thick,
         // don't stop stop tranfer may be next tick DsServic isn't full any more

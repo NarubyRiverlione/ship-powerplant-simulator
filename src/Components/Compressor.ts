@@ -27,8 +27,7 @@ export default class Compressor extends Appliance {
 
   Thick() {
     super.Thick()
-    // only output when running with closed safety
-    this.Output = !this.SafetyOpen && this.isRunning ? this.RatedFor : 0.0
+    this.Output = this.isRunning ? this.RatedFor : 0.0
     this.OutletValve.Source = this
   }
 }

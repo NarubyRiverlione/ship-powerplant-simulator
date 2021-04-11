@@ -1,33 +1,20 @@
 import Item from './Item'
 import Tank from './Tank'
-import { iValve } from './Valve'
+import Valve from './Valve'
 
-export default class MultiInputs implements iValve {
-  Name: string
+export default class MultiInputs extends Valve {
   Inputs: Array<Item>
-  isOpen: boolean
-  Source: Item  // virtual tank to add all inputs
-  cbNowOpen: () => void
-  cbNowClosed: () => void
 
-  constructor(name: string) {
-    this.Name = name
+  constructor(name: string, sourceTank: Tank) {
+    super(name, sourceTank)
     this.Inputs = new Array()
-    this.isOpen = true
-    this.Source = new Tank("virtual tank to add inputs", 100)
-    this.cbNowOpen = () => { }
-    this.cbNowClosed = () => { }
+    this.Open()
   }
 
-  get AddInputs() { return this.Inputs.reduce((prev, item) => prev + item.Content, 0) }
+  get AddInputs() {
+    return this.Inputs.reduce((prev, item) => prev + item.Content, 0)
+  }
   get Content() {
     return this.AddInputs
   }
-
-  Thick() {
-    // this.Source.Content = this.AddInputs
-  }
-  Open() { }
-  Close() { }
-  Toggle() { }
 }

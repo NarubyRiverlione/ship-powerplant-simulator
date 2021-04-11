@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { CstChanges, CstStartConditions } from './Cst'
+import { CstChanges, CstPowerSys, CstStartConditions } from './Cst'
 import PowerSystem from './Systems/PowerSystem'
 import FuelSystem from './Systems/FuelSystem'
 import AirSystem from './Systems/AirSystem'
@@ -58,6 +58,10 @@ export default class Simulator {
 
     this.CoolingFreshWaterSys.FwPumpDsGen.Bus = this.PowerSys.EmergencyBus
     this.CoolingFreshWaterSys.FwPumpStartAir.Bus = this.PowerSys.MainBus1
+
+    // FIXME can only be enabled if there is a bypass (handpump) to start the DsGen for mainbus power
+    // this.FuelSys.DsPurification.Bus = this.PowerSys.MainBus1
+    this.FuelSys.DsPurification.Bus.Voltage = CstPowerSys.Voltage
 
     this.Running = undefined
   }

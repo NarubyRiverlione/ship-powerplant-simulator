@@ -20,7 +20,7 @@ export default class mockValve implements iValve {
 
   }
 
-  get Content() { return this.Source.Content }
+  get Content() { return this.isOpen ? this.Source.Content : 0 }
   Thick() { }
   Open() { }  //this.isOpen = true
   Close() { this.isOpen = false }

@@ -25,10 +25,10 @@ export default class TankWithValves implements Item {
     //  Inlet valve and Source valve are open
     // --> filling = adding this tank, removing from source
     this.IntakeValve.cbNowOpen = () => {
-      if (sourceValve.isOpen) {
+      if (this.IntakeValve.Source.Content) {
         this.Tank.Adding = true
-        const Source = sourceValve.Source as Tank
-        Source.AmountRemovers += 1
+        const SourceTank = sourceValve.Source as Tank
+        SourceTank.AmountRemovers += 1
       }
     }
     // inlet valve closed

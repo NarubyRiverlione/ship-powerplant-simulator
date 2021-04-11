@@ -95,7 +95,11 @@ export default class SteamBoiler implements Item {
   }
 
   Ignite() {
-    if (this.HasFlame) return
+    /* istanbul ignore if  */
+    if (this.HasFlame) {
+      console.error('double ignition')
+      return
+    }
     // ignite if there is fuel and enough water
     this.HasFlame = this.HasFuel && this.HasEnoughWaterForFlame
     if (this.HasFlame) {
@@ -105,7 +109,11 @@ export default class SteamBoiler implements Item {
     }
   }
   Extinguishing() {
-    if (!this.HasFlame) return
+    /* istanbul ignore if  */
+    if (!this.HasFlame) {
+      console.warn('double Extinguishing')
+      return
+    }
     // kill flame & stop burning fuel
     this.HasFlame = false
     this.FuelSourceTank.AmountRemovers -= 1

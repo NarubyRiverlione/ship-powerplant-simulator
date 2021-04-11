@@ -146,7 +146,7 @@ export default class Tank implements iTank {
       console.warn(`Tank:${this.Name} had a negative AddEachStep: ${this.AddEachStep} `)
       //  this.AddEachStep = 0
     }
-
+    /* istanbul ignore if  */
     if (this.Inside === undefined || Number.isNaN(this.Inside)) {
       console.warn(`Tank ${this.Name} contents is not a number: ${this.Inside}`)
     }

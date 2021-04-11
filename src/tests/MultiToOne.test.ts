@@ -3,9 +3,10 @@ import mockTank from './mocks/mockTank'
 import mockValve from './mocks/mockValve'
 
 let multiToOne: MultiInputs
+const dummySourceTank = new mockTank("dummy source tank", 100, 100)
 
 beforeEach(() => {
-  multiToOne = new MultiInputs("test multi to one")
+  multiToOne = new MultiInputs("test multi to one", dummySourceTank)
 })
 describe('Init', () => {
   test('no content', () => {
@@ -22,7 +23,6 @@ describe('adding', () => {
 
     multiToOne.Inputs.push(tank1)
     multiToOne.Inputs.push(tank2)
-
     expect(multiToOne.Content).toBe(content1 + content2)
 
   })
