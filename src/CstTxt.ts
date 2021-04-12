@@ -29,6 +29,7 @@ export default {
   FuelSysTxt: {
     DsPurification: 'Diesel purification unit',
     DsHandpump: 'Diesel handpump',
+    DsBypassValve: 'Diesel bypass valve',
     DsStorageTank: 'Diesel storage tank',
     DsServiceTank: 'Diesel service tank',
     DsShoreFillValve: 'Diesel shore fill valve',

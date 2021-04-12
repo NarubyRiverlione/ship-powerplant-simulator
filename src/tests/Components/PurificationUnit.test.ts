@@ -23,7 +23,7 @@ describe("init", () => {
 })
 
 describe("start / stop", () => {
-  test('start = content', () => {
+  test('start with power = content', () => {
     purUnit.Start()
     purUnit.Thick()
     expect(purUnit.CheckPower).toBeTruthy()

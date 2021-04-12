@@ -1,7 +1,6 @@
 import Simulator from '../Simulator'
 import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys, CstStartConditions, CstSteamSys } from '../Cst'
 import CstTxt from '../CstTxt'
-import CoolingSeaWaterSystem from '../Systems/CoolingSeaWaterSystem'
 
 let sim: Simulator
 
@@ -25,7 +24,13 @@ describe('Use start conditions', () => {
       expect(error.message).toBe(CstTxt.SimulationTxt.StartConditionsTxt.Undefined + tryCondition)
     }
   })
-
+  test('Cold & dark', () => {
+    sim.SetStartConditions(CstStartConditions.ColdAndDark)
+    sim.Thick()
+    const { PowerSys } = sim
+    expect(PowerSys.EmergencyBus.Content).toBe(0)
+    expect(PowerSys.MainBus1.Content).toBe(0)
+  })
   test('Full fuel tanks , diesel available via open service outlet valves', () => {
     sim.SetStartConditions(CstStartConditions.SetFuelTanksFull)
     sim.Thick()

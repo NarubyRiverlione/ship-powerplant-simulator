@@ -1,4 +1,4 @@
-import { makeObservable, action } from 'mobx'
+import { makeAutoObservable } from 'mobx'
 import Tank from '../Components/Tank'
 import TankWithValves from '../Components/TankWithValves'
 import Valve from '../Components/Valve'
@@ -27,7 +27,7 @@ export default class FuelSystem {
   DsStorage: TankWithValves
   DsService: TankWithValves
   // DsHandpump: HandPump
-  // DsHandPumpOutletValve: Valve
+  DsBypassValve: Valve
   DsServiceMulti: MultiInputs
   DsPurification: PurificationUnit
 
@@ -85,8 +85,13 @@ export default class FuelSystem {
     this.DsHandPumpOutletValve = new Valve("handpump outlet valve", this.DsHandpump)
     */
 
+    this.DsBypassValve = new Valve(FuelSysTxt.DsBypassValve, this.DsStorage.OutletValve)
+
+    this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification, mainbus, this.DsStorage.OutletValve)
+
     this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs", this.DsStorage.Tank)
-    this.DsServiceMulti.Inputs.push(this.DsStorage.OutletValve)
+    this.DsServiceMulti.Inputs.push(this.DsPurification)
+    this.DsServiceMulti.Inputs.push(this.DsBypassValve)
 
     // TODO add input for purification outlet valve
     // this.DsServiceMulti.Inputs.push(this.Purification.OutletValve)
@@ -104,16 +109,15 @@ export default class FuelSystem {
     this.DsService.Tank.LowLevelAlarm = AlarmLevel.FuelSys.LowDsService
     // #endregion
 
-    this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification, mainbus, this.DsStorage.OutletValve)
 
-    makeObservable(this, { Thick: action })
+    makeAutoObservable(this)
   }
 
   Thick() {
     // reevaluate DsStorage removing each Tick, to may possibilities to catch in callback functions
     this.DsStorage.Tank.RemoveEachStep = 0
 
-    if (this.DsPurification.isRunning) {
+    if (this.DsPurification.isRunning || this.DsBypassValve.isOpen) {
       // remove from storage tank, DsStorage is Ratio bigger then DsService tank
       if (this.DsStorage.OutletValve.isOpen && this.DsService.IntakeValve.isOpen) {
 
@@ -130,6 +134,11 @@ export default class FuelSystem {
         ? CstFuelSys.DsServiceTank.TankAddStep
         // stop filling service tank if storage is empty
         : 0
+    }
+    if (!this.DsPurification.isRunning && !this.DsBypassValve.isOpen) {
+      // stop filling if purification unit stops running or bypass valve is now closed
+      this.DsStorage.Tank.RemoveEachStep = 0
+      this.DsService.Tank.AddEachStep = 0
     }
 
     // also draining ?

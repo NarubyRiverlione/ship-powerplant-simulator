@@ -23,12 +23,6 @@ export default class HandPump extends Tank {
   }
 
   Thick() {
-    if (!this.IsCranked) {
-      // clear content
-      this.Inside = 0
-      return
-    }
-
     if (this.IsCranked) {
       // add max volume of handpump
       this.AddEachStep = this.SourceValve.Content >= this.Volume ? this.Volume : this.SourceValve.Content
@@ -41,7 +35,11 @@ export default class HandPump extends Tank {
 
       this.IsCranked = false
     }
-
+    else {
+      // clear content
+      this.Inside = 0
+      return
+    }
   }
 }
 

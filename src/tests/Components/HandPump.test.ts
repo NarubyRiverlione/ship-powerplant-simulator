@@ -31,6 +31,13 @@ describe('Cranking', () => {
     expect(handPump.IsCranked).toBeFalsy()
     expect(handPump.Content).toBe(CstPumpVolume)
   })
+  test(' cranking with limit source =  has all source content', () => {
+    dummySourceTank.Inside = 1
+    handPump.Crank()
+    handPump.Thick()
+    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.Content).toBe(1)
+  })
   test('2the Thick after 1 cranking =  no content', () => {
     handPump.Crank()
     handPump.Thick()
