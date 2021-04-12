@@ -123,6 +123,7 @@ Pump FW Air cooler (Main bus)         |        Pump Diesel generator cooler (Eme
 ```
 
 ### Steam diagram
+```
        |--> Safety Release valve 
 BOILER |
        |--> Steam Vent valve
@@ -131,6 +132,6 @@ BOILER |
        |==>== Main Steam valve ==>==
        |
        |==<== Steam Condensor ==<==
-
+```
 
 ## (Todo) Main Engine
