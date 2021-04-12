@@ -9,14 +9,15 @@ import Cooler from './Cooler'
 const { SteamSysTxt } = CstTxt
 
 /*
-  |
-Main Steam  Valve
-  |
-BOILER ==<== Fuel Intake Valve ==<==
-   |
-(WaterTank) ==<== Water Intake Valve ==<==
-  |     
-Water Drain Valve
+  
+Fuel intake vale ==>==|                   |--> Safety Release valve 
+                      | BOILER =>=steam=>=|
+Water intake valve =>=|     |             |--> Steam Vent valve
+                 water DrainValve         |
+                                          |
+                                          |==>== Main Steam valve ==>==
+                                          |
+                                          |==<== Steam Condensor ==<==
   |
 */
 export default class SteamBoiler implements Item {

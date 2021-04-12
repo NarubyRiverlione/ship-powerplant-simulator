@@ -21,11 +21,13 @@ Diesel generator 1 -->  Breaker Diesel Gen 1
                         |
 ```
 
-### Diesel generator 1
+### Diesel generator
 ```
--- (Diesel service tank) ----------->-- Diesel oil intake valve =======>====== |------------------| ===>=== (Breaker Diesel generator)
--- (Emergency start air receiver) -->-- Start air intake valve  =======>====== | Diesel generator |
--- (Lubrication service tank) -->-- Lubrication intake valve ==>== Slump ==>== |------------------| 
+-- (Diesel service tank) ----------->-- Diesel oil intake valve =======>== |------------------| 
+                                                                           |                  |
+-- (Emergency start air receiver) -->-- Start air intake valve  =======>== | Diesel generator |===>=== (Breaker Diesel generator)
+                                                                           |                  |
+-- (Lubrication service tank) -->-- Lubrication intake valve =>= Slump =>= |------------------| 
                                                                     |                        |     
                                                                     |==<== Lub. cooler ==<== |
                                                                             |       |
@@ -37,10 +39,14 @@ Diesel generator 1 -->  Breaker Diesel Gen 1
 
 ### Diesel oil
 ```
-Shore Valve -->-- (intake valve) DsStorage (outlet valve) -->-- (intake valve) DsService (outlet valve)
-                                (drain)                                     (drain)
+Shore Valve 
+    |
+(intake valve) DsStorage 
+                |
+               (outlet valve) |--> Handpump (todo) --> bypass valve --> |
+                              |                                         |=>(MultiToOne)--> (intake valve) DsService (outlet valve)                                   
+                              |-->-- Purification (WIP)           -->-- |
 ```
-(todo: purifier)
 
 ### Todo Heavy Fuel
 
@@ -57,10 +63,11 @@ Shore Valve --->-- (intake valve) DsStorage (outlet valve)
 
 ### Start Air
 ```
-Start air compressor 1 - outlet valve  --- FW air compress cooler --- (intake valve) Start air receiver 1 (outlet valve)
-                                                                                        | (drain)
+Start air compressor 1 ->- outlet valve  -->-- FW air compress cooler -->-- (intake valve) Start air receiver 1 (outlet valve)
+             | safety                                                                            | (drain)
 
-Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (outlet valve)
+
+Emergency compressor ->- outlet valve  -->-- (intake valve) Emergence receiver (outlet valve)
        | safety   
 ```
 
@@ -72,10 +79,10 @@ Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (o
 ### Sea water cooling circuit 
 ```
 Sea chest high  - suction Valve ->- |  
-                                    | - Suction pump 1 (main bus) --|     |- Steam condensor                                    -->-|
-                                    | - Suction pump 2 (main bus) --|==>==|- Fresh water cooler Start Air compressor             ->-|==>== over board dump valve
-                                    | - Aux pump (emergency bus)  --|     |- Fresh water cooler Diesel generator 1 (aux capable) ->-|
-Sea chest low  - suction valve ->-  |
+                                    | - Suction pump 1 (main bus) --|     |- Steam condensor                         -->-|
+                                    | - Suction pump 2 (main bus) --|==>==|- Fresh water cooler Start Air compressor  ->-|==>== over board dump valve
+                                    | - Aux pump (emergency bus)  --|     |- Fresh water cooler Diesel generator      ->-|
+Sea chest low  - suction valve ->-  |                                             (aux capable)
 */
 ```
 
@@ -114,6 +121,16 @@ Pump FW Air cooler (Main bus)         |        Pump Diesel generator cooler (Eme
                                               |             |-<- Feed Water Inlet Valve -<- (Feed water Make up)
                                         Drain valve                             
 ```
+
+### Steam diagram
+       |--> Safety Release valve 
+BOILER |
+       |--> Steam Vent valve
+       |
+       |
+       |==>== Main Steam valve ==>==
+       |
+       |==<== Steam Condensor ==<==
 
 
 ## (Todo) Main Engine

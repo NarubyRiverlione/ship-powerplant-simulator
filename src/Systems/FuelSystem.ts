@@ -16,10 +16,11 @@ const { FuelSysTxt } = CstTxt
 /*
 Shore Valve 
     |
-(intake valve) DsStorage (outlet valve) 
-            --> Handpump --> handpump outlet valve                    --> |
-                                                                          | => MultiToOne ==> --> (intake valve) DsService (outlet valve)                                   
-                --> Purification (TODO) --> purification outlet valve --> |
+(intake valve) DsStorage 
+                |
+               (outlet valve) |--> Handpump (todo) --> bypass valve --> |
+                              |                                         | => (MultiToOne) ==> --> (intake valve) DsService (outlet valve)                                   
+                              |-->-- Purification (WIP)           -->-- |
                                       
 */
 export default class FuelSystem {
