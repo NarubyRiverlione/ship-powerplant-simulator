@@ -4,13 +4,13 @@ import Tank from './Tank'
 import Valve from './Valve'
 
 export default class HandPump extends Tank {
-  IsCranked: boolean
+  isCranked: boolean
   SourceValve: Valve
 
 
   constructor(name: string, volume: number, sourceValve: Valve) {
     super(name, volume)
-    this.IsCranked = false
+    this.isCranked = false
     this.SourceValve = sourceValve
 
     makeObservable(this, {
@@ -19,11 +19,11 @@ export default class HandPump extends Tank {
   }
 
   Crank() {
-    this.IsCranked = true
+    this.isCranked = true
   }
 
   Thick() {
-    if (this.IsCranked) {
+    if (this.isCranked) {
       // add max volume of handpump
       this.AddEachStep = this.SourceValve.Content >= this.Volume ? this.Volume : this.SourceValve.Content
       this.Adding = true
@@ -33,7 +33,7 @@ export default class HandPump extends Tank {
       const sourceTank = this.SourceValve.Source as Tank
       sourceTank.Inside -= this.AddEachStep
 
-      this.IsCranked = false
+      this.isCranked = false
     }
     else {
       // clear content

@@ -12,7 +12,8 @@ export default class Generator implements Item {
   HasLubrication: boolean
   FuelProvider: Tank
   FuelConsumption: number
-  //FIXME FuelProvider is Tank, wordt outlet valve van tank in rekening gebracht?
+
+
   constructor(Name: string, Rate: number, fuelProvider: Tank) {
     this.Name = Name
     this.RatedFor = Rate

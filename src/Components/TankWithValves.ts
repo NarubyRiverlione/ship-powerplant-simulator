@@ -53,6 +53,8 @@ export default class TankWithValves implements Item {
       this.Tank.AmountRemovers += 1
     }
   }
+
+
   get Content() { return this.Tank.Content }
   Thick() {
     this.Tank.Thick()

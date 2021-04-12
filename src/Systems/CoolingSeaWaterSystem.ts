@@ -27,11 +27,11 @@ export default class CoolingSeaWaterSystem {
   FwCoolerDsGen: Cooler
   FwCoolerStartAir: Cooler
   SteamCondensor: Cooler
-
+  // Seawater intake chests
   SeaChestLowSuctionIntakeValve: Valve
   SeaChestHighSuctionIntakeValve: Valve
-
-  AuxPump: Pump
+  // Seawater pumps
+  AuxPump: Pump       // aux can run on emergency bus
   SuctionPump1: Pump
   SuctionPump2: Pump
 

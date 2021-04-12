@@ -5,7 +5,6 @@ import CstTxt from '../CstTxt'
 import { CstChanges, CstSteamSys, CstFuelSys } from '../Cst'
 import CalcPressureViaTemp from '../CalcPressureTemp'
 import { makeAutoObservable } from 'mobx'
-import Cooler from './Cooler'
 const { SteamSysTxt } = CstTxt
 
 /*
@@ -79,6 +78,7 @@ export default class SteamBoiler implements Item {
     makeAutoObservable(this)
   }
 
+
   get WaterLevel(): number { return this.WaterTank.Content }
   get HasFuel(): boolean { return this.FuelIntakeValve.Content !== 0 }
   get Content() { return this.Pressure }
@@ -90,11 +90,11 @@ export default class SteamBoiler implements Item {
   get Pressure() {
     return CalcPressureViaTemp(this.Temperature)
   }
+
   CheckFlame() {
     // only keep flame is there is still fuel && water
     if (this.HasFlame && (!this.HasFuel || !this.HasEnoughWaterForFlame)) this.Extinguishing()
   }
-
   Ignite() {
     /* istanbul ignore if  */
     if (this.HasFlame) {
@@ -120,7 +120,6 @@ export default class SteamBoiler implements Item {
     this.FuelSourceTank.AmountRemovers -= 1
     this.FuelSourceTank.RemoveEachStep -= CstFuelSys.SteamBoiler.Consumption
   }
-
   CheckTemp() {
     //  no flame but not at start temp = cooling down
     if (!this.HasFlame && this.Temperature > CstSteamSys.Boiler.StartTemp) {

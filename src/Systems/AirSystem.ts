@@ -86,7 +86,7 @@ export default class AirSystem {
     this.StartAirCompressor.OutletValve.Source = this.StartAirCompressor
 
     // emergency compressor running with valves closed = has no receiver -> open safety
-    // todo also look at emergencyReceiver is full
+    // TODO also look at emergencyReceiver is full or use AlarmSys ?
     this.EmergencyCompressor.HasReceiver = this.EmergencyCompressor.OutletValve.isOpen && this.EmergencyReceiver.IntakeValve.isOpen
 
     this.EmergencyCompressor.Thick()

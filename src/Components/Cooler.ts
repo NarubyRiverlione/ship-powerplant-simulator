@@ -12,6 +12,7 @@ export default class Cooler implements iCooler {
   HotCircuitComplete: boolean
   CoolCircuitComplete: boolean
 
+
   constructor(name: string) {
     this.Name = name
     this.HotCircuitComplete = false
@@ -23,11 +24,8 @@ export default class Cooler implements iCooler {
   }
 
   get IsCooling() { return this.HotCircuitComplete && this.CoolCircuitComplete }
-
   get Content() { return this.IsCooling ? 1 : 0 }
 
-  // Cooler is a passive appliance, no need for Thick testing
-  /* istanbul ignore next */
-  Thick() {
-  }
+  /* istanbul ignore next  */
+  Thick() { }
 }

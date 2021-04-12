@@ -3,26 +3,27 @@ import { action, computed, makeObservable, observable } from 'mobx'
 
 
 export interface iValve extends Item {
-  isOpen: boolean
   Name: string
   Source: Item
+  isOpen: boolean
   cbNowOpen: () => void
   cbNowClosed: () => void
 }
 
 export default class Valve implements iValve {
-  isOpen: boolean
   Name: string
   Source: Item
+  isOpen: boolean
   cbNowOpen: () => void
   cbNowClosed: () => void
 
   constructor(name: string, source: Item) {
+    this.Name = name
+    this.Source = source
     this.isOpen = false
     this.cbNowOpen = () => { }
     this.cbNowClosed = () => { }
-    this.Source = source
-    this.Name = name
+
     makeObservable(this, {
       isOpen: observable,
       Source: observable,
@@ -34,24 +35,24 @@ export default class Valve implements iValve {
     })
   }
 
+
+  get Content() {
+    return this.isOpen ? this.Source.Content : 0
+  }
+
   Open() {
     this.isOpen = true
     this.cbNowOpen()
   }
-
   Close() {
     this.isOpen = false
     this.cbNowClosed()
   }
 
-  get Content() {
-    return this.isOpen ? this.Source.Content : 0
-  }
-  Thick() {
-
-  }
   Toggle() {
     if (this.isOpen) this.Close()
     else this.Open()
   }
+
+  Thick() { }
 }

@@ -19,7 +19,7 @@ beforeEach(() => {
 
 describe('Init', () => {
   test('Pump is not cranking, has no content', () => {
-    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.isCranked).toBeFalsy()
     expect(handPump.Content).toBe(0)
   })
 })
@@ -28,34 +28,34 @@ describe('Cranking', () => {
   test('Thick if cranking =  has content', () => {
     handPump.Crank()
     handPump.Thick()
-    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.isCranked).toBeFalsy()
     expect(handPump.Content).toBe(CstPumpVolume)
   })
   test(' cranking with limit source =  has all source content', () => {
     dummySourceTank.Inside = 1
     handPump.Crank()
     handPump.Thick()
-    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.isCranked).toBeFalsy()
     expect(handPump.Content).toBe(1)
   })
   test('2the Thick after 1 cranking =  no content', () => {
     handPump.Crank()
     handPump.Thick()
     handPump.Thick()
-    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.isCranked).toBeFalsy()
     expect(handPump.Content).toBe(0)
   })
   test('Thick if not cranked, still no content', () => {
-    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.isCranked).toBeFalsy()
     handPump.Thick()
-    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.isCranked).toBeFalsy()
     expect(handPump.Content).toBe(0)
   })
 
   test('Thick after cranking removes from source', () => {
     handPump.Crank()
     handPump.Thick()
-    expect(handPump.IsCranked).toBeFalsy()
+    expect(handPump.isCranked).toBeFalsy()
     expect(handPump.Content).toBe(CstPumpVolume)
     expect(handPump.Inside).toBe(CstPumpVolume)
 

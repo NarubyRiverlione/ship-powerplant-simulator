@@ -25,4 +25,3 @@ export const AlarmLevel = {
     LowStorage: 25
   }
 }
-

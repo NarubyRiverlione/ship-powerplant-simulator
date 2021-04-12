@@ -4,13 +4,17 @@ import PowerBus from './PowerBus'
 
 export default class Appliance implements Item {
   Name: string
-  isRunning: boolean
   Bus: PowerBus
+  isRunning: boolean
+  Output: number
 
   constructor(name: string, bus: PowerBus) {
     this.Name = name
-    this.isRunning = false
     this.Bus = bus
+    this.isRunning = false
+    this.Output = 0.0
+
+    // this is a super class, makeAutoObservable doesn't work here
     makeObservable(this, {
       isRunning: observable,
       CheckPower: computed,
@@ -19,8 +23,8 @@ export default class Appliance implements Item {
       Thick: action
     })
   }
-  get Content() { return 0 }
 
+  get Content() { return this.Output }
   get CheckPower() {
     return this.Bus.Voltage !== 0
   }

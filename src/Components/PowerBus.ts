@@ -19,6 +19,7 @@ export default class PowerBus implements iPowerBus {
     makeAutoObservable(this)
   }
 
+
   get Content() { return this.Voltage }
 
   Thick() {

@@ -59,9 +59,7 @@ export default class Simulator {
     this.CoolingFreshWaterSys.FwPumpDsGen.Bus = this.PowerSys.EmergencyBus
     this.CoolingFreshWaterSys.FwPumpStartAir.Bus = this.PowerSys.MainBus1
 
-    // FIXME can only be enabled if there is a bypass (handpump) to start the DsGen for mainbus power
-    // this.FuelSys.DsPurification.Bus = this.PowerSys.MainBus1
-    this.FuelSys.DsPurification.Bus.Voltage = CstPowerSys.Voltage
+    this.FuelSys.DsPurification.Bus = this.PowerSys.MainBus1
 
     this.Running = undefined
   }

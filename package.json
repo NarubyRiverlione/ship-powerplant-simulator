@@ -1,7 +1,7 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "5.11.2",
-  "description": "Simulator logic for ship powerplant",
+  "version": "5.11.3",
+  "description": "Logic for ship simulator app",
   "main": "lib/Simulator.js",
   "types": "lib/Simulator.d.ts",
   "type": "module",
@@ -68,6 +68,7 @@
       "ecmaVersion": 8,
       "sourceType": "module"
     },
+    "ignorePatterns": "/lib/",
     "rules": {
       "no-mixed-operators": "off",
       "class-methods-use-this": "warn",

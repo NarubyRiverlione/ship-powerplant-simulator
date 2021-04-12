@@ -56,14 +56,13 @@ export default class DieselGenerator extends Generator {
     })
   }
 
+
   CheckFuel() {
     this.HasFuel = this.FuelIntakeValve.Content !== 0
   }
-
   CheckLubrication() {
     this.HasLubrication = this.LubSlump.Content >= CstPowerSys.DsGen.Slump.MinForLubrication
   }
-
   CheckCooling() {
     // lub cooler only works 
     // with enough lubrication (hot side Ok)
@@ -73,7 +72,6 @@ export default class DieselGenerator extends Generator {
     // generator has cooling of lub cooler is cooling
     this.HasCooling = this.LubCooler.IsCooling
   }
-
   get CheckAir() {
     return this.AirIntakeValve.Content - CstAirSys.DieselGenerator.StarAirConsumption >= 0
   }

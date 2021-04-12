@@ -90,12 +90,11 @@ export default class FuelSystem {
 
     this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification, mainbus, this.DsStorage.OutletValve)
 
+    //#region Combine inputs from Purification and Bypass valve to 1 
     this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs", this.DsStorage.Tank)
     this.DsServiceMulti.Inputs.push(this.DsPurification)
     this.DsServiceMulti.Inputs.push(this.DsBypassValve)
-
-    // TODO add input for purification outlet valve
-    // this.DsServiceMulti.Inputs.push(this.Purification.OutletValve)
+    //#endregion
 
     // #region Diesel service tank,
     // filled from the storage outlet valve
