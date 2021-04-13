@@ -5,7 +5,7 @@ const { CoolantSysTxt } = CstTxt
 
 import Tank from '../Components/Tank'
 import Valve from '../Components/Valve'
-import Pump from '../Components/ElectricPump'
+import Pump from '../Components/Appliances/ElectricPump'
 import Cooler from '../Components/Cooler'
 import PowerBus from '../Components/PowerBus'
 

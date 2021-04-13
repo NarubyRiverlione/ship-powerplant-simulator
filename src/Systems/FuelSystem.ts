@@ -9,7 +9,7 @@ import { CstFuelSys, CstChanges } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
 import HandPump from '../Components/HandPump'
 import MultiInputs from '../Components/MultiToOne'
-import PurificationUnit from '../Components/PurificationUnit'
+import PurificationUnit from '../Components/Appliances/PurificationUnit'
 import PowerBus from '../Components/PowerBus'
 
 const { FuelSysTxt } = CstTxt
@@ -32,7 +32,10 @@ export default class FuelSystem {
   DsServiceMulti: MultiInputs
   DsPurification: PurificationUnit
 
-  constructor(alarmSys: AlarmSystem, mainbus = new PowerBus('dummy powerbus')) {
+  constructor(alarmSys: AlarmSystem,
+    // mainbus = new PowerBus('dummy powerbus'),
+    // steamMainValve: Valve
+  ) {
     // #region Intake valve from shore to diesel storage tank
     const dummyShore = new Tank('Shore as tank', CstFuelSys.ShoreVolume, CstFuelSys.ShoreVolume)
     this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
@@ -88,7 +91,8 @@ export default class FuelSystem {
 
     this.DsBypassValve = new Valve(FuelSysTxt.DsBypassValve, this.DsStorage.OutletValve)
 
-    this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification, mainbus, this.DsStorage.OutletValve)
+    this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification,
+      CstFuelSys.Purification.Volume, this.DsStorage.OutletValve)
 
     //#region Combine inputs from Purification and Bypass valve to 1 
     this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs", this.DsStorage.Tank)
@@ -116,6 +120,8 @@ export default class FuelSystem {
   Thick() {
     // reevaluate DsStorage removing each Tick, to may possibilities to catch in callback functions
     this.DsStorage.Tank.RemoveEachStep = 0
+
+    this.DsPurification.Thick()
 
     if (this.DsPurification.isRunning || this.DsBypassValve.isOpen) {
       // remove from storage tank, DsStorage is Ratio bigger then DsService tank

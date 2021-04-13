@@ -1,16 +1,18 @@
 import { makeObservable, observable, action, computed } from 'mobx'
-import Item from "./Item"
-import PowerBus from './PowerBus'
+import Item from "../Item"
+import PowerBus from '../PowerBus'
 
 export default class Appliance implements Item {
   Name: string
   Bus: PowerBus
   isRunning: boolean
+  RatedFor: number
   Output: number
 
-  constructor(name: string, bus: PowerBus) {
+  constructor(name: string, bus: PowerBus, rate: number) {
     this.Name = name
     this.Bus = bus
+    this.RatedFor = rate
     this.isRunning = false
     this.Output = 0.0
 
@@ -38,7 +40,9 @@ export default class Appliance implements Item {
   }
 
   Thick() {
+    // cannot run without power
     this.isRunning = this.isRunning && this.CheckPower
+    this.Output = this.isRunning ? this.RatedFor : 0.0
   }
 
   Toggle() {

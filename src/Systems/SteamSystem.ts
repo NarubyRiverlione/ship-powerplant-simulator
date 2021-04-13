@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import TankWithValves from "../Components/TankWithValves";
 import Tank from "../Components/Tank";
 import Valve from "../Components/Valve";
-import Pump from "../Components/ElectricPump";
+import Pump from "../Components/Appliances/ElectricPump";
 import PowerBus from "../Components/PowerBus";
 import Cooler from "../Components/Cooler";
 import SteamBoiler from "../Components/SteamBoiler";

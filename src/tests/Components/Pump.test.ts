@@ -1,4 +1,4 @@
-import Pump from '../../Components/ElectricPump'
+import Pump from '../../Components/Appliances/ElectricPump'
 import mockPowerBus from '../mocks/mockPowerBus'
 
 const ratedFor = 6916

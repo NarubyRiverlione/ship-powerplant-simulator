@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import TankWithValves from '../Components/TankWithValves'
 import Valve from '../Components/Valve'
 import PowerBus from '../Components/PowerBus'
-import Compressor from '../Components/Compressor'
+import Compressor from '../Components/Appliances/Compressor'
 
 import { CstAirSys } from '../Cst'
 import CstTxt from '../CstTxt'

@@ -1,5 +1,5 @@
 import mockPowerBus from '../mocks/mockPowerBus'
-import Compressor from '../../Components/Compressor'
+import Compressor from '../../Components/Appliances/Compressor'
 
 let comp: Compressor
 const ratedFor = 13568

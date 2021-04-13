@@ -60,6 +60,7 @@ export default class Simulator {
     this.CoolingFreshWaterSys.FwPumpStartAir.Bus = this.PowerSys.MainBus1
 
     this.FuelSys.DsPurification.Bus = this.PowerSys.MainBus1
+    this.FuelSys.DsPurification.SteamIntakeValve.Source = this.SteamSys.MainSteamValve
 
     this.Running = undefined
   }

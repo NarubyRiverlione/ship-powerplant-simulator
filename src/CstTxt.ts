@@ -86,5 +86,9 @@ export default {
       SafetyRelease: 'Safety release valve',
       SteamVent: 'Steam vent valve'
     }
+  },
+  PurificationTxt: {
+    IntakeValve: 'Intake valve',
+    SteamIntakeValve: 'Steam intake valve'
   }
 }

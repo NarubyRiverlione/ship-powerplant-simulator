@@ -1,13 +1,14 @@
-import Appliance from '../../Components/Appliance'
+import Appliance from '../../Components/Appliances/Appliance'
 import mockPowerBus from '../mocks/mockPowerBus'
 
 const testVoltage = 440
+const testRate = 25
 let appliance: Appliance
+
 beforeEach(() => {
   const testBus = new mockPowerBus('test bus')
   testBus.Voltage = testVoltage
-
-  appliance = new Appliance('test bus', testBus)
+  appliance = new Appliance('test bus', testBus, testRate)
 })
 
 describe('Init', () => {
@@ -29,9 +30,11 @@ describe('start/stop', () => {
   })
   test('start  power on bus =  running', () => {
     appliance.Start()
+    appliance.Thick()
     expect(appliance.Bus.Voltage).toBe(testVoltage)
     expect(appliance.CheckPower).toBeTruthy()
     expect(appliance.isRunning).toBeTruthy()
+    expect(appliance.Content).toBe(testRate)
   })
   test('stop running appliance = stop', () => {
     appliance.Start()

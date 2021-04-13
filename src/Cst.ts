@@ -40,7 +40,8 @@ export const CstFuelSys = {
     TankAddStep: 2
   },
   DieselGenerator: { Consumption: { Diesel: 0.01 } },
-  SteamBoiler: { Consumption: 0.05 }
+  SteamBoiler: { Consumption: 0.05 },
+  Purification: { Volume: 2, SteamNeeded: 4 }
 }
 export const CstAirSys = {
   StartAirCompressor1: {
