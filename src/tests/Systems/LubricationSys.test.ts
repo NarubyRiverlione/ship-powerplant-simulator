@@ -88,7 +88,7 @@ describe('Storage tank: fill from shore', () => {
   })
 
 })
-describe.skip('Alarms', () => {
+describe('Alarms', () => {
   test('Raise Low diesel storage tank', () => {
     // at alarm level = no alarm yet, must be below
     lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.LowStorage

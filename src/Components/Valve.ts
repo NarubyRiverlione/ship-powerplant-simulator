@@ -7,8 +7,8 @@ export interface iValve extends Item {
   Source: Item
   Volume: number
   isOpen: boolean
-  cbNowOpen: () => void
-  cbNowClosed: () => void
+  Open: () => void
+  Close: () => void
 }
 
 export default class Valve implements iValve {

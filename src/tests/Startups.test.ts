@@ -86,13 +86,20 @@ describe('Use start conditions', () => {
     expect(CoolingSeaWaterSys.AuxPump.isRunning).toBeFalsy()
   })
   test('Boiler has steam', () => {
-    const { SteamSys: { Boiler } } = sim
+    const { SteamSys: { Boiler }, FuelSys: { DsService }, PowerSys: { DsGen } } = sim
     sim.SetStartConditions(CstStartConditions.BoilerOperational)
     sim.Thick()
     expect(Boiler.HasFlame).toBeTruthy()
     expect(Boiler.AutoFlame).toBeTruthy()
     expect(Boiler.Temperature).toBe(CstSteamSys.Boiler.OperatingTemp + CstSteamSys.Boiler.TempAddStep)
     expect(Boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
+    // DsGen in running and Boiler has flame ==> diesel consumption 
+    expect(DsGen.isRunning).toBeTruthy()
+    expect(DsService.Tank.RemoveEachStep).toBe(
+      CstFuelSys.DieselGenerator.Consumption.Diesel
+      + CstFuelSys.SteamBoiler.Consumption
+    )
+
   })
   test('Boiler delivers steam', () => {
     const { SteamSys: { SteamCondensor, MainSteamValve } } = sim

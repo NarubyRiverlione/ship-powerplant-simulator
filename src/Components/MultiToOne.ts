@@ -1,11 +1,11 @@
 import Item from './Item'
-import Tank from './Tank'
+import { iTank } from './Tank'
 import Valve from './Valve'
 
 export default class MultiInputs extends Valve {
   Inputs: Array<Item>
 
-  constructor(name: string, sourceTank: Tank) {
+  constructor(name: string, sourceTank: iTank) {
     super(name, sourceTank)
     this.Inputs = new Array()
     this.Open()

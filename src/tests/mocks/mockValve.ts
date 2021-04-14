@@ -9,17 +9,12 @@ export default class mockValve implements iValve {
   Name: string
   Source: Item
   Volume: number
-  cbNowOpen: () => void
-  cbNowClosed: () => void
 
   constructor(name: string, source: mockValve | mockTank, volume?: number) {
     this.isOpen = true // mock valve is default open !
     this.Volume = volume ?? Number.MAX_SAFE_INTEGER
-    this.cbNowOpen = () => { }
-    this.cbNowClosed = () => { }
     this.Source = source
     this.Name = name
-
   }
 
   get Content() {

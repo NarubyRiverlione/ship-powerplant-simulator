@@ -6,7 +6,7 @@ import mockAlarmSys from '../mocks/mockAlarmSys'
 import mockTank from '../mocks/mockTank'
 import mockValve from '../mocks/mockValve'
 import mockPowerBus from '../mocks/mockPowerBus'
-import { CstPowerSys } from '../../Cst'
+import { CstPowerSys, CstSteamSys } from '../../Cst'
 const { FuelSysTxt } = CstTxt
 
 let fuelSys: FuelSystem
@@ -573,6 +573,25 @@ describe('Diesel service tank, filling via multi input', () => {
       expect(DsStorage.Tank.Content).toBeCloseTo(contentTank - CstFuelSys.BypassValveVolume * 2)
       expect(DsService.Tank.Content).toBe(CstFuelSys.BypassValveVolume * 2)
     })
+  })
+
+  test('Add via purification and bypass valve', () => {
+    const { DsPurification, DsStorage, DsService } = fuelSys
+    DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
+    DsStorage.OutletValve.Open()
+    DsService.IntakeValve.Open()
+
+    DsPurification.IntakeValve.Open()
+    DsPurification.SteamIntakeValve.Open()
+    DsPurification.Start()
+
+    fuelSys.DsBypassValve.Open()
+    fuelSys.Thick()
+    expect(fuelSys.DsServiceMulti.Content).toBe(CstFuelSys.BypassValveVolume + CstFuelSys.Purification.Volume)
+    expect(DsService.Tank.Content).toBe(CstFuelSys.BypassValveVolume + CstFuelSys.Purification.Volume)
+    expect(DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankVolume
+      - (CstFuelSys.BypassValveVolume + CstFuelSys.Purification.Volume))
+
   })
 })
 

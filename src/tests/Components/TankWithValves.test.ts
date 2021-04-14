@@ -40,7 +40,6 @@ describe('Init', () => {
     expect(tankV.DrainValve.isOpen).toBeFalsy()
   })
 })
-
 describe('Intake valve', () => {
   test('intake & source valves are closed --> no filling', () => {
     dummySourceValve.Close()
@@ -101,6 +100,26 @@ describe('Intake valve', () => {
   })
   */
 })
+
+describe('Drain valve', () => {
+  test('open drain valve = remove from tank', () => {
+    const startContent = 1435
+    tankV.Tank.Inside = startContent
+    tankV.DrainValve.Open()
+    tankV.Thick()
+    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
+  })
+  test('closing previous open drain valve = stop remove from tank', () => {
+    const startContent = 563
+    tankV.Tank.Inside = startContent
+    tankV.DrainValve.Open()
+    tankV.Thick()
+    tankV.DrainValve.Close()
+    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
+  })
+})
+
+/*
 describe.skip('Outlet valve', () => {
   test('full tank and open unrestricted outlet = valve has tank content', () => {
     tankV.OutletValve.Open()
@@ -133,23 +152,6 @@ describe.skip('Outlet valve', () => {
     expect(tankV.OutletValve.Content).toBe(StartContent)
     tankV.Thick()
     expect(tankV.Tank.Content).toBe(0)
-  })
-})
-describe('Drain valve', () => {
-  test('open drain valve = remove from tank', () => {
-    const startContent = 1435
-    tankV.Tank.Inside = startContent
-    tankV.DrainValve.Open()
-    tankV.Thick()
-    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
-  })
-  test('closing previous open drain valve = stop remove from tank', () => {
-    const startContent = 563
-    tankV.Tank.Inside = startContent
-    tankV.DrainValve.Open()
-    tankV.Thick()
-    tankV.DrainValve.Close()
-    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
   })
 })
 describe.skip('Drain & outlet combo', () => {
@@ -234,3 +236,4 @@ describe.skip('Drain & outlet combo', () => {
   })
 
 })
+*/

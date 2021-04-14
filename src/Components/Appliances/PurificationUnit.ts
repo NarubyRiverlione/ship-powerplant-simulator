@@ -1,27 +1,28 @@
 import Appliance from "./Appliance";
 import PowerBus from "../PowerBus";
-import Valve from "../Valve";
+import Valve, { iValve } from "../Valve";
 import Tank from "../Tank";
 import { CstFuelSys } from "../../Cst";
 import CstTxt from '../../CstTxt'
 
 const { PurificationTxt } = CstTxt
 
+// FIXME first instantiate purification unit with dummy main steam valve
+// as the Steam Sys is later instantiate in Simulator than the FuelSys
 const dummySteamMainValve = new Valve('dummy main steam valve', new Tank('dummy steam source', 0, 0))
 
+
 export default class PurificationUnit extends Appliance {
-  IntakeValve: Valve
-  SteamIntakeValve: Valve
+  IntakeValve: iValve
+  SteamIntakeValve: iValve
 
 
-  constructor(name: string, rate: number, sourceValve: Valve,
-    powerbus = new PowerBus('dummy powerbus'),
-    steamSourceValve = dummySteamMainValve
-  ) {
+  constructor(name: string, rate: number, sourceValve: iValve,
+    powerbus = new PowerBus('dummy powerbus')) {
     super(name, powerbus, rate)
 
     this.IntakeValve = new Valve(PurificationTxt.IntakeValve, sourceValve)
-    this.SteamIntakeValve = new Valve(PurificationTxt.SteamIntakeValve, steamSourceValve)
+    this.SteamIntakeValve = new Valve(PurificationTxt.SteamIntakeValve, dummySteamMainValve)
   }
   get HasSteam() { return this.SteamIntakeValve.Content >= CstFuelSys.Purification.SteamNeeded }
 

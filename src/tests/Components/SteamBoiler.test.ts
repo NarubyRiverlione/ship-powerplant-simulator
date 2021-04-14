@@ -84,11 +84,6 @@ describe('Water level', () => {
     expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainStep)
 
   })
-  test.skip('Prevent negative level', () => {
-    boiler.WaterTank.Inside = -10
-    boiler.Thick()
-    expect(boiler.WaterTank.Inside).toBe(0)
-  })
 })
 
 describe('Fuel', () => {

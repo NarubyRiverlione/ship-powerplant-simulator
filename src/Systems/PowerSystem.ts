@@ -6,7 +6,7 @@ import Generator from '../Components/Generator'
 import DieselGenerator from '../Components/DieselGenerator'
 import Breaker from '../Components/Breaker'
 import PowerBus from '../Components/PowerBus'
-import Valve from '../Components/Valve'
+import { iValve } from '../Components/Valve'
 import Cooler from '../Components/Cooler'
 import Tank from '../Components/Tank'
 
@@ -40,9 +40,9 @@ export default class PowerSystem {
   DsGen: DieselGenerator
   DsGenBreaker: Breaker
 
-  constructor(DsGen1FuelValve: Valve,
-    DsGenLubValve: Valve,
-    DsGenAirValve: Valve,
+  constructor(DsGen1FuelValve: iValve,
+    DsGenLubValve: iValve,
+    DsGenAirValve: iValve,
     LubCooler: Cooler) {
 
     this.Providers = 0 // sum of all providers, can be connected to main busses

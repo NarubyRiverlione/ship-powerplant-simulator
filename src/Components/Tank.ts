@@ -8,13 +8,6 @@ export interface iTank extends Item {
   Volume: number
   AddEachStep: number
   RemoveEachStep: number
-  // cbFull: () => void
-  // cbAdded: (added: number) => void
-  // cbRemoved: (removed: number) => void
-  // AlarmSystem?: AlarmSystem
-  // LowLevelAlarmCode: number
-  // LowLevelAlarm: number
-  // EmptyAlarmCode: number
 }
 
 export default class Tank implements iTank {
@@ -23,9 +16,6 @@ export default class Tank implements iTank {
   Volume: number
   AddEachStep: number
   RemoveEachStep: number
-  // cbFull: () => void
-  cbAdded: (added: number) => void
-  cbRemoved: (removed: number) => void
   AlarmSystem?: AlarmSystem
   LowLevelAlarmCode: number
   LowLevelAlarm: number
@@ -39,10 +29,6 @@ export default class Tank implements iTank {
 
     this.AddEachStep = 0.0
     this.RemoveEachStep = 0.0
-
-    // this.cbFull = () => { }
-    this.cbAdded = () => { }
-    this.cbRemoved = () => { }
 
     this.AlarmSystem = undefined
     this.LowLevelAlarmCode = 0
@@ -67,7 +53,6 @@ export default class Tank implements iTank {
   Add() {
     if (this.AddEachStep + this.Inside < this.Volume) {
       this.Inside += this.AddEachStep
-      this.cbAdded(this.AddEachStep)
     } else {
       // prevent overfill
       this.AddEachStep = 0 //this.Volume - this.Inside
@@ -78,7 +63,7 @@ export default class Tank implements iTank {
   Remove() {
     if (this.Inside - this.RemoveEachStep > 0) {
       this.Inside -= this.RemoveEachStep
-      this.cbRemoved(this.RemoveEachStep)
+      // this.cbRemoved(this.RemoveEachStep)
     } else { this.Inside = 0.0 }
   }
 

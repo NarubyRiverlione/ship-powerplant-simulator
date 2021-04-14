@@ -1,5 +1,5 @@
 import Item from './Item'
-import Tank from './Tank'
+import Tank, { iTank } from './Tank'
 import Valve from './Valve'
 import CstTxt from '../CstTxt'
 import { CstChanges, CstSteamSys, CstFuelSys } from '../Cst'
@@ -29,11 +29,12 @@ export default class SteamBoiler implements Item {
   SafetyRelease: Valve
   SteamVent: Valve
   Temperature: number
-  FuelSourceTank: Tank
+  FuelSourceTank: iTank
   AutoFlame: boolean
 
 
-  constructor(name: string, waterSource: Item, fuelSource: Item, fuelSourceTank: Tank) {
+  constructor(name: string, waterSource: Item,
+    fuelSource: Item, fuelSourceTank: iTank) {
     this.Name = name
     //#region Water supply
     this.WaterIntakeValve = new Valve(SteamSysTxt.Boiler.WaterIntakeValve, waterSource)

@@ -55,15 +55,12 @@ describe('Tank add 1 step', () => {
 
 describe('Tank remove 1 step', () => {
   test('Remove from full tank', () => {
-    let flagRemoved = false
     const start = 200
     const removeEachStep = 80
     const tank = new Tank('full tank', start, start)
     tank.RemoveEachStep = removeEachStep
-    tank.cbRemoved = () => { flagRemoved = true }
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep)
-    expect(flagRemoved).toBeTruthy()
   })
   test('Remove from empty tank, without callback', () => {
     const removeEachStep = 1
@@ -114,15 +111,9 @@ describe('Tank add over time', () => {
   test('Start filling until full', () => {
     const startContent = 50
     const addEachStep = 10
-    const expectAmountOfSteps = 4
     const maxTank = 100
-    let steps = 0
     const tank = new Tank('test tank', maxTank, startContent)
     tank.AddEachStep = addEachStep
-
-    const cbAdding = () => { steps += 1 }
-
-    tank.cbAdded = cbAdding
 
     // tank.Adding = true
     do {

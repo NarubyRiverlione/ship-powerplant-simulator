@@ -20,7 +20,8 @@ const dummySteamSourceValve = new mockValve("dummy steam source valve", dummySte
 beforeEach(() => {
   dummyBus.Voltage = 440
   purUnit = new PurificationUnit('test purification unit', testRate, dummySourceValve,
-    dummyBus, dummySteamSourceValve)
+    dummyBus)
+  purUnit.SteamIntakeValve.Source = dummySteamSourceValve
 })
 
 describe("init", () => {

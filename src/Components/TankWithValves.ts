@@ -1,4 +1,4 @@
-import Valve from './Valve'
+import Valve, { iValve } from './Valve'
 import Tank from './Tank'
 import { CstChanges } from '../Cst'
 import Item from './Item'
@@ -11,7 +11,7 @@ export default class TankWithValves implements Item {
   Tank: Tank
 
 
-  constructor(tankName: string, volume: number, startContent: number, sourceValve: Valve) {
+  constructor(tankName: string, volume: number, startContent: number, sourceValve: iValve) {
     this.Name = tankName
     this.IntakeValve = new Valve(`${tankName} - intake valve`, sourceValve)
     this.Tank = new Tank(tankName, volume, startContent)
