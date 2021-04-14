@@ -6,28 +6,24 @@ export interface iTank extends Item {
   Name: string
   Inside: number
   Volume: number
-  Adding: boolean
-  AmountRemovers: number
   AddEachStep: number
   RemoveEachStep: number
-  cbFull: () => void
-  cbAdded: (added: number) => void
-  cbRemoved: (removed: number) => void
-  AlarmSystem?: AlarmSystem
-  LowLevelAlarmCode: number
-  LowLevelAlarm: number
-  EmptyAlarmCode: number
+  // cbFull: () => void
+  // cbAdded: (added: number) => void
+  // cbRemoved: (removed: number) => void
+  // AlarmSystem?: AlarmSystem
+  // LowLevelAlarmCode: number
+  // LowLevelAlarm: number
+  // EmptyAlarmCode: number
 }
 
 export default class Tank implements iTank {
   Name: string
   Inside: number
   Volume: number
-  Adding: boolean
-  AmountRemovers: number
   AddEachStep: number
   RemoveEachStep: number
-  cbFull: () => void
+  // cbFull: () => void
   cbAdded: (added: number) => void
   cbRemoved: (removed: number) => void
   AlarmSystem?: AlarmSystem
@@ -41,15 +37,10 @@ export default class Tank implements iTank {
     this.Inside = StartContent
     this.Volume = Volume
 
-    // flags are needed to remember when tank is full/empty that
-    // was filling/removing to resume after tank is no longer full/empty
-    this.Adding = false
-    this.AmountRemovers = 0
-
     this.AddEachStep = 0.0
     this.RemoveEachStep = 0.0
 
-    this.cbFull = () => { }
+    // this.cbFull = () => { }
     this.cbAdded = () => { }
     this.cbRemoved = () => { }
 
@@ -62,8 +53,6 @@ export default class Tank implements iTank {
       Inside: observable,
       Volume: observable,
       Name: observable,
-      Adding: observable,
-      AmountRemovers: observable,
       AddEachStep: observable,
       RemoveEachStep: observable,
       Add: action,
@@ -71,24 +60,18 @@ export default class Tank implements iTank {
       Thick: action
     })
   }
-  get Removing() { return this.AmountRemovers !== 0 }
   get Content() {
     return this.Inside
   }
 
-
   Add() {
-    if (this.Inside === this.Volume) {
-      // already full, prevent calling cbFull multiple times
-      return
-    }
     if (this.AddEachStep + this.Inside < this.Volume) {
       this.Inside += this.AddEachStep
       this.cbAdded(this.AddEachStep)
     } else {
       // prevent overfill
+      this.AddEachStep = 0 //this.Volume - this.Inside
       this.Inside = this.Volume
-      this.cbFull()
     }
   }
 
@@ -128,8 +111,8 @@ export default class Tank implements iTank {
   }
 
   Thick() {
-    if (this.Adding) this.Add()
-    if (this.Removing) this.Remove()
+    this.Add()
+    this.Remove()
     this.CheckAlarmLevels()
 
     /* istanbul ignore if  */

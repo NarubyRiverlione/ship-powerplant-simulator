@@ -2,7 +2,8 @@ import Valve from '../../Components/Valve'
 import mockTank from '../mocks/mockTank'
 
 const name = 'Test valve'
-const sourceContent = 12
+const sourceContent = 20
+const testVolume = 5
 const source = new mockTank('dummy source', 100, sourceContent)
 
 let valve: Valve
@@ -24,20 +25,23 @@ describe('Valve init', () => {
 })
 
 describe('Valve open', () => {
-  test('Open valve has content', () => {
+  test('Unrestricted open valve has complete source content', () => {
     valve.Open()
     expect(valve.Content).toBe(sourceContent)
     expect(valve.isOpen).toBeTruthy()
   })
+  test('Restricted open valve has only valve volume as content', () => {
+    valve.Volume = testVolume
+    valve.Open()
+    expect(valve.Content).toBe(testVolume)
+    expect(valve.isOpen).toBeTruthy()
+  })
   test('Open valve has output and delivers feedback', () => {
     let cbFlag = false
-    const cbOpening = () => {
-      cbFlag = true
-    }
+    const cbOpening = () => { cbFlag = true }
 
     valve.cbNowOpen = cbOpening
     valve.Open()
-    expect(valve.Content).toBe(sourceContent)
     expect(cbFlag).toBeTruthy()
   })
 })

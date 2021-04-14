@@ -112,8 +112,6 @@ describe('Ignition / flame', () => {
     boiler.Ignite()
     expect(boiler.HasEnoughWaterForFlame).toBeFalsy()
     expect(boiler.HasFlame).toBeFalsy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has fuel + ignite = has flame = burn fuel', () => {
@@ -122,8 +120,6 @@ describe('Ignition / flame', () => {
     boiler.Thick()
     boiler.Ignite()
     expect(boiler.HasFlame).toBeTruthy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(1)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
   test('has fuel + toggle = has flame = burn fuel', () => {
@@ -132,17 +128,12 @@ describe('Ignition / flame', () => {
     boiler.Thick()
     boiler.Toggle()
     expect(boiler.HasFlame).toBeTruthy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(1)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
   test('no fuel + ignite = no flame', () => {
     expect(boiler.FuelIntakeValve.isOpen).toBeFalsy()
     boiler.Ignite()
     expect(boiler.HasFlame).toBeFalsy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has flame but now not enough water = no flame', () => {
     boiler.FuelIntakeValve.Open()
@@ -154,8 +145,6 @@ describe('Ignition / flame', () => {
     boiler.Thick()
     expect(boiler.HasEnoughWaterForFlame).toBeFalsy()
     expect(boiler.HasFlame).toBeFalsy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has flame + close fuel valve = no flame', () => {
@@ -167,8 +156,6 @@ describe('Ignition / flame', () => {
     boiler.FuelIntakeValve.Close()
     boiler.Thick()
     expect(boiler.HasFlame).toBeFalsy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has flame + toggle = no flame', () => {
@@ -179,8 +166,6 @@ describe('Ignition / flame', () => {
     expect(boiler.HasFlame).toBeTruthy()
     boiler.Toggle()
     expect(boiler.HasFlame).toBeFalsy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
   test('has flame + Extinguishing = no flame', () => {
@@ -191,8 +176,6 @@ describe('Ignition / flame', () => {
     expect(boiler.HasFlame).toBeTruthy()
     boiler.Extinguishing()
     expect(boiler.HasFlame).toBeFalsy()
-
-    expect(boiler.FuelSourceTank.AmountRemovers).toBe(0)
     expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
   })
 })

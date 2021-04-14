@@ -16,7 +16,7 @@ describe('Init', () => {
   })
   test('Storage tank is empty', () => {
     expect(lubSys.Storage.Tank.Content).toBe(0)
-    expect(lubSys.Storage.Tank.AddEachStep).toBe(CstLubSys.StorageTank.TankAddStep)
+    expect(lubSys.Storage.Tank.AddEachStep).toBe(0)
   })
 })
 
@@ -27,7 +27,6 @@ describe('Storage tank: fill from shore', () => {
     expect(lubSys.Storage.IntakeValve.isOpen).toBeFalsy()
 
     lubSys.Thick()
-    expect(lubSys.Storage.Tank.Adding).toBeFalsy()
     expect(lubSys.Storage.Tank.Content).toBe(0)
   })
   test('Opening intake valve, shore fill valve stays closed --> no adding to diesel tank', () => {
@@ -36,7 +35,6 @@ describe('Storage tank: fill from shore', () => {
     expect(lubSys.Storage.IntakeValve.isOpen).toBeTruthy()
 
     lubSys.Thick()
-    expect(lubSys.Storage.Tank.Adding).toBeFalsy()
     expect(lubSys.Storage.Tank.Content).toBe(0)
   })
   test('open first intake valve then shore fill --> filling', () => {
@@ -46,10 +44,10 @@ describe('Storage tank: fill from shore', () => {
     expect(lubSys.ShoreValve.isOpen).toBeTruthy()
 
     lubSys.Thick()
-    expect(lubSys.Storage.Tank.Adding).toBeTruthy()
-    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.TankAddStep)
+    expect(lubSys.Storage.IntakeValve.Content).toBe(CstLubSys.StorageTank.IntakeValveVolume)
+    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.IntakeValveVolume)
     lubSys.Thick()
-    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.TankAddStep * 2)
+    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.IntakeValveVolume * 2)
   })
   test('open first shore fill valve then intake --> filling', () => {
     lubSys.ShoreValve.Open()
@@ -58,10 +56,9 @@ describe('Storage tank: fill from shore', () => {
     expect(lubSys.Storage.IntakeValve.isOpen).toBeTruthy()
 
     lubSys.Thick()
-    expect(lubSys.Storage.Tank.Adding).toBeTruthy()
-    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.TankAddStep)
+    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.IntakeValveVolume)
     lubSys.Thick()
-    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.TankAddStep * 2)
+    expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.IntakeValveVolume * 2)
   })
   test('Closing shore fill valve, both where open = stop filling', () => {
     lubSys.Storage.IntakeValve.Open()
@@ -89,28 +86,9 @@ describe('Storage tank: fill from shore', () => {
     lubSys.Thick()
     expect(lubSys.Storage.Tank.Content).toBe(contentBeforeReopeningIntakeValve)
   })
-  test('Fill storage tank until full', () => {
-    let fullFlag = false
-    let steps = 0
-    const expectedSteps = CstLubSys.StorageTank.TankVolume / CstLubSys.StorageTank.TankAddStep
-    const cbFull = () => {
-      // console.debug('tank is full')
-      fullFlag = true
-      expect(lubSys.Storage.Tank.Content).toBe(CstLubSys.StorageTank.TankVolume)
-      expect(steps).toBe(expectedSteps - 1)
-    }
-    lubSys.Storage.Tank.cbFull = cbFull
-    lubSys.Storage.Tank.cbAdded = () => { steps += 1 }
 
-    lubSys.ShoreValve.Open()
-    lubSys.Storage.IntakeValve.Open()
-
-    do {
-      lubSys.Thick()
-    } while (!fullFlag)
-  })
 })
-describe('Alarms', () => {
+describe.skip('Alarms', () => {
   test('Raise Low diesel storage tank', () => {
     // at alarm level = no alarm yet, must be below
     lubSys.Storage.Tank.Inside = AlarmLevel.LubSys.LowStorage

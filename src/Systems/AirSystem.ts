@@ -32,15 +32,6 @@ export default class AirSystem {
     this.StartAirCompressor = new Compressor(AirSysTxt.Compressor1,
       mainBus, CstAirSys.StartAirCompressor1.AddStep)
 
-    this.StartAirCompressor.OutletValve.cbNowOpen = () => {
-      if (this.StartAirReceiver.IntakeValve.isOpen) {
-        this.StartAirReceiver.Tank.Adding = true
-      }
-    }
-    this.StartAirCompressor.OutletValve.cbNowClosed = () => {
-      this.StartAirReceiver.Tank.Adding = false
-    }
-
     this.StartAirCooler = _startAirCooler
     this.StartAirCooler.HotCircuitComplete = true
 
@@ -54,15 +45,6 @@ export default class AirSystem {
     // #region Emergency compressor
     this.EmergencyCompressor = new Compressor(AirSysTxt.EmergencyCompressor,
       emergencyBus, CstAirSys.EmergencyCompressor.AddStep)
-
-    this.EmergencyCompressor.OutletValve.cbNowOpen = () => {
-      if (this.EmergencyReceiver.IntakeValve.isOpen) {
-        this.EmergencyReceiver.Tank.Adding = true
-      }
-    }
-    this.EmergencyCompressor.OutletValve.cbNowClosed = () => {
-      this.EmergencyReceiver.Tank.Adding = false
-    }
 
     this.EmergencyReceiver = new TankWithValves(AirSysTxt.EmergencyReceiver,
       CstAirSys.EmergencyReceiver.TankPressure, 0,

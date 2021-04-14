@@ -52,24 +52,15 @@ export default class CoolingFreshWaterSystem {
 
     // #region FW Expand tank
     this.FwExpandTank = new Tank(CoolantSysTxt.FwExpandTank, CstCoolantSys.FwExpandTank.TankVolume)
-    this.FwExpandTank.AddEachStep = CstCoolantSys.FwExpandTank.TankAddStep
     this.FwExpandTank.RemoveEachStep = CstChanges.DrainStep
 
     const FwMakeUp = new Tank('Fresh water make up', 1e6, 1e6)
     this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve, FwMakeUp)
-    this.FwIntakeValve.cbNowOpen = () => {
-      this.FwExpandTank.Adding = true
-    }
-    this.FwIntakeValve.cbNowClosed = () => {
-      this.FwExpandTank.Adding = false
-    }
+    this.FwIntakeValve.Volume = CstCoolantSys.FwExpandTank.IntakeValveVolume
+
     this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve, this.FwExpandTank)
-    this.FwDrainValve.cbNowOpen = () => {
-      this.FwExpandTank.AmountRemovers += 1
-    }
-    this.FwDrainValve.cbNowClosed = () => {
-      this.FwExpandTank.AmountRemovers -= 1
-    }
+    this.FwDrainValve.Volume = CstChanges.DrainStep
+
     // #endregion
     // DsGen Lubrication cooler (secundaire FW circuit)
     this.DsGenLubCooler = new Cooler(CoolantSysTxt.DsGenLubCooler)
@@ -88,6 +79,8 @@ export default class CoolingFreshWaterSystem {
   }
 
   Thick() {
+    this.FwExpandTank.AddEachStep = this.FwIntakeValve.Content
+    this.FwExpandTank.RemoveEachStep = this.FwDrainValve.Content
     this.FwExpandTank.Thick()
 
     this.FwPumpDsGen.Providers = this.FwExpandTank.Content

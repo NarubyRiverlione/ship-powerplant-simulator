@@ -18,7 +18,7 @@ beforeEach(() => {
   const dummyFuelOutletValve = new mockValve('test fuel source outlet valve', fuelSource)
 
   const lubSource = new mockTank('dummy lub  tank', 100, startLubAmount)
-  const dummyLubOutletValve = new mockValve('test lub source outlet valve', lubSource)
+  const dummyLubOutletValve = new mockValve('test lub source outlet valve', lubSource, CstPowerSys.DsGen.Slump.IntakeValveVolume)
 
   const airSource = new mockTank('dummy air receiver', 100, startAirAmount)
   const dummyAirOutletValve = new mockValve('test air source valve', airSource)
@@ -48,8 +48,8 @@ describe('init', () => {
     expect(dsgen.FuelProvider.RemoveEachStep).toBe(0)
   })
   test('Lubrication intake valve closed at start', () => {
-    expect(dsgen.LubIntakeValve.Source.Content).toBe(startLubAmount)
     expect(dsgen.LubIntakeValve.isOpen).toBeFalsy()
+    expect(dsgen.LubIntakeValve.Source.Content).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
   })
   test('Air intake valve closed at start', () => {
     expect(dsgen.AirIntakeValve.Source.Content).toBe(startAirAmount)
@@ -73,38 +73,38 @@ describe('Slump', () => {
   test('Open lub intake = slump adding, remove from Lub provider', () => {
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
-    expect(dsgen.LubSlump.AddEachStep).toBe(CstPowerSys.DsGen.Slump.TankAddStep)
-    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.TankAddStep)
+    expect(dsgen.LubSlump.AddEachStep).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
+    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
     expect(dsgen.LubProvider.RemoveEachStep)
-      .toBe(CstPowerSys.DsGen.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump)
+      .toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume / CstLubSys.RatioStorageDsGenSlump)
   })
   test('Re-close lub intake = slump stop adding', () => {
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
     expect(dsgen.LubProvider.RemoveEachStep)
-      .toBe(CstPowerSys.DsGen.Slump.TankAddStep / CstLubSys.RatioStorageDsGenSlump)
+      .toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume / CstLubSys.RatioStorageDsGenSlump)
     dsgen.LubIntakeValve.Close()
     dsgen.Thick()
-    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.TankAddStep)
+    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
     expect(dsgen.LubProvider.RemoveEachStep).toBe(0)
     expect(dsgen.LubSlump.AddEachStep).toBe(0)
   })
   test('Lub source is empty, stop adding slump', () => {
-    dsgen.LubProvider = new mockTank('dummy', 100, CstPowerSys.DsGen.Slump.TankAddStep)
+    dsgen.LubProvider = new mockTank('dummy', 100, CstPowerSys.DsGen.Slump.IntakeValveVolume)
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
-    expect(dsgen.LubSlump.AddEachStep).toBe(CstPowerSys.DsGen.Slump.TankAddStep)
-    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.TankAddStep)
+    expect(dsgen.LubSlump.AddEachStep).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
+    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
     // dummy test source  hasn't logic to remove content, set manual to 0
     dsgen.LubIntakeValve.Source = new mockTank('dummy', 100, 0)
     expect(dsgen.LubIntakeValve.Source.Content).toBe(0)
 
     dsgen.Thick()
     expect(dsgen.LubSlump.AddEachStep).toBe(0)
-    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.TankAddStep)
+    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
     dsgen.Thick()
     expect(dsgen.LubSlump.AddEachStep).toBe(0)
-    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.TankAddStep)
+    expect(dsgen.LubSlump.Content).toBe(CstPowerSys.DsGen.Slump.IntakeValveVolume)
   })
 
   test('slump above minimum = has lubrication', () => {
@@ -155,7 +155,6 @@ describe('Start', () => {
 
     dsgen.LubIntakeValve.Open()
     dsgen.Thick()
-    expect(dsgen.LubIntakeValve.Content).toBe(startLubAmount)
     expect(dsgen.HasLubrication).toBeTruthy()
 
     dsgen.AirIntakeValve.Open()

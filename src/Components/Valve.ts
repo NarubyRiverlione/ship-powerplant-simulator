@@ -5,6 +5,7 @@ import { action, computed, makeObservable, observable } from 'mobx'
 export interface iValve extends Item {
   Name: string
   Source: Item
+  Volume: number
   isOpen: boolean
   cbNowOpen: () => void
   cbNowClosed: () => void
@@ -13,13 +14,15 @@ export interface iValve extends Item {
 export default class Valve implements iValve {
   Name: string
   Source: Item
+  Volume: number
   isOpen: boolean
   cbNowOpen: () => void
   cbNowClosed: () => void
 
-  constructor(name: string, source: Item) {
+  constructor(name: string, source: Item, volume?: number) {
     this.Name = name
     this.Source = source
+    this.Volume = volume ?? Number.MAX_SAFE_INTEGER
     this.isOpen = false
     this.cbNowOpen = () => { }
     this.cbNowClosed = () => { }
@@ -37,7 +40,8 @@ export default class Valve implements iValve {
 
 
   get Content() {
-    return this.isOpen ? this.Source.Content : 0
+    if (!this.isOpen) return 0
+    return this.Source.Content >= this.Volume ? this.Volume : this.Source.Content
   }
 
   Open() {

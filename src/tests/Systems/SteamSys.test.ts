@@ -45,11 +45,11 @@ describe('Feed water', () => {
   test('Fill feed water supply via intake valve', () => {
     steamSys.FeedWaterSupply.IntakeValve.Open()
     steamSys.Thick()
-    expect(steamSys.FeedWaterSupply.Tank.Content).toBe(CstSteamSys.FeedWaterSupply.TankAddStep)
+    expect(steamSys.FeedWaterSupply.Tank.Content).toBe(CstSteamSys.FeedWaterSupply.IntakeValveVolume)
 
     steamSys.FeedWaterSupply.IntakeValve.Close()
     steamSys.Thick()
-    expect(steamSys.FeedWaterSupply.Tank.Content).toBe(CstSteamSys.FeedWaterSupply.TankAddStep)
+    expect(steamSys.FeedWaterSupply.Tank.Content).toBe(CstSteamSys.FeedWaterSupply.IntakeValveVolume)
   })
   test('supply tank content > pump rate, open outlet valve & start feed water pump = pump running at rate', () => {
     const { FeedWaterSupply, FeedWaterPump } = steamSys
@@ -77,7 +77,6 @@ describe('Feed water', () => {
     steamSys.Thick()
     expect(FeedWaterPump.isRunning).toBeTruthy()
     expect(FeedWaterPump.Content).toBe(CstSteamSys.FeedWaterPump)
-    expect(FeedWaterSupply.Tank.Removing).toBeTruthy()
     expect(FeedWaterSupply.Tank.RemoveEachStep).toBe(CstSteamSys.FeedWaterPump)
     expect(FeedWaterSupply.Tank.Content).toBe(startVolume - CstSteamSys.FeedWaterPump)
     expect(Boiler.WaterLevel).toBe(CstSteamSys.FeedWaterPump)
@@ -150,7 +149,6 @@ describe('Fuel', () => {
     expect(FuelPump.Content).toBe(CstSteamSys.FuelPump)
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.Removing).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
   test('Fuel pump running & flame = burn fuel form FuelProviderTank', () => {
@@ -171,11 +169,8 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.AmountRemovers).toBe(1)
-    expect(fuelSource.Removing).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
     steamSys.Thick()
-    expect(fuelSource.Removing).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
   test('Stop a running Fuel pump  = not burning fuel form FuelProviderTank', () => {
@@ -193,11 +188,9 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.Removing).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
     FuelPump.Stop()
     steamSys.Thick()
-    expect(fuelSource.Removing).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
   test('running Fuel pump  but Extinguishing flame = not burning fuel form FuelProviderTank', () => {
@@ -215,11 +208,9 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.Removing).toBeTruthy()
     expect(fuelSource.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
     Boiler.Extinguishing()
     steamSys.Thick()
-    expect(fuelSource.Removing).toBeFalsy()
     expect(fuelSource.RemoveEachStep).toBe(0)
   })
 })

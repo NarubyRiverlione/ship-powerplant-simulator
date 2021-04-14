@@ -38,16 +38,12 @@ export default class SteamBoiler implements Item {
     //#region Water supply
     this.WaterIntakeValve = new Valve(SteamSysTxt.Boiler.WaterIntakeValve, waterSource)
     this.WaterTank = new Tank('virtual tank to hold the water inside the boiler', CstSteamSys.Boiler.WaterVolume, 0)
-    this.WaterIntakeValve.cbNowOpen = () => { this.WaterTank.Adding = true }
-    this.WaterIntakeValve.cbNowClosed = () => { this.WaterTank.Adding = false }
 
     this.WaterDrainValve = new Valve(SteamSysTxt.Boiler.WaterDrainValve, this.WaterTank)
     this.WaterDrainValve.cbNowOpen = () => {
-      this.WaterTank.AmountRemovers += 1
       this.WaterTank.RemoveEachStep += CstChanges.DrainStep
     }
     this.WaterDrainValve.cbNowClosed = () => {
-      this.WaterTank.AmountRemovers -= 1
       this.WaterTank.RemoveEachStep -= CstChanges.DrainStep
     }
     //#endregion 
@@ -59,11 +55,9 @@ export default class SteamBoiler implements Item {
     this.SteamVent = new Valve(SteamSysTxt.Boiler.SteamVent, this)
     // open steam vent, loss some water
     this.SteamVent.cbNowOpen = () => {
-      this.WaterTank.AmountRemovers += 1
       this.WaterTank.RemoveEachStep += CstSteamSys.Boiler.WaterVentLoss
     }
     this.SteamVent.cbNowClosed = () => {
-      this.WaterTank.AmountRemovers -= 1
       this.WaterTank.RemoveEachStep -= CstSteamSys.Boiler.WaterVentLoss
     }
     //#endregion
@@ -105,7 +99,6 @@ export default class SteamBoiler implements Item {
     this.HasFlame = this.HasFuel && this.HasEnoughWaterForFlame
     if (this.HasFlame) {
       // ignition succesfull = start burning fuel
-      this.FuelSourceTank.AmountRemovers += 1
       this.FuelSourceTank.RemoveEachStep += CstFuelSys.SteamBoiler.Consumption
     }
   }
@@ -117,7 +110,6 @@ export default class SteamBoiler implements Item {
     }
     // kill flame & stop burning fuel
     this.HasFlame = false
-    this.FuelSourceTank.AmountRemovers -= 1
     this.FuelSourceTank.RemoveEachStep -= CstFuelSys.SteamBoiler.Consumption
   }
   CheckTemp() {

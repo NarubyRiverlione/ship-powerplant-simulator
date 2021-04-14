@@ -3,10 +3,14 @@ import mockTank from '../mocks/mockTank'
 
 let generator: Generator
 const testRate = 12345
-beforeEach(() => {
-  const testFuelProvider = new mockTank('test tank', 1000, 1000)
+const startFuelContent = 800
+const consumption = 50
+let testFuelProvider: mockTank
 
+beforeEach(() => {
+  testFuelProvider = new mockTank('test tank', 1000, startFuelContent)
   generator = new Generator('test generator', testRate, testFuelProvider)
+  generator.FuelConsumption = consumption
 })
 
 describe('Generator init', () => {
@@ -112,33 +116,32 @@ describe('Generator start/stop', () => {
 })
 describe('Fuel consumption', () => {
   test('running = consume fuel', () => {
-    const consumption = 1235
-    generator.FuelConsumption = consumption
     generator.HasFuel = true
     generator.HasCooling = true
     generator.HasLubrication = true
     generator.Start()
     generator.Thick()
+    testFuelProvider.Thick()
     expect(generator.isRunning).toBeTruthy()
     expect(generator.FuelConsumption).toBe(consumption)
-    expect(generator.FuelProvider.RemoveEachStep).toBe(consumption)
-    expect(generator.FuelProvider.AmountRemovers).toBe(1)
-    expect(generator.FuelProvider.Removing).toBeTruthy()
+    expect(generator.FuelProvider.Content).toBe(startFuelContent - consumption)
+
     expect(generator.FuelProvider.RemoveEachStep).toBe(consumption)
   })
-  test('stop after running = no consume fuel', () => {
-    const consumption = 1235
-    generator.FuelConsumption = consumption
+  test('stop after running = no fuel consumption', () => {
     generator.HasFuel = true
     generator.HasCooling = true
     generator.HasLubrication = true
     generator.Start()
     generator.Thick()
+    testFuelProvider.Thick()
+    expect(generator.FuelProvider.Content).toBe(startFuelContent - consumption)
+
     generator.Stop()
     generator.Thick()
-
+    testFuelProvider.Thick()
     expect(generator.FuelProvider.RemoveEachStep).toBe(0)
-    expect(generator.FuelProvider.Removing).toBeFalsy()
+    expect(generator.FuelProvider.Content).toBe(startFuelContent - consumption)
   })
 })
 describe('Toggle', () => {

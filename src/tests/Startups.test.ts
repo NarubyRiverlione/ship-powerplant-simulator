@@ -35,7 +35,7 @@ describe('Use start conditions', () => {
     sim.SetStartConditions(CstStartConditions.SetFuelTanksFull)
     sim.Thick()
     const { FuelSys } = sim
-    expect(FuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankVolume)
+    expect(FuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.IntakeValveVolume)
     expect(FuelSys.DsService.OutletValve.Content).toBe(CstFuelSys.DsServiceTank.TankVolume)
   })
   test('Full Lub tank available via open outlet valve', () => {

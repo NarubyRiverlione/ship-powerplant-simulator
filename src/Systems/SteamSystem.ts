@@ -52,7 +52,7 @@ export default class SteamSystem {
     const FeedWaterMakeUpValve = new Valve('dummy feed water makeup valve, always open', FeedWaterMakeup)
     FeedWaterMakeUpValve.Open()
     this.FeedWaterSupply = new TankWithValves(SteamSysTxt.FeedWaterSupply, CstSteamSys.FeedWaterSupply.TankVolume, 0, FeedWaterMakeUpValve)
-    this.FeedWaterSupply.Tank.AddEachStep = CstSteamSys.FeedWaterSupply.TankAddStep
+    this.FeedWaterSupply.IntakeValve.Volume = CstSteamSys.FeedWaterSupply.IntakeValveVolume
 
     this.FeedWaterPump = new Pump(SteamSysTxt.FeedWaterPump, mainBus1, CstSteamSys.FeedWaterPump)
     //#endregion
@@ -89,17 +89,14 @@ export default class SteamSystem {
 
     this.FeedWaterSupply.Tank.RemoveEachStep = 0
 
-    if (this.FeedWaterPump.Content !== 0
-      && this.Boiler.WaterIntakeValve.isOpen) {
+    if (this.FeedWaterPump.Content !== 0 && this.Boiler.WaterIntakeValve.isOpen) {
       // remove from feed water storage to fill boiler
-      this.FeedWaterSupply.Tank.AmountRemovers -= 1
       this.FeedWaterSupply.Tank.RemoveEachStep = CstSteamSys.FeedWaterPump
     }
-    if (this.FeedWaterSupply.DrainValve.isOpen) {
-      // (also) draining
-      this.FeedWaterSupply.Tank.AmountRemovers -= 1
-      this.FeedWaterSupply.Tank.RemoveEachStep += CstChanges.DrainStep
-    }
+    // if (this.FeedWaterSupply.DrainValve.isOpen) {
+    //   // (also) draining
+    //   this.FeedWaterSupply.Tank.RemoveEachStep += CstChanges.DrainStep
+    // }
     this.FeedWaterSupply.Thick()
     //#endregion
     //#region  Fuel

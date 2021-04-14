@@ -21,18 +21,10 @@ export default class LubricationSystem {
     makeObservable(this, { Thick: action })
     const dummyShore = new Tank('dummy shore', CstLubSys.ShoreVolume, CstLubSys.ShoreVolume)
     this.ShoreValve = new Valve(LubSysTxt.LubShoreFillValve, dummyShore)
-    // if both shore and storage intake valves are open --> filling
-    this.ShoreValve.cbNowOpen = () => {
-      if (this.Storage.IntakeValve.isOpen) this.Storage.Tank.Adding = true
-    }
-    this.ShoreValve.cbNowClosed = () => {
-      this.Storage.Tank.Adding = false
-    }
 
     this.Storage = new TankWithValves(LubSysTxt.LubStorageTank,
       CstLubSys.StorageTank.TankVolume, 0, this.ShoreValve)
-
-    this.Storage.Tank.AddEachStep = CstLubSys.StorageTank.TankAddStep
+    this.Storage.IntakeValve.Volume = CstLubSys.StorageTank.IntakeValveVolume
 
     // Alarms
     this.Storage.Tank.AlarmSystem = alarmSys
@@ -42,6 +34,7 @@ export default class LubricationSystem {
   }
 
   Thick() {
-    this.Storage.Tank.Thick()
+
+    this.Storage.Thick()
   }
 }

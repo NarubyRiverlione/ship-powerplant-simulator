@@ -12,7 +12,7 @@ export const CstPowerSys = {
     RatedFor: 1000, // 10 kW
     Slump: {
       TankVolume: 100,
-      TankAddStep: 10,
+      IntakeValveVolume: 10,
       MinForLubrication: 40
     }
   }
@@ -23,7 +23,7 @@ export const CstLubSys = {
   RatioStorageDsGenSlump: 5,
   StorageTank: {
     TankVolume: 100,
-    TankAddStep: 1
+    IntakeValveVolume: 1
   }
 }
 export const CstFuelSys = {
@@ -32,13 +32,14 @@ export const CstFuelSys = {
   RatioStorageServiceTanks: 100,
   DsStorageTank: {
     TankVolume: 100,
-    TankAddStep: 1
+    IntakeValveVolume: 1
   },
   DsHandpumpVolume: 10,
   DsServiceTank: {
     TankVolume: 100,
-    TankAddStep: 2
+    IntakeValveVolume: 10
   },
+  BypassValveVolume: 1,
   DieselGenerator: { Consumption: { Diesel: 0.01 } },
   SteamBoiler: { Consumption: 0.05 },
   Purification: { Volume: 2, SteamNeeded: 4 }
@@ -65,7 +66,7 @@ export const CstCoolantSys = {
   FwMakeUp: 1e6,
   FwExpandTank: {
     TankVolume: 100,
-    TankAddStep: 1,
+    IntakeValveVolume: 1,
     MinForCooling: 25
   },
   FwPumpDsGen: 1000,
@@ -75,7 +76,7 @@ export const CstCoolantSys = {
 export const CstSteamSys = {
   FeedWaterSupply: {
     TankVolume: 100,
-    TankAddStep: 5
+    IntakeValveVolume: 5
   },
   FeedWaterPump: 1,
   FuelPump: 10,

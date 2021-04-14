@@ -6,7 +6,7 @@ export const SetFuelTanksFull = (sim: Simulator) => {
   const { FuelSys } = sim
   FuelSys.DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
   FuelSys.DsService.OutletValve.Open()
-  FuelSys.DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
+  FuelSys.DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.IntakeValveVolume
 }
 export const SetLubTanksFull = (sim: Simulator) => {
   const { LubSys } = sim

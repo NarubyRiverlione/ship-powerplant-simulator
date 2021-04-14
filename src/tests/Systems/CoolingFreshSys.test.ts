@@ -55,16 +55,16 @@ describe('Fresh water expand tank', () => {
   test('fill expand tank by open the intake valve', () => {
     coolingFreshSys.FwIntakeValve.Open()
     coolingFreshSys.Thick()
-    expect(coolingFreshSys.FwExpandTank.Content).toBe(CstCoolantSys.FwExpandTank.TankAddStep)
-    expect(coolingFreshSys.FwIntakeValve.Content).toBe(CstCoolantSys.FwMakeUp)
+    expect(coolingFreshSys.FwIntakeValve.Content).toBe(CstCoolantSys.FwExpandTank.IntakeValveVolume)
+    expect(coolingFreshSys.FwExpandTank.Content).toBe(CstCoolantSys.FwExpandTank.IntakeValveVolume)
   })
   test('closing intake valve, stop filling expand tank', () => {
     coolingFreshSys.FwIntakeValve.Open()
     coolingFreshSys.Thick()
-    expect(coolingFreshSys.FwExpandTank.Content).toBe(CstCoolantSys.FwExpandTank.TankAddStep)
+    expect(coolingFreshSys.FwExpandTank.Content).toBe(CstCoolantSys.FwExpandTank.IntakeValveVolume)
     coolingFreshSys.FwIntakeValve.Close()
     coolingFreshSys.Thick()
-    expect(coolingFreshSys.FwExpandTank.Content).toBe(CstCoolantSys.FwExpandTank.TankAddStep)
+    expect(coolingFreshSys.FwExpandTank.Content).toBe(CstCoolantSys.FwExpandTank.IntakeValveVolume)
   })
   test('Drain expand tank', () => {
     const startContent = 60

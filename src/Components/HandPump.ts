@@ -26,9 +26,9 @@ export default class HandPump extends Tank {
     if (this.isCranked) {
       // add max volume of handpump
       this.AddEachStep = this.SourceValve.Content >= this.Volume ? this.Volume : this.SourceValve.Content
-      this.Adding = true
+      // this.Adding = true
       super.Thick()
-      this.Adding = false
+      // this.Adding = false
       // remove from source tank via source valve
       const sourceTank = this.SourceValve.Source as Tank
       sourceTank.Inside -= this.AddEachStep
