@@ -95,9 +95,9 @@ describe('Use start conditions', () => {
     expect(Boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
     // DsGen in running and Boiler has flame ==> diesel consumption 
     expect(DsGen.isRunning).toBeTruthy()
-    expect(DsService.Tank.RemoveEachStep).toBe(
+    expect(DsService.Tank.Content).toBe(CstFuelSys.DsServiceTank.TankVolume -
       CstFuelSys.DieselGenerator.Consumption.Diesel
-      + CstFuelSys.SteamBoiler.Consumption
+      - CstFuelSys.SteamBoiler.Consumption
     )
 
   })

@@ -52,7 +52,7 @@ export default class CoolingFreshWaterSystem {
 
     // #region FW Expand tank
     this.FwExpandTank = new Tank(CoolantSysTxt.FwExpandTank, CstCoolantSys.FwExpandTank.TankVolume)
-    this.FwExpandTank.RemoveEachStep = CstChanges.DrainStep
+    this.FwExpandTank.RemoveThisStep = CstChanges.DrainStep
 
     const FwMakeUp = new Tank('Fresh water make up', 1e6, 1e6)
     this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve, FwMakeUp)
@@ -79,8 +79,8 @@ export default class CoolingFreshWaterSystem {
   }
 
   Thick() {
-    this.FwExpandTank.AddEachStep = this.FwIntakeValve.Content
-    this.FwExpandTank.RemoveEachStep = this.FwDrainValve.Content
+    this.FwExpandTank.AddThisStep = this.FwIntakeValve.Content
+    this.FwExpandTank.RemoveThisStep = this.FwDrainValve.Content
     this.FwExpandTank.Thick()
 
     this.FwPumpDsGen.Providers = this.FwExpandTank.Content

@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from 'mobx'
+import { action, makeAutoObservable, makeObservable, observable } from 'mobx'
 import AlarmSystem from '../Systems/AlarmSystem'
 import Item from "./Item"
 
@@ -6,16 +6,16 @@ export interface iTank extends Item {
   Name: string
   Inside: number
   Volume: number
-  AddEachStep: number
-  RemoveEachStep: number
+  AddThisStep: number
+  RemoveThisStep: number
 }
 
 export default class Tank implements iTank {
   Name: string
   Inside: number
   Volume: number
-  AddEachStep: number
-  RemoveEachStep: number
+  AddThisStep: number
+  RemoveThisStep: number
   AlarmSystem?: AlarmSystem
   LowLevelAlarmCode: number
   LowLevelAlarm: number
@@ -27,20 +27,22 @@ export default class Tank implements iTank {
     this.Inside = StartContent
     this.Volume = Volume
 
-    this.AddEachStep = 0.0
-    this.RemoveEachStep = 0.0
+    this.AddThisStep = 0.0
+    this.RemoveThisStep = 0.0
 
     this.AlarmSystem = undefined
     this.LowLevelAlarmCode = 0
     this.LowLevelAlarm = 0
     this.EmptyAlarmCode = 0
 
+
+    // Tank is Super class for Handpump and can't use makeAutoObservable
     makeObservable(this, {
       Inside: observable,
       Volume: observable,
       Name: observable,
-      AddEachStep: observable,
-      RemoveEachStep: observable,
+      AddThisStep: observable,
+      RemoveThisStep: observable,
       Add: action,
       Remove: action,
       Thick: action
@@ -51,20 +53,21 @@ export default class Tank implements iTank {
   }
 
   Add() {
-    if (this.AddEachStep + this.Inside < this.Volume) {
-      this.Inside += this.AddEachStep
+    if (this.AddThisStep + this.Inside < this.Volume) {
+      this.Inside += this.AddThisStep
     } else {
       // prevent overfill
-      this.AddEachStep = 0 //this.Volume - this.Inside
+      this.AddThisStep = 0
       this.Inside = this.Volume
     }
   }
 
   Remove() {
-    if (this.Inside - this.RemoveEachStep > 0) {
-      this.Inside -= this.RemoveEachStep
-      // this.cbRemoved(this.RemoveEachStep)
+    if (this.Inside - this.RemoveThisStep > 0) {
+      this.Inside -= this.RemoveThisStep
     } else { this.Inside = 0.0 }
+    // reset RemoveThisStep so each step multiple systems can add there consumption 
+    this.RemoveThisStep = 0
   }
 
   CheckAlarmLevels() {
@@ -101,19 +104,19 @@ export default class Tank implements iTank {
     this.CheckAlarmLevels()
 
     /* istanbul ignore if  */
-    if (this.RemoveEachStep < 0) {
-      console.warn(`Tank:${this.Name} had a negative RemoveEachStep :${this.RemoveEachStep}`)
+    if (this.RemoveThisStep < 0) {
+      console.warn(`Tank:${this.Name} had a negative RemoveThisStep :${this.RemoveThisStep}`)
       debugger
     }
     /* istanbul ignore if  */
-    if (this.RemoveEachStep === undefined || Number.isNaN(this.RemoveEachStep)) {
-      console.warn(`Tank:${this.Name} RemoveEachStep is not a number : ${this.RemoveEachStep}`)
-      //  this.RemoveEachStep = 0
+    if (this.RemoveThisStep === undefined || Number.isNaN(this.RemoveThisStep)) {
+      console.warn(`Tank:${this.Name} RemoveThisStep is not a number : ${this.RemoveThisStep}`)
+      //  this.RemoveThisStep = 0
     }
     /* istanbul ignore if  */
-    if (this.AddEachStep < 0) {
-      console.warn(`Tank:${this.Name} had a negative AddEachStep: ${this.AddEachStep} `)
-      //  this.AddEachStep = 0
+    if (this.AddThisStep < 0) {
+      console.warn(`Tank:${this.Name} had a negative AddThisStep: ${this.AddThisStep} `)
+      //  this.AddThisStep = 0
     }
     /* istanbul ignore if  */
     if (this.Inside === undefined || Number.isNaN(this.Inside)) {

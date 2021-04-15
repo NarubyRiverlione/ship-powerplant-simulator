@@ -185,6 +185,6 @@ describe('Diesel generator ', () => {
     expect(DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
 
     powerSys.Thick()
-    expect(DsGen.FuelProvider.RemoveEachStep).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
+    expect(DsGen.FuelProvider.RemoveThisStep).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
   })
 })

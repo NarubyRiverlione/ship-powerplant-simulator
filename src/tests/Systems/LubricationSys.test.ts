@@ -16,7 +16,7 @@ describe('Init', () => {
   })
   test('Storage tank is empty', () => {
     expect(lubSys.Storage.Tank.Content).toBe(0)
-    expect(lubSys.Storage.Tank.AddEachStep).toBe(0)
+    expect(lubSys.Storage.Tank.AddThisStep).toBe(0)
   })
 })
 

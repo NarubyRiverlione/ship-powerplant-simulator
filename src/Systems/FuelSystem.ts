@@ -90,43 +90,12 @@ export default class FuelSystem {
   Thick() {
     this.DsPurification.Thick()
 
-    //  this.DsStorage.Tank.RemoveEachStep = CstFuelSys.DsServiceTank.IntakeValveVolume / CstFuelSys.RatioStorageServiceTanks
-    /*
-    // DsSerivice is full, no transfer this thick,
-    // don't stop stop tranfer may be next tick DsServic isn't full any more
-    if (this.DsService.Tank.Content === CstFuelSys.DsServiceTank.TankVolume) {
-      this.DsStorage.Tank.RemoveEachStep = 0
-    }
-*/
-    /*
-        this.DsService.Tank.AddEachStep = this.DsServiceMulti.Content//(this.DsStorage.Tank.Content !== 0 && this.DsService.Tank.Adding)
-          //  filling service tank if storage isn't empty
-          ? CstFuelSys.DsServiceTank.IntakeValveVolume
-          // stop filling service tank if storage is empty
-          : 0
-    */
-    /*
-        //FIXME !!
-        if (!this.DsPurification.isRunning && !this.DsBypassValve.isOpen) {
-          // stop filling if purification unit stops running or bypass valve is now closed
-          this.DsStorage.Tank.RemoveEachStep = 0
-          this.DsService.Tank.AddEachStep = 0
-        }
-    */
-
-
-    // also draining ?
-    if (this.DsStorage.DrainValve.isOpen) {
-      this.DsStorage.Tank.RemoveEachStep += CstChanges.DrainStep
-    }
-
-
     // service tank needs first to Thick to detect full
     // -> stop from removing from storage
     this.DsService.Thick()
 
     // remove from Storage what has be added to Service, unless Service is full
-    this.DsStorage.Tank.RemoveEachStep = this.DsService.Tank.AddEachStep
+    this.DsStorage.Tank.RemoveThisStep = this.DsService.Tank.AddThisStep
 
     // / CstFuelSys.RatioStorageServiceTanks
     this.DsStorage.Thick()

@@ -23,8 +23,8 @@ export default class TankWithValves implements Item {
   get Content() { return this.Tank.Content }
 
   Thick() {
-    this.Tank.AddEachStep = this.IntakeValve.Content
-    this.Tank.RemoveEachStep += this.DrainValve.Content
+    this.Tank.AddThisStep = this.IntakeValve.Content
+    this.Tank.RemoveThisStep += this.DrainValve.Content
     this.Tank.Thick()
   }
 }

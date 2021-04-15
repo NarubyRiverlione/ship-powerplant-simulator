@@ -6,22 +6,22 @@ export default class mockTank implements iTank {
   Name: string
   Inside: number
   Volume: number
-  AddEachStep: number
-  RemoveEachStep: number
+  AddThisStep: number
+  RemoveThisStep: number
 
   constructor(Name: string, Volume: number, StartContent = 0.0) {
     this.Name = Name
     this.Inside = StartContent
     this.Volume = Volume
-    this.AddEachStep = 0.0
-    this.RemoveEachStep = 0.0
+    this.AddThisStep = 0.0
+    this.RemoveThisStep = 0.0
 
   }
   Add() {
-    this.Inside += this.AddEachStep
+    this.Inside += this.AddThisStep
   }
   Remove() {
-    this.Inside -= this.RemoveEachStep
+    this.Inside -= this.RemoveThisStep
   }
   CheckAlarmLevels() { }
 

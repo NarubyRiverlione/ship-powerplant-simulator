@@ -107,7 +107,7 @@ describe('Ignition / flame', () => {
     boiler.Ignite()
     expect(boiler.HasEnoughWaterForFlame).toBeFalsy()
     expect(boiler.HasFlame).toBeFalsy()
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(0)
   })
   test('has fuel + ignite = has flame = burn fuel', () => {
     boiler.FuelIntakeValve.Open()
@@ -115,7 +115,7 @@ describe('Ignition / flame', () => {
     boiler.Thick()
     boiler.Ignite()
     expect(boiler.HasFlame).toBeTruthy()
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
   test('has fuel + toggle = has flame = burn fuel', () => {
     boiler.FuelIntakeValve.Open()
@@ -123,7 +123,7 @@ describe('Ignition / flame', () => {
     boiler.Thick()
     boiler.Toggle()
     expect(boiler.HasFlame).toBeTruthy()
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
   test('no fuel + ignite = no flame', () => {
     expect(boiler.FuelIntakeValve.isOpen).toBeFalsy()
@@ -140,7 +140,7 @@ describe('Ignition / flame', () => {
     boiler.Thick()
     expect(boiler.HasEnoughWaterForFlame).toBeFalsy()
     expect(boiler.HasFlame).toBeFalsy()
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(0)
   })
   test('has flame + close fuel valve = no flame', () => {
     boiler.FuelIntakeValve.Open()
@@ -151,7 +151,7 @@ describe('Ignition / flame', () => {
     boiler.FuelIntakeValve.Close()
     boiler.Thick()
     expect(boiler.HasFlame).toBeFalsy()
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(0)
   })
   test('has flame + toggle = no flame', () => {
     boiler.FuelIntakeValve.Open()
@@ -161,7 +161,7 @@ describe('Ignition / flame', () => {
     expect(boiler.HasFlame).toBeTruthy()
     boiler.Toggle()
     expect(boiler.HasFlame).toBeFalsy()
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(0)
   })
   test('has flame + Extinguishing = no flame', () => {
     boiler.FuelIntakeValve.Open()
@@ -171,7 +171,7 @@ describe('Ignition / flame', () => {
     expect(boiler.HasFlame).toBeTruthy()
     boiler.Extinguishing()
     expect(boiler.HasFlame).toBeFalsy()
-    expect(boiler.FuelSourceTank.RemoveEachStep).toBe(0)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(0)
   })
 })
 
@@ -275,6 +275,10 @@ describe('Steam vent valve', () => {
     expect(SteamVent.isOpen).toBeTruthy()
     expect(boiler.Temperature).toBeCloseTo(startTemp + CstSteamSys.Boiler.TempAddStep * 2 - CstSteamSys.Boiler.TempVentLoss)
     expect(WaterTank.Content).toBe(CstSteamSys.Boiler.WaterVolume - CstSteamSys.Boiler.WaterVentLoss)
+
+    boiler.Thick()
+    expect(WaterTank.Content).toBe(CstSteamSys.Boiler.WaterVolume - CstSteamSys.Boiler.WaterVentLoss * 2)
+    expect(boiler.Temperature).toBeCloseTo(startTemp + CstSteamSys.Boiler.TempAddStep * 3 - CstSteamSys.Boiler.TempVentLoss * 2)
   })
   test('closed an previous opened steam vent = no more loss temperture and water', () => {
     const { WaterTank, SteamVent } = boiler

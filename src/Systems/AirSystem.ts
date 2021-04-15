@@ -39,7 +39,7 @@ export default class AirSystem {
       CstAirSys.StartAirReceiver1.TankPressure, 0,
       this.StartAirCompressor.OutletValve)
 
-    this.StartAirReceiver.Tank.AddEachStep = CstAirSys.StartAirCompressor1.AddStep
+    this.StartAirReceiver.Tank.AddThisStep = CstAirSys.StartAirCompressor1.AddStep
     // #endregion
 
     // #region Emergency compressor
@@ -51,7 +51,7 @@ export default class AirSystem {
       this.EmergencyCompressor.OutletValve)
 
     // #endregion
-    this.EmergencyReceiver.Tank.AddEachStep = CstAirSys.EmergencyCompressor.AddStep
+    this.EmergencyReceiver.Tank.AddThisStep = CstAirSys.EmergencyCompressor.AddStep
 
     makeAutoObservable(this)
   }

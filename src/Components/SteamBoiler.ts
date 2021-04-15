@@ -21,47 +21,35 @@ Water intake valve =>=|     |             |--> Steam Vent valve
 */
 export default class SteamBoiler implements Item {
   Name: string
+
   WaterTank: Tank // virtual tank to hold the water inside the boiler
   WaterIntakeValve: Valve
   WaterDrainValve: Valve
+
+  FuelSourceTank: iTank
   FuelIntakeValve: Valve
-  HasFlame: boolean
+
   SafetyRelease: Valve
   SteamVent: Valve
+
+  HasFlame: boolean
   Temperature: number
-  FuelSourceTank: iTank
   AutoFlame: boolean
 
 
   constructor(name: string, waterSource: Item,
     fuelSource: Item, fuelSourceTank: iTank) {
     this.Name = name
-    //#region Water supply
+    // Water supply
     this.WaterIntakeValve = new Valve(SteamSysTxt.Boiler.WaterIntakeValve, waterSource)
     this.WaterTank = new Tank('virtual tank to hold the water inside the boiler', CstSteamSys.Boiler.WaterVolume, 0)
+    this.WaterDrainValve = new Valve(SteamSysTxt.Boiler.WaterDrainValve, this.WaterTank, CstChanges.DrainStep)
 
-    this.WaterDrainValve = new Valve(SteamSysTxt.Boiler.WaterDrainValve, this.WaterTank)
-    this.WaterDrainValve.cbNowOpen = () => {
-      this.WaterTank.RemoveEachStep += CstChanges.DrainStep
-    }
-    this.WaterDrainValve.cbNowClosed = () => {
-      this.WaterTank.RemoveEachStep -= CstChanges.DrainStep
-    }
-    //#endregion 
-    //#region Fuel & Flame
+    this.FuelSourceTank = fuelSourceTank
     this.FuelIntakeValve = new Valve(SteamSysTxt.Boiler.FuelIntakeValve, fuelSource)
     this.HasFlame = false
-    //#endregion
-    //#region Steam Vent valve
+
     this.SteamVent = new Valve(SteamSysTxt.Boiler.SteamVent, this)
-    // open steam vent, loss some water
-    this.SteamVent.cbNowOpen = () => {
-      this.WaterTank.RemoveEachStep += CstSteamSys.Boiler.WaterVentLoss
-    }
-    this.SteamVent.cbNowClosed = () => {
-      this.WaterTank.RemoveEachStep -= CstSteamSys.Boiler.WaterVentLoss
-    }
-    //#endregion
 
     this.SafetyRelease = new Valve(SteamSysTxt.Boiler.SafetyRelease, this)
 
@@ -69,7 +57,6 @@ export default class SteamBoiler implements Item {
 
     this.AutoFlame = false
 
-    this.FuelSourceTank = fuelSourceTank
     makeAutoObservable(this)
   }
 
@@ -100,7 +87,7 @@ export default class SteamBoiler implements Item {
     this.HasFlame = this.HasFuel && this.HasEnoughWaterForFlame
     if (this.HasFlame) {
       // ignition succesfull = start burning fuel
-      this.FuelSourceTank.RemoveEachStep += CstFuelSys.SteamBoiler.Consumption
+      this.FuelSourceTank.RemoveThisStep += CstFuelSys.SteamBoiler.Consumption
     }
   }
   Extinguishing() {
@@ -111,7 +98,7 @@ export default class SteamBoiler implements Item {
     }
     // kill flame & stop burning fuel
     this.HasFlame = false
-    this.FuelSourceTank.RemoveEachStep -= CstFuelSys.SteamBoiler.Consumption
+    this.FuelSourceTank.RemoveThisStep -= CstFuelSys.SteamBoiler.Consumption
   }
   CheckTemp() {
     //  no flame but not at start temp = cooling down
@@ -133,10 +120,21 @@ export default class SteamBoiler implements Item {
   }
 
   Thick() {
-    this.WaterTank.AddEachStep = this.WaterIntakeValve.Content
+    this.WaterTank.AddThisStep = this.WaterIntakeValve.Content
+    if (this.WaterDrainValve.isOpen) this.WaterTank.RemoveThisStep += CstChanges.DrainStep
+
+    // Steam vent valve, loose some heat and water
+    if (this.SteamVent.isOpen) {
+      this.Temperature -= CstSteamSys.Boiler.TempVentLoss
+      this.WaterTank.RemoveThisStep += CstSteamSys.Boiler.WaterVentLoss
+    }
+
     this.WaterTank.Thick()
+
+
     this.CheckFlame() // auto trip with fuel or not enough water
     this.CheckTemp()
+
 
     //#region safety release valve
     // open safety release valve and kill flame is pressure is to high
@@ -154,10 +152,7 @@ export default class SteamBoiler implements Item {
     }
     //#endregion
 
-    // Steam vent valve, loose some heat and water
-    if (this.SteamVent.isOpen) {
-      this.Temperature -= CstSteamSys.Boiler.TempVentLoss
-    }
+
     //#region Auto flame
     // auto flame can only works inside operation zone (operational temp + / - autoEnableZoner)
     if (this.AutoFlame && !this.TempInsideAutoZone) this.AutoFlame = false

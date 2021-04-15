@@ -39,11 +39,14 @@ BOILER |
 export default class SteamSystem {
   FeedWaterSupply: TankWithValves
   FeedWaterPump: Pump
-  Boiler: SteamBoiler
+
   FuelPump: Pump
   FuelSource: TankWithValves
   FuelSourceValve: Valve
+
+  Boiler: SteamBoiler
   MainSteamValve: Valve
+
   SteamCondensor: Cooler
 
   constructor(mainBus1: PowerBus, fuelSource: TankWithValves, condensor: Cooler) {
@@ -87,17 +90,13 @@ export default class SteamSystem {
     this.FeedWaterPump.Providers = this.FeedWaterSupply.OutletValve.Content
     this.FeedWaterPump.Thick()
 
-    this.FeedWaterSupply.Tank.RemoveEachStep = 0
-
     if (this.FeedWaterPump.Content !== 0 && this.Boiler.WaterIntakeValve.isOpen) {
       // remove from feed water storage to fill boiler
-      this.FeedWaterSupply.Tank.RemoveEachStep = CstSteamSys.FeedWaterPump
+      this.FeedWaterSupply.Tank.RemoveThisStep = CstSteamSys.FeedWaterPump
     }
-    // if (this.FeedWaterSupply.DrainValve.isOpen) {
-    //   // (also) draining
-    //   this.FeedWaterSupply.Tank.RemoveEachStep += CstChanges.DrainStep
-    // }
+
     this.FeedWaterSupply.Thick()
+
     //#endregion
     //#region  Fuel
     this.FuelPump.Providers = this.FuelSourceValve.Content !== 0

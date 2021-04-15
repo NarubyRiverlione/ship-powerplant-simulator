@@ -75,12 +75,12 @@ export default class DieselGenerator extends Generator {
   }
 
   Thick() {
-    this.LubProvider.RemoveEachStep = 0
-    this.LubSlump.AddEachStep = 0
+    this.LubProvider.RemoveThisStep = 0
+    this.LubSlump.AddThisStep = 0
     if (this.LubIntakeValve.Content !== 0) {
       // only  fill slump tank if lub source is not empty
-      this.LubProvider.RemoveEachStep += this.LubIntakeValve.Content / CstLubSys.RatioStorageDsGenSlump
-      this.LubSlump.AddEachStep = this.LubIntakeValve.Content
+      this.LubProvider.RemoveThisStep += this.LubIntakeValve.Content / CstLubSys.RatioStorageDsGenSlump
+      this.LubSlump.AddThisStep = this.LubIntakeValve.Content
     }
 
     this.LubSlump.Thick()
