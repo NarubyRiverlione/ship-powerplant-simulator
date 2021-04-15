@@ -40,8 +40,8 @@ export const CstFuelSys = {
     IntakeValveVolume: 10
   },
   BypassValveVolume: 1,
-  DieselGenerator: { Consumption: { Diesel: 0.01 } },
-  SteamBoiler: { Consumption: 0.05 },
+  DieselGenerator: { Consumption: { Diesel: 0.1 } },
+  SteamBoiler: { Consumption: 0.5 },
   Purification: { Volume: 2, SteamNeeded: 4 }
 }
 export const CstAirSys = {

@@ -35,7 +35,7 @@ describe('Use start conditions', () => {
     sim.SetStartConditions(CstStartConditions.SetFuelTanksFull)
     sim.Thick()
     const { FuelSys } = sim
-    expect(FuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.IntakeValveVolume)
+    expect(FuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankVolume)
     expect(FuelSys.DsService.OutletValve.Content).toBe(CstFuelSys.DsServiceTank.TankVolume)
   })
   test('Full Lub tank available via open outlet valve', () => {
@@ -73,11 +73,20 @@ describe('Use start conditions', () => {
 
   })
   test('Diesel generator 1 running', () => {
+    const { PowerSys: { MainBus1, DsGen }, FuelSys: { DsService } } = sim
     sim.SetStartConditions(CstStartConditions.RunningDsGen1)
-    sim.Thick()
-    const { PowerSys: { MainBus1, DsGen } } = sim
+    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption.Diesel)
     expect(DsGen.isRunning).toBeTruthy()
+    sim.Thick()
     expect(MainBus1.Content).toBe(CstPowerSys.Voltage)
+    // startup already did a Thick so breakers could be closed
+    // so consumption is here on step 2
+    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption.Diesel * 2)
+
+    sim.Thick()
+    // so consumption is here on step 3
+    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption.Diesel * 3)
+
   })
   test('Seawater suction pump 1 running , Aux pump stopped ', () => {
     const { CoolingSeaWaterSys } = sim
@@ -95,9 +104,11 @@ describe('Use start conditions', () => {
     expect(Boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
     // DsGen in running and Boiler has flame ==> diesel consumption 
     expect(DsGen.isRunning).toBeTruthy()
-    expect(DsService.Tank.Content).toBe(CstFuelSys.DsServiceTank.TankVolume -
-      CstFuelSys.DieselGenerator.Consumption.Diesel
+    // startup already did a 3 Thick so this is consumption step 4
+    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume -
+      CstFuelSys.DieselGenerator.Consumption.Diesel * 4
       - CstFuelSys.SteamBoiler.Consumption
+      , 1 // percision for test
     )
 
   })

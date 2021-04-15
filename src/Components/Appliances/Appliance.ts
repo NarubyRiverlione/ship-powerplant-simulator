@@ -19,6 +19,7 @@ export default class Appliance implements Item {
     // this is a super class, makeAutoObservable doesn't work here
     makeObservable(this, {
       isRunning: observable,
+      Output: observable,
       CheckPower: computed,
       Start: action,
       Stop: action,

@@ -22,6 +22,7 @@ export default class mockTank implements iTank {
   }
   Remove() {
     this.Inside -= this.RemoveThisStep
+    this.RemoveThisStep = 0
   }
   CheckAlarmLevels() { }
 

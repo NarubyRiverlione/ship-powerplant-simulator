@@ -55,12 +55,10 @@ export default class Generator implements Item {
 
   Start() {
     this.isRunning = true
-    this.FuelProvider.RemoveThisStep += this.FuelConsumption
   }
 
   Stop() {
     this.isRunning = false
-    this.FuelProvider.RemoveThisStep -= this.FuelConsumption
   }
 
   Toggle() {
@@ -70,6 +68,8 @@ export default class Generator implements Item {
 
   Thick() {
     this.isRunning = this.TestRunning()
+    if (this.isRunning) this.FuelProvider.RemoveThisStep += this.FuelConsumption
+
     this.Output = this.isRunning ? this.RatedFor : 0
   }
 }

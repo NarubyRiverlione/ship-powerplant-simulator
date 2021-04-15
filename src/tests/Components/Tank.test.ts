@@ -47,33 +47,30 @@ describe('Tank add 1 step', () => {
 describe('Tank remove 1 step', () => {
   test('Remove from full tank', () => {
     const start = 200
-    const removeEachStep = 80
+    const remove = 80
     const tank = new Tank('full tank', start, start)
-    tank.RemoveThisStep = removeEachStep
+    tank.RemoveThisStep = remove
     tank.Thick()
-    expect(tank.Content).toBe(start - removeEachStep)
-  })
-  test('Remove from empty tank, without callback', () => {
-    const removeEachStep = 1
-    const tank = new Tank('empty tank', 200)
-    tank.RemoveThisStep = removeEachStep
-    tank.Thick()
-    expect(tank.Content).toBe(0)
+    expect(tank.Content).toBe(start - remove)
+    expect(tank.ReadoutConsumption).toBe(remove)
   })
   test('Remove from empty tank = empty (not negative content)', () => {
-    const removeEachStep = 1
+    const remove = 1
     const tank = new Tank('empty tank', 200)
-    tank.RemoveThisStep = removeEachStep
+    tank.RemoveThisStep = remove
+    tank.Thick()
     tank.Thick()
     expect(tank.Content).toBe(0)
+    expect(tank.ReadoutConsumption).toBe(0)
   })
   test('Remove from more then content from tank = empty (not negative content)', () => {
-    const removeEachStep = 80
+    const remove = 80
     const start = 50
     const tank = new Tank('not empty tank', 200, start)
-    tank.RemoveThisStep = removeEachStep
+    tank.RemoveThisStep = remove
     tank.Thick()
     expect(tank.Content).toBe(0)
+    expect(tank.ReadoutConsumption).toBe(start)
   })
 })
 

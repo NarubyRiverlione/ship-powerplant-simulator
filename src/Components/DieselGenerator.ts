@@ -28,9 +28,9 @@ export default class DieselGenerator extends Generator {
     lubCooler: Cooler) {
     super(name, rate, dieselValve.Source as Tank)
     this.FuelIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.FuelIntakeValve}`, dieselValve)
-    this.FuelProvider = dieselValve.Source as Tank
 
-    this.LubIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.LubIntakeValve}`, lubValve)
+    this.LubIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.LubIntakeValve}`, lubValve,
+      CstPowerSys.DsGen.Slump.IntakeValveVolume)
     this.LubProvider = lubValve.Source as Tank
 
     this.LubSlump = new Tank(DieselGeneratorTxt.LubSlump, CstPowerSys.DsGen.Slump.TankVolume)

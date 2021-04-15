@@ -1,3 +1,4 @@
+import { makeObservable, computed, observable } from 'mobx'
 import Item from './Item'
 import { iTank } from './Tank'
 import Valve from './Valve'
@@ -9,6 +10,11 @@ export default class MultiInputs extends Valve {
     super(name, sourceTank)
     this.Inputs = new Array()
     this.Open()
+
+    makeObservable(this, {
+      Inputs: observable,
+      AddInputs: computed,
+    })
   }
 
   get AddInputs() {

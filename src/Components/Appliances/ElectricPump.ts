@@ -12,7 +12,7 @@ export default class ElectricPump extends Appliance {
 
     this.Providers = 0
 
-    makeObservable(this, { Output: observable, Content: computed })
+    makeObservable(this, {})
   }
 
 

@@ -149,7 +149,7 @@ describe('Fuel', () => {
     const fuelSource = fuelSourceOutlet.Source as mockTank
     expect(fuelSource.RemoveThisStep).toBe(0)
   })
-  test('Fuel pump running & flame = burn fuel form FuelProviderTank', () => {
+  test('Fuel pump running & flame = burn fuel from FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
     FuelSourceValve.Open()
     FuelPump.Start()
@@ -168,6 +168,7 @@ describe('Fuel', () => {
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
     expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    fuelSource.Thick()
     steamSys.Thick()
     expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
@@ -187,6 +188,7 @@ describe('Fuel', () => {
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
     expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    fuelSource.Thick()
     FuelPump.Stop()
     steamSys.Thick()
     expect(fuelSource.RemoveThisStep).toBe(0)
@@ -208,6 +210,7 @@ describe('Fuel', () => {
     const fuelSource = fuelSourceOutlet.Source as mockTank
     expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
     Boiler.Extinguishing()
+    fuelSource.Thick()
     steamSys.Thick()
     expect(fuelSource.RemoveThisStep).toBe(0)
   })

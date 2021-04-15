@@ -85,10 +85,6 @@ export default class SteamBoiler implements Item {
     }
     // ignite if there is fuel and enough water
     this.HasFlame = this.HasFuel && this.HasEnoughWaterForFlame
-    if (this.HasFlame) {
-      // ignition succesfull = start burning fuel
-      this.FuelSourceTank.RemoveThisStep += CstFuelSys.SteamBoiler.Consumption
-    }
   }
   Extinguishing() {
     /* istanbul ignore if  */
@@ -96,9 +92,9 @@ export default class SteamBoiler implements Item {
       console.warn('double Extinguishing')
       return
     }
-    // kill flame & stop burning fuel
+    // kill flame 
     this.HasFlame = false
-    this.FuelSourceTank.RemoveThisStep -= CstFuelSys.SteamBoiler.Consumption
+
   }
   CheckTemp() {
     //  no flame but not at start temp = cooling down
@@ -167,6 +163,11 @@ export default class SteamBoiler implements Item {
       && this.Temperature <= CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.AutoEnableZone / 2)
       this.Ignite()
     //#endregion
+
+    if (this.HasFlame) {
+      // burn fuel      
+      this.FuelSourceTank.RemoveThisStep += CstFuelSys.SteamBoiler.Consumption
+    }
 
     /* istanbul ignore if  */
     if (this.WaterTank.Content < 0) {

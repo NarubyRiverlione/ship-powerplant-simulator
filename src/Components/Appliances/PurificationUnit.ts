@@ -4,6 +4,7 @@ import Valve, { iValve } from "../Valve";
 import Tank from "../Tank";
 import { CstFuelSys } from "../../Cst";
 import CstTxt from '../../CstTxt'
+import { computed, makeObservable, observable } from "mobx";
 
 const { PurificationTxt } = CstTxt
 
@@ -23,6 +24,10 @@ export default class PurificationUnit extends Appliance {
 
     this.IntakeValve = new Valve(PurificationTxt.IntakeValve, sourceValve)
     this.SteamIntakeValve = new Valve(PurificationTxt.SteamIntakeValve, dummySteamMainValve)
+
+    makeObservable(this, {
+      HasSteam: computed
+    })
   }
   get HasSteam() { return this.SteamIntakeValve.Content >= CstFuelSys.Purification.SteamNeeded }
 

@@ -9,9 +9,10 @@ let powerSys: PowerSystem
 const startFuelAmount = 10000
 const startLubAmount = 2000
 const startAirAmount = CstAirSys.DieselGenerator.StarAirConsumption
+let fuelSource: mockTank
 
 beforeEach(() => {
-  const fuelSource = new mockTank('dummy fuel source', 1e6, startFuelAmount)
+  fuelSource = new mockTank('dummy fuel source', 1e6, startFuelAmount)
   const lubSource = new mockTank('dummy lub source', 1e6, startLubAmount)
   const airSource = new mockTank('dummy air source', 1e6, startAirAmount)
 

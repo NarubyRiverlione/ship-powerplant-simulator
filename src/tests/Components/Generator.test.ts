@@ -125,8 +125,10 @@ describe('Fuel consumption', () => {
     expect(generator.isRunning).toBeTruthy()
     expect(generator.FuelConsumption).toBe(consumption)
     expect(generator.FuelProvider.Content).toBe(startFuelContent - consumption)
+    generator.Thick()
+    testFuelProvider.Thick()
+    expect(generator.FuelProvider.Content).toBe(startFuelContent - consumption * 2)
 
-    expect(generator.FuelProvider.RemoveThisStep).toBe(consumption)
   })
   test('stop after running = no fuel consumption', () => {
     generator.HasFuel = true

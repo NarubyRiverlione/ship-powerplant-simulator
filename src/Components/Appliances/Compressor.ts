@@ -15,7 +15,9 @@ export default class Compressor extends Appliance {
 
     this.HasReceiver = false
     this.OutletValve = new Valve(name + ' - outlet valve', this)
-    makeObservable(this, { HasReceiver: observable, SafetyOpen: computed, Output: observable, Content: computed })
+    makeObservable(this, {
+      HasReceiver: observable, SafetyOpen: computed
+    })
   }
 
   // open safety with running without a receiver

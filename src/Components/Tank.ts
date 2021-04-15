@@ -16,6 +16,7 @@ export default class Tank implements iTank {
   Volume: number
   AddThisStep: number
   RemoveThisStep: number
+  ReadoutConsumption: number
   AlarmSystem?: AlarmSystem
   LowLevelAlarmCode: number
   LowLevelAlarm: number
@@ -29,6 +30,7 @@ export default class Tank implements iTank {
 
     this.AddThisStep = 0.0
     this.RemoveThisStep = 0.0
+    this.ReadoutConsumption = 0.0
 
     this.AlarmSystem = undefined
     this.LowLevelAlarmCode = 0
@@ -65,7 +67,12 @@ export default class Tank implements iTank {
   Remove() {
     if (this.Inside - this.RemoveThisStep > 0) {
       this.Inside -= this.RemoveThisStep
-    } else { this.Inside = 0.0 }
+      this.ReadoutConsumption = this.RemoveThisStep
+    } else {
+      this.ReadoutConsumption = this.Inside
+      this.Inside = 0.0
+    }
+    // save amount thats be remove als readout consumption
     // reset RemoveThisStep so each step multiple systems can add there consumption 
     this.RemoveThisStep = 0
   }

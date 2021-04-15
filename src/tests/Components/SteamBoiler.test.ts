@@ -112,16 +112,16 @@ describe('Ignition / flame', () => {
   test('has fuel + ignite = has flame = burn fuel', () => {
     boiler.FuelIntakeValve.Open()
     boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
-    boiler.Thick()
     boiler.Ignite()
+    boiler.Thick()
     expect(boiler.HasFlame).toBeTruthy()
     expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
   test('has fuel + toggle = has flame = burn fuel', () => {
     boiler.FuelIntakeValve.Open()
     boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
-    boiler.Thick()
     boiler.Toggle()
+    boiler.Thick()
     expect(boiler.HasFlame).toBeTruthy()
     expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
   })
@@ -218,7 +218,6 @@ describe('Pressure calculation', () => {
     expect(boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
   })
 })
-
 
 describe('Safety release valve', () => {
   test('Safety open if pressure is to high', () => {

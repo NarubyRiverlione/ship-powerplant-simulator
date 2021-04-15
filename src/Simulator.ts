@@ -72,7 +72,7 @@ export default class Simulator {
     this.CoolingSeaWaterSys.Thick()
     this.CoolingFreshWaterSys.Thick()
     this.SteamSys.Thick()
-    this.FuelSys.Thick()  //must be evaluated last to consume fuel form other systems
+    this.FuelSys.Thick()  //must be evaluated last to consume fuel from other systems
   }
 
   Start() {
