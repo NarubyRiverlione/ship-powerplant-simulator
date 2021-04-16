@@ -52,14 +52,13 @@ export default class CoolingFreshWaterSystem {
 
     // #region FW Expand tank
     this.FwExpandTank = new Tank(CoolantSysTxt.FwExpandTank, CstCoolantSys.FwExpandTank.TankVolume)
-    this.FwExpandTank.RemoveThisStep = CstChanges.DrainStep
+    this.FwExpandTank.RemoveThisStep = CstChanges.DrainRatio
 
     const FwMakeUp = new Tank('Fresh water make up', 1e6, 1e6)
     this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve, FwMakeUp)
     this.FwIntakeValve.Volume = CstCoolantSys.FwExpandTank.IntakeValveVolume
 
-    this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve, this.FwExpandTank)
-    this.FwDrainValve.Volume = CstChanges.DrainStep
+    this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve, this.FwExpandTank, this.FwExpandTank.Volume / CstChanges.DrainRatio)
 
     // #endregion
     // DsGen Lubrication cooler (secundaire FW circuit)
@@ -77,6 +76,7 @@ export default class CoolingFreshWaterSystem {
     )
     makeAutoObservable(this)
   }
+  get FwEnoughForCooling() { return this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling }
 
   Thick() {
     this.FwExpandTank.AddThisStep = this.FwIntakeValve.Content
@@ -90,12 +90,12 @@ export default class CoolingFreshWaterSystem {
     this.FwPumpStartAir.Thick()
 
     // FW Ds Gen needs pump running and enough fresh water in hot circuit to be cooling
-    this.FwCoolerDsGen.HotCircuitComplete = this.FwPumpDsGen.isRunning && this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling
+    this.FwCoolerDsGen.HotCircuitComplete = this.FwPumpDsGen.isRunning && this.FwEnoughForCooling
     // Lub DsGen cooler cool circuit is ok if  FW cooler ds gen is cooling
     this.DsGenLubCooler.CoolCircuitComplete = this.FwCoolerDsGen.IsCooling
 
     // FW Start air Gen needs pump running and enough fresh water in hot circuit to be cooling
-    this.FwCoolerStartAir.HotCircuitComplete = this.FwPumpStartAir.isRunning && this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling
+    this.FwCoolerStartAir.HotCircuitComplete = this.FwPumpStartAir.isRunning && this.FwEnoughForCooling
     // Lub Start air cooler cool circuit is ok if  FW cooler start air is cooling
     this.StartAirCooler.CoolCircuitComplete = this.FwCoolerStartAir.IsCooling
   }

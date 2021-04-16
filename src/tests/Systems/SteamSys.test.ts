@@ -117,7 +117,7 @@ describe('Feed water', () => {
     FeedWaterSupply.DrainValve.Open()
     FeedWaterPump.Start()
     steamSys.Thick()
-    const expectLevel = startVolume - CstSteamSys.FeedWaterPump - CstChanges.DrainStep
+    const expectLevel = startVolume - CstSteamSys.FeedWaterPump - FeedWaterSupply.Tank.Volume / CstChanges.DrainRatio
     expect(FeedWaterSupply.Tank.Content).toBe(expectLevel)
     expect(Boiler.WaterLevel).toBe(CstSteamSys.FeedWaterPump)
   })
@@ -167,10 +167,10 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
     fuelSource.Thick()
     steamSys.Thick()
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
   })
   test('Stop a running Fuel pump  = not burning fuel form FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
@@ -187,7 +187,7 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
     fuelSource.Thick()
     FuelPump.Stop()
     steamSys.Thick()
@@ -208,7 +208,7 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
     Boiler.Extinguishing()
     fuelSource.Thick()
     steamSys.Thick()
@@ -261,7 +261,7 @@ describe('Main steam valve', () => {
     Boiler.WaterDrainValve.Open()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam * 2 - CstChanges.DrainStep)
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam * 2 - CstChanges.DrainRatio)
   })
   test('drain open the open main steam valve', () => {
     const { Boiler, MainSteamValve } = steamSys
@@ -277,7 +277,7 @@ describe('Main steam valve', () => {
     MainSteamValve.Open()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam - CstChanges.DrainStep * 2)
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam - CstChanges.DrainRatio * 2)
   })
   test('re-close previous open drain while  main steam valve remains open', () => {
     const { Boiler, MainSteamValve } = steamSys
@@ -295,7 +295,7 @@ describe('Main steam valve', () => {
     Boiler.WaterDrainValve.Close()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam * 2 - CstChanges.DrainStep * 2)
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam * 2 - CstChanges.DrainRatio * 2)
   })
   test('re-close previous open main steam valve while  drain  valve remains open', () => {
     const { Boiler, MainSteamValve } = steamSys
@@ -313,7 +313,7 @@ describe('Main steam valve', () => {
     MainSteamValve.Close()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam - CstChanges.DrainStep * 3)
+      - CstSteamSys.Boiler.WaterLossByNotCoolingSteam - CstChanges.DrainRatio * 3)
   })
 })
 

@@ -43,7 +43,7 @@ export default class SteamBoiler implements Item {
     // Water supply
     this.WaterIntakeValve = new Valve(SteamSysTxt.Boiler.WaterIntakeValve, waterSource)
     this.WaterTank = new Tank('virtual tank to hold the water inside the boiler', CstSteamSys.Boiler.WaterVolume, 0)
-    this.WaterDrainValve = new Valve(SteamSysTxt.Boiler.WaterDrainValve, this.WaterTank, CstChanges.DrainStep)
+    this.WaterDrainValve = new Valve(SteamSysTxt.Boiler.WaterDrainValve, this.WaterTank, CstChanges.DrainRatio)
 
     this.FuelSourceTank = fuelSourceTank
     this.FuelIntakeValve = new Valve(SteamSysTxt.Boiler.FuelIntakeValve, fuelSource)
@@ -117,7 +117,7 @@ export default class SteamBoiler implements Item {
 
   Thick() {
     this.WaterTank.AddThisStep = this.WaterIntakeValve.Content
-    if (this.WaterDrainValve.isOpen) this.WaterTank.RemoveThisStep += CstChanges.DrainStep
+    if (this.WaterDrainValve.isOpen) this.WaterTank.RemoveThisStep += CstChanges.DrainRatio
 
     // Steam vent valve, loose some heat and water
     if (this.SteamVent.isOpen) {
@@ -166,7 +166,7 @@ export default class SteamBoiler implements Item {
 
     if (this.HasFlame) {
       // burn fuel      
-      this.FuelSourceTank.RemoveThisStep += CstFuelSys.SteamBoiler.Consumption
+      this.FuelSourceTank.RemoveThisStep += CstFuelSys.SteamBoiler.Consumption.Diesel
     }
 
     /* istanbul ignore if  */

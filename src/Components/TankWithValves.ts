@@ -16,7 +16,9 @@ export default class TankWithValves implements Item {
     this.IntakeValve = new Valve(`${tankName} - intake valve`, sourceValve)
     this.Tank = new Tank(tankName, volume, startContent)
     this.OutletValve = new Valve(`${tankName} - outlet valve`, this.Tank)
-    this.DrainValve = new Valve(`${tankName} - drain valve`, this.Tank, CstChanges.DrainStep)
+    this.DrainValve = new Valve(`${tankName} - drain valve`, this.Tank,
+      // how many step it takes to drain a tank (drain valve volume = tankvolume / drainratio)
+      this.Tank.Volume / CstChanges.DrainRatio)
   }
 
 

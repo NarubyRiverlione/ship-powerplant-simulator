@@ -68,14 +68,20 @@ describe('Fresh water expand tank', () => {
   })
   test('Drain expand tank', () => {
     const startContent = 60
-    coolingFreshSys.FwExpandTank.Inside = startContent
-    coolingFreshSys.FwDrainValve.Open()
+    const { FwExpandTank, FwDrainValve } = coolingFreshSys
+    FwExpandTank.Inside = startContent
+    FwDrainValve.Open()
     coolingFreshSys.Thick()
-    expect(coolingFreshSys.FwExpandTank.Content).toBe(startContent - CstChanges.DrainStep)
+    expect(FwExpandTank.Content).toBe(startContent - FwExpandTank.Volume / CstChanges.DrainRatio)
 
-    coolingFreshSys.FwDrainValve.Close()
+    // continue draining
     coolingFreshSys.Thick()
-    expect(coolingFreshSys.FwExpandTank.Content).toBe(startContent - CstChanges.DrainStep)
+    expect(FwExpandTank.Content).toBe(startContent - (FwExpandTank.Volume / CstChanges.DrainRatio) * 2)
+
+    // stop draining
+    FwDrainValve.Close()
+    coolingFreshSys.Thick()
+    expect(FwExpandTank.Content).toBe(startContent - (FwExpandTank.Volume / CstChanges.DrainRatio) * 2)
   })
 })
 

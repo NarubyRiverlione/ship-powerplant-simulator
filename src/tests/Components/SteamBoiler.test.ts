@@ -67,21 +67,21 @@ describe('Water level', () => {
     boiler.WaterTank.Inside = startVolume
     boiler.WaterDrainValve.Open()
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainStep)
+    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainRatio)
 
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainStep * 2)
+    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainRatio * 2)
   })
   test('re-close previous open drain  = stop remove water from boiler', () => {
     const startVolume = 45
     boiler.WaterTank.Inside = startVolume
     boiler.WaterDrainValve.Open()
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainStep)
+    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainRatio)
 
     boiler.WaterDrainValve.Close()
     boiler.Thick()
-    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainStep)
+    expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainRatio)
 
   })
 })
@@ -115,7 +115,7 @@ describe('Ignition / flame', () => {
     boiler.Ignite()
     boiler.Thick()
     expect(boiler.HasFlame).toBeTruthy()
-    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
   })
   test('has fuel + toggle = has flame = burn fuel', () => {
     boiler.FuelIntakeValve.Open()
@@ -123,7 +123,7 @@ describe('Ignition / flame', () => {
     boiler.Toggle()
     boiler.Thick()
     expect(boiler.HasFlame).toBeTruthy()
-    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
   })
   test('no fuel + ignite = no flame', () => {
     expect(boiler.FuelIntakeValve.isOpen).toBeFalsy()

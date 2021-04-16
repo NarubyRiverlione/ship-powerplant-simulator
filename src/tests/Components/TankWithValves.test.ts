@@ -104,23 +104,23 @@ describe('Intake valve', () => {
 
 describe('Drain valve', () => {
   test('open drain valve = remove from tank', () => {
-    const startContent = 1450
+    const startContent = Volume - 1450 // random
     tankV.Tank.Inside = startContent
     tankV.DrainValve.Open()
     tankV.Thick()
-    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
+    expect(tankV.Tank.Content).toBe(startContent - (tankV.Tank.Volume / CstChanges.DrainRatio))
     tankV.Thick()
-    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep * 2)
+    expect(tankV.Tank.Content).toBe(startContent - (tankV.Tank.Volume / CstChanges.DrainRatio) * 2)
   })
   test('closing previous open drain valve = stop remove from tank', () => {
-    const startContent = 560
+    const startContent = Volume - 560 // random
     tankV.Tank.Inside = startContent
     tankV.DrainValve.Open()
     tankV.Thick()
-    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
+    expect(tankV.Tank.Content).toBe(startContent - (tankV.Tank.Volume / CstChanges.DrainRatio))
     tankV.DrainValve.Close()
     tankV.Thick()
-    expect(tankV.Tank.Content).toBe(startContent - CstChanges.DrainStep)
+    expect(tankV.Tank.Content).toBe(startContent - (tankV.Tank.Volume / CstChanges.DrainRatio))
   })
 })
 

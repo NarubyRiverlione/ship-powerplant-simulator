@@ -1,6 +1,6 @@
 export const CstChanges = {
   Interval: 1000,
-  DrainStep: 2
+  DrainRatio: 20  // how many step it takes to drain a tank (drain valve volume = tankvolume / drainratio)
 }
 export const CstPowerSys = {
   Voltage: 440,
@@ -28,21 +28,19 @@ export const CstLubSys = {
 }
 export const CstFuelSys = {
   ShoreVolume: 1e6,
-  // storage tank is Ratio bigger then service tank
-  RatioStorageServiceTanks: 100,
   DsStorageTank: {
-    TankVolume: 100,
-    IntakeValveVolume: 1
+    TankVolume: 2000,
+    IntakeValveVolume: 100
   },
-  DsHandpumpVolume: 10,
+  DsHandpumpVolume: 5,
   DsServiceTank: {
     TankVolume: 100,
     IntakeValveVolume: 10
   },
-  BypassValveVolume: 1,
+  BypassValveVolume: 0.5,
+  Purification: { Volume: 1, SteamNeeded: 4 },
   DieselGenerator: { Consumption: { Diesel: 0.1 } },
-  SteamBoiler: { Consumption: 0.5 },
-  Purification: { Volume: 2, SteamNeeded: 4 }
+  SteamBoiler: { Consumption: { Diesel: 0.5 } },
 }
 export const CstAirSys = {
   StartAirCompressor1: {
@@ -66,8 +64,8 @@ export const CstCoolantSys = {
   FwMakeUp: 1e6,
   FwExpandTank: {
     TankVolume: 100,
-    IntakeValveVolume: 1,
-    MinForCooling: 25
+    IntakeValveVolume: 5,
+    MinForCooling: 30
   },
   FwPumpDsGen: 1000,
   FwPumpStartAir: 2000

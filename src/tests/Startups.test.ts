@@ -107,7 +107,7 @@ describe('Use start conditions', () => {
     // startup already did a 3 Thick so this is consumption step 4
     expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume -
       CstFuelSys.DieselGenerator.Consumption.Diesel * 4
-      - CstFuelSys.SteamBoiler.Consumption
+      - CstFuelSys.SteamBoiler.Consumption.Diesel
       , 1 // percision for test
     )
 
