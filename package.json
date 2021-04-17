@@ -1,6 +1,6 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "6.1.15",
+  "version": "7.0.0",
   "description": "Logic for ship simulator app",
   "main": "lib/Simulator.js",
   "types": "lib/Simulator.d.ts",

@@ -1,6 +1,6 @@
 import Simulator from '../Simulator'
 import {
-  CstFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys, CstCoolantSys, CstSteamSys
+  CstDsFuelSys, CstChanges, CstLubSys, CstAirSys, CstPowerSys, CstCoolantSys, CstSteamSys
 } from '../Cst'
 
 let simulator: Simulator

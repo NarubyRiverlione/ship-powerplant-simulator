@@ -1,5 +1,5 @@
 import PowerSystem from '../../Systems/PowerSystem'
-import { CstPowerSys, CstFuelSys, CstAirSys } from '../../Cst'
+import { CstPowerSys, CstDsFuelSys, CstAirSys } from '../../Cst'
 import mockValve from '../mocks/mockValve'
 import mockTank from '../mocks/mockTank'
 import mockCooler from '../mocks/mockCooler'
@@ -52,7 +52,7 @@ describe('Init power', () => {
     expect(powerSys.DsGen.isRunning).toBeFalsy()
     expect(powerSys.DsGenBreaker.isOpen).toBeTruthy()
     // expect(powerSys.DsGen.FuelProvider).toEqual(fuelSource)
-    expect(powerSys.DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
+    expect(powerSys.DsGen.FuelConsumption).toBe(CstDsFuelSys.DieselGenerator.Consumption.Diesel)
     // valve only has content of opened, so test here source
     expect(powerSys.DsGen.FuelIntakeValve.Source.Content).toBe(startFuelAmount)
   })
@@ -183,9 +183,9 @@ describe('Diesel generator ', () => {
 
     DsGen.Start()
     expect(DsGen.isRunning).toBeTruthy()
-    expect(DsGen.FuelConsumption).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
+    expect(DsGen.FuelConsumption).toBe(CstDsFuelSys.DieselGenerator.Consumption.Diesel)
 
     powerSys.Thick()
-    expect(DsGen.FuelProvider.RemoveThisStep).toBe(CstFuelSys.DieselGenerator.Consumption.Diesel)
+    expect(DsGen.FuelProvider.RemoveThisStep).toBe(CstDsFuelSys.DieselGenerator.Consumption.Diesel)
   })
 })

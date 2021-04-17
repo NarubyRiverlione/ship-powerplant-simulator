@@ -1,5 +1,5 @@
 import SteamBoiler from '../../Components/SteamBoiler'
-import { CstChanges, CstSteamSys, CstFuelSys } from '../../Cst'
+import { CstChanges, CstSteamSys, CstDsFuelSys } from '../../Cst'
 
 import mockTank from '../mocks/mockTank'
 import mockValve from '../mocks/mockValve'
@@ -23,7 +23,7 @@ describe('Init', () => {
     expect(boiler.Content).toBeCloseTo(0, 0)
   })
   test('Boiler temp is start temp', () => {
-    expect(boiler.Temperature).toBe(CstSteamSys.Boiler.StartTemp)
+    expect(boiler.Temperature).toBe(CstChanges.StartTemp)
   })
   test('water intake valve is closed', () => {
     expect(boiler.WaterIntakeValve.isOpen).toBeFalsy()
@@ -135,7 +135,7 @@ describe('Ignition / flame', () => {
     boiler.Ignite()
     boiler.Thick()
     expect(boiler.HasFlame).toBeTruthy()
-    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
   })
   test('has fuel + toggle = has flame = burn fuel', () => {
     boiler.FuelIntakeValve.Open()
@@ -143,7 +143,7 @@ describe('Ignition / flame', () => {
     boiler.Toggle()
     boiler.Thick()
     expect(boiler.HasFlame).toBeTruthy()
-    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
+    expect(boiler.FuelSourceTank.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
   })
   test('no fuel + ignite = no flame', () => {
     expect(boiler.FuelIntakeValve.isOpen).toBeFalsy()
@@ -203,20 +203,20 @@ describe('Temperature', () => {
     boiler.Ignite()
 
     boiler.Thick()
-    expect(boiler.Temperature).toBe(CstSteamSys.Boiler.StartTemp + CstSteamSys.Boiler.TempAddStep)
+    expect(boiler.Temperature).toBe(CstChanges.StartTemp + CstSteamSys.Boiler.TempAddStep)
 
     boiler.Thick()
-    expect(boiler.Temperature).toBe(CstSteamSys.Boiler.StartTemp + CstSteamSys.Boiler.TempAddStep * 2)
+    expect(boiler.Temperature).toBe(CstChanges.StartTemp + CstSteamSys.Boiler.TempAddStep * 2)
   })
 
   test('no flame = cool down until start temp', () => {
-    boiler.Temperature = CstSteamSys.Boiler.StartTemp + CstSteamSys.Boiler.TempCoolingStep * 2
+    boiler.Temperature = CstChanges.StartTemp + CstSteamSys.Boiler.TempCoolingStep * 2
     boiler.Thick()
-    expect(boiler.Temperature).toBeCloseTo(CstSteamSys.Boiler.StartTemp + CstSteamSys.Boiler.TempCoolingStep)
+    expect(boiler.Temperature).toBeCloseTo(CstChanges.StartTemp + CstSteamSys.Boiler.TempCoolingStep)
     boiler.Thick()
-    expect(boiler.Temperature).toBeCloseTo(CstSteamSys.Boiler.StartTemp)
+    expect(boiler.Temperature).toBeCloseTo(CstChanges.StartTemp)
     boiler.Thick()
-    expect(boiler.Temperature).toBeCloseTo(CstSteamSys.Boiler.StartTemp)
+    expect(boiler.Temperature).toBeCloseTo(CstChanges.StartTemp)
   })
 })
 

@@ -1,5 +1,5 @@
 import PurificationUnit from '../../Components/Appliances/PurificationUnit'
-import { CstFuelSys } from '../../Cst'
+import { CstDsFuelSys } from '../../Cst'
 import mockPowerBus from '../mocks/mockPowerBus'
 import mockTank from '../mocks/mockTank'
 import mockValve from '../mocks/mockValve'
@@ -7,7 +7,7 @@ import mockValve from '../mocks/mockValve'
 
 let purUnit: PurificationUnit
 const sourceContent = 100
-const steamSourceContent = CstFuelSys.Purification.SteamNeeded
+const steamSourceContent = CstDsFuelSys.Purification.SteamNeeded
 const testRate = 25
 
 const dummyBus = new mockPowerBus("dummy powerbus")
@@ -77,7 +77,7 @@ describe("start / stop", () => {
   test('start with power but not enough  steam = not running', () => {
     purUnit.SteamIntakeValve.Open()
     purUnit.IntakeValve.Open()
-    dummySteamSourceTank.Inside = CstFuelSys.Purification.SteamNeeded - 1
+    dummySteamSourceTank.Inside = CstDsFuelSys.Purification.SteamNeeded - 1
     purUnit.Start()
     purUnit.Thick()
     expect(purUnit.HasSteam).toBeFalsy()

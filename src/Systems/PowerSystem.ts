@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 
-import { CstPowerSys, CstFuelSys } from '../Cst'
+import { CstPowerSys, CstDsFuelSys } from '../Cst'
 import CstTxt from '../CstTxt'
 import Generator from '../Components/Generator'
 import DieselGenerator from '../Components/DieselGenerator'
@@ -67,7 +67,7 @@ export default class PowerSystem {
     // Diesel Generator 
     this.DsGen = new DieselGenerator(PowerTxt.DieselGen,
       CstPowerSys.DsGen.RatedFor, DsGen1FuelValve, DsGenLubValve, DsGenAirValve, LubCooler)
-    this.DsGen.FuelConsumption = CstFuelSys.DieselGenerator.Consumption.Diesel
+    this.DsGen.FuelConsumption = CstDsFuelSys.DieselGenerator.Consumption.Diesel
     this.DsGenBreaker = new Breaker(PowerTxt.DsGenBreaker)
 
     makeAutoObservable(this)

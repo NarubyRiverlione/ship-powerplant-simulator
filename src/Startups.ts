@@ -1,12 +1,12 @@
 
-import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys, CstSteamSys } from "./Cst"
+import { CstAirSys, CstCoolantSys, CstDsFuelSys, CstLubSys, CstPowerSys, CstSteamSys } from "./Cst"
 import Simulator from "./Simulator"
 
 export const SetFuelTanksFull = (sim: Simulator) => {
-  const { FuelSys } = sim
-  FuelSys.DsService.Tank.Inside = CstFuelSys.DsServiceTank.TankVolume
-  FuelSys.DsService.OutletValve.Open()
-  FuelSys.DsStorage.Tank.Inside = CstFuelSys.DsStorageTank.TankVolume
+  const { DsFuelSys } = sim
+  DsFuelSys.DsService.Tank.Inside = CstDsFuelSys.DsServiceTank.TankVolume
+  DsFuelSys.DsService.OutletValve.Open()
+  DsFuelSys.DsStorage.Tank.Inside = CstDsFuelSys.DsStorageTank.TankVolume
 }
 export const SetLubTanksFull = (sim: Simulator) => {
   const { LubSys } = sim
@@ -68,12 +68,12 @@ export const SeaWaterCoolingSupplyPump1Running = (sim: Simulator) => {
 export const BoilerOperational = (sim: Simulator) => {
   RunningDsGen1(sim)
   sim.Thick()
-  const { SteamSys, FuelSys } = sim
+  const { SteamSys, DsFuelSys } = sim
   const { FeedWaterSupply, FuelPump, FuelSourceValve, Boiler } = SteamSys
   const { FuelIntakeValve } = Boiler
   FeedWaterSupply.Tank.Inside = CstSteamSys.FeedWaterSupply.TankVolume
   Boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
-  FuelSys.DsService.OutletValve.Open()
+  DsFuelSys.DsService.OutletValve.Open()
   FuelSourceValve.Open()
   FuelIntakeValve.Open()
   FuelPump.Start()

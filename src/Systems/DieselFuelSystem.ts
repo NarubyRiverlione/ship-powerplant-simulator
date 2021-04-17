@@ -5,12 +5,12 @@ import Valve from '../Components/Valve'
 
 import CstTxt from '../CstTxt'
 import AlarmSystem from './AlarmSystem'
-import { CstFuelSys, CstChanges } from '../Cst'
+import { CstDsFuelSys } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
 import HandPump from '../Components/HandPump'
 import MultiInputs from '../Components/MultiToOne'
 import PurificationUnit from '../Components/Appliances/PurificationUnit'
-import PowerBus from '../Components/PowerBus'
+
 
 const { FuelSysTxt } = CstTxt
 /*
@@ -23,7 +23,7 @@ Shore Valve
                               |-->-- Purification (WIP)           -->-- |
                                       
 */
-export default class FuelSystem {
+export default class DieselFuelSystem {
   DsShoreValve: Valve
   DsStorage: TankWithValves
   DsService: TankWithValves
@@ -34,16 +34,16 @@ export default class FuelSystem {
 
   constructor(alarmSys: AlarmSystem) {
     //  Intake valve from shore to diesel storage tank
-    const dummyShore = new Tank('Shore as tank', CstFuelSys.ShoreVolume, CstFuelSys.ShoreVolume)
+    const dummyShore = new Tank('Shore as tank', CstDsFuelSys.ShoreVolume, CstDsFuelSys.ShoreVolume)
     this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
 
 
     //  Diesel storage tank,
     // filled from shore via the intake valve, outlet valve to service intake valve
     this.DsStorage = new TankWithValves(FuelSysTxt.DsStorageTank,
-      CstFuelSys.DsStorageTank.TankVolume, 0, this.DsShoreValve)
+      CstDsFuelSys.DsStorageTank.TankVolume, 0, this.DsShoreValve)
     // fixed fill rate from shore
-    this.DsStorage.IntakeValve.Volume = CstFuelSys.DsStorageTank.IntakeValveVolume
+    this.DsStorage.IntakeValve.Volume = CstDsFuelSys.DsStorageTank.IntakeValveVolume
 
     // Alarms
     this.DsStorage.Tank.AlarmSystem = alarmSys
@@ -52,16 +52,16 @@ export default class FuelSystem {
     this.DsStorage.Tank.LowLevelAlarm = AlarmLevel.FuelSys.LowDsStorage
 
     /*
-   this.DsHandpump = new HandPump(FuelSysTxt.DsHandpump, CstFuelSys.DsHandpumpVolume,
+   this.DsHandpump = new HandPump(FuelSysTxt.DsHandpump, CstDsFuelSys.DsHandpumpVolume,
      this.DsStorage.OutletValve)
    this.DsHandPumpOutletValve = new Valve("handpump outlet valve", this.DsHandpump)
    */
 
     this.DsBypassValve = new Valve(FuelSysTxt.DsBypassValve, this.DsStorage.OutletValve)
-    this.DsBypassValve.Volume = CstFuelSys.BypassValveVolume
+    this.DsBypassValve.Volume = CstDsFuelSys.BypassValveVolume
 
     this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification,
-      CstFuelSys.Purification.Volume, this.DsStorage.OutletValve)
+      CstDsFuelSys.Purification.Volume, this.DsStorage.OutletValve)
 
     //#region Combine inputs from Purification and Bypass valve to 1 
     this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs", this.DsStorage.Tank)
@@ -72,7 +72,7 @@ export default class FuelSystem {
     // #region Diesel service tank,
     // filled from the storage outlet valve
     this.DsService = new TankWithValves(FuelSysTxt.DsServiceTank,
-      CstFuelSys.DsServiceTank.TankVolume, 0, this.DsServiceMulti)
+      CstDsFuelSys.DsServiceTank.TankVolume, 0, this.DsServiceMulti)
 
     //#endregion
 
@@ -97,7 +97,7 @@ export default class FuelSystem {
     // remove from Storage what has be added to Service, unless Service is full
     this.DsStorage.Tank.RemoveThisStep = this.DsService.Tank.AddThisStep
 
-    // / CstFuelSys.RatioStorageServiceTanks
+    // / CstDsFuelSys.RatioStorageServiceTanks
     this.DsStorage.Thick()
   }
 }

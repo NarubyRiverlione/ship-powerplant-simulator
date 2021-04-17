@@ -1,6 +1,6 @@
 import SteamSystem from '../../Systems/SteamSystem'
 import mockPowerBus from '../mocks/mockPowerBus'
-import { CstPowerSys, CstSteamSys, CstFuelSys, CstChanges } from '../../Cst'
+import { CstPowerSys, CstSteamSys, CstDsFuelSys, CstChanges } from '../../Cst'
 import mockTank from '../mocks/mockTank'
 import mockValve from '../mocks/mockValve'
 import mockCooler from '../mocks/mockCooler'
@@ -167,10 +167,10 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
+    expect(fuelSource.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
     fuelSource.Thick()
     steamSys.Thick()
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
+    expect(fuelSource.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
   })
   test('Stop a running Fuel pump  = not burning fuel form FuelProviderTank', () => {
     const { FuelPump, Boiler, FuelSourceValve } = steamSys
@@ -187,7 +187,7 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
+    expect(fuelSource.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
     fuelSource.Thick()
     FuelPump.Stop()
     steamSys.Thick()
@@ -208,7 +208,7 @@ describe('Fuel', () => {
 
     const fuelSourceOutlet = FuelSourceValve.Source as mockValve
     const fuelSource = fuelSourceOutlet.Source as mockTank
-    expect(fuelSource.RemoveThisStep).toBe(CstFuelSys.SteamBoiler.Consumption.Diesel)
+    expect(fuelSource.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
     Boiler.Extinguishing()
     fuelSource.Thick()
     steamSys.Thick()

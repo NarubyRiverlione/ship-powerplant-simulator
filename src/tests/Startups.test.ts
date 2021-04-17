@@ -1,5 +1,5 @@
 import Simulator from '../Simulator'
-import { CstAirSys, CstCoolantSys, CstFuelSys, CstLubSys, CstPowerSys, CstStartConditions, CstSteamSys } from '../Cst'
+import { CstAirSys, CstCoolantSys, CstDsFuelSys, CstLubSys, CstPowerSys, CstStartConditions, CstSteamSys } from '../Cst'
 import CstTxt from '../CstTxt'
 
 let sim: Simulator
@@ -34,9 +34,9 @@ describe('Use start conditions', () => {
   test('Full fuel tanks , diesel available via open service outlet valves', () => {
     sim.SetStartConditions(CstStartConditions.SetFuelTanksFull)
     sim.Thick()
-    const { FuelSys } = sim
-    expect(FuelSys.DsStorage.Tank.Content).toBe(CstFuelSys.DsStorageTank.TankVolume)
-    expect(FuelSys.DsService.OutletValve.Content).toBe(CstFuelSys.DsServiceTank.TankVolume)
+    const { DsFuelSys: FuelSys } = sim
+    expect(FuelSys.DsStorage.Tank.Content).toBe(CstDsFuelSys.DsStorageTank.TankVolume)
+    expect(FuelSys.DsService.OutletValve.Content).toBe(CstDsFuelSys.DsServiceTank.TankVolume)
   })
   test('Full Lub tank available via open outlet valve', () => {
     sim.SetStartConditions(CstStartConditions.SetLubTanksFull)
@@ -73,19 +73,19 @@ describe('Use start conditions', () => {
 
   })
   test('Diesel generator 1 running', () => {
-    const { PowerSys: { MainBus1, DsGen }, FuelSys: { DsService } } = sim
+    const { PowerSys: { MainBus1, DsGen }, DsFuelSys: { DsService } } = sim
     sim.SetStartConditions(CstStartConditions.RunningDsGen1)
-    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption.Diesel)
+    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel)
     expect(DsGen.isRunning).toBeTruthy()
     sim.Thick()
     expect(MainBus1.Content).toBe(CstPowerSys.Voltage)
     // startup already did a Thick so breakers could be closed
     // so consumption is here on step 2
-    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption.Diesel * 2)
+    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel * 2)
 
     sim.Thick()
     // so consumption is here on step 3
-    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume - CstFuelSys.DieselGenerator.Consumption.Diesel * 3)
+    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel * 3)
 
   })
   test('Seawater suction pump 1 running , Aux pump stopped ', () => {
@@ -95,7 +95,7 @@ describe('Use start conditions', () => {
     expect(CoolingSeaWaterSys.AuxPump.isRunning).toBeFalsy()
   })
   test('Boiler has steam', () => {
-    const { SteamSys: { Boiler }, FuelSys: { DsService }, PowerSys: { DsGen } } = sim
+    const { SteamSys: { Boiler }, DsFuelSys: { DsService }, PowerSys: { DsGen } } = sim
     sim.SetStartConditions(CstStartConditions.BoilerOperational)
     sim.Thick()
     expect(Boiler.HasFlame).toBeTruthy()
@@ -105,9 +105,9 @@ describe('Use start conditions', () => {
     // DsGen in running and Boiler has flame ==> diesel consumption 
     expect(DsGen.isRunning).toBeTruthy()
     // startup already did a 3 Thick so this is consumption step 4
-    expect(DsService.Tank.Content).toBeCloseTo(CstFuelSys.DsServiceTank.TankVolume -
-      CstFuelSys.DieselGenerator.Consumption.Diesel * 4
-      - CstFuelSys.SteamBoiler.Consumption.Diesel
+    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume -
+      CstDsFuelSys.DieselGenerator.Consumption.Diesel * 4
+      - CstDsFuelSys.SteamBoiler.Consumption.Diesel
       , 1 // percision for test
     )
 

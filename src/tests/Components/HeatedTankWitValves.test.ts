@@ -1,0 +1,114 @@
+import HeatedTankWithValves from '../../Components/HeatedTankWithValves'
+import { CstChanges, CstSteamSys } from '../../Cst'
+import mockTank from '../mocks/mockTank'
+import mockValve from '../mocks/mockValve'
+
+let heatedTank: HeatedTankWithValves
+const SetpointTemp = 80
+const Volume = 10000
+const StartContent = 9000
+const SourceContent = 100
+const SteamSource = CstSteamSys.Boiler.OperatingPressure
+
+const dummySource = new mockTank('dummy source tank', 1000, SourceContent)
+const dummySourceValve = new mockValve('dummy source valve', dummySource)
+let dummySteamSource: mockTank
+
+beforeEach(() => {
+  dummySteamSource = new mockTank('dummy steam source', 100, SteamSource)
+  const dummyMainSteamValve = new mockValve('dummy main steam valve', dummySteamSource)
+
+  heatedTank = new HeatedTankWithValves('test tank', Volume, StartContent,
+    dummySourceValve, dummyMainSteamValve)
+  heatedTank.SetpointTemp = SetpointTemp
+})
+
+describe('Init', () => {
+  test('Tank at start temp', () => {
+    expect(heatedTank.Temperature).toBe(CstChanges.StartTemp)
+  })
+  test('Set setpoint', () => {
+    expect(heatedTank.SetpointTemp).toBe(SetpointTemp)
+  })
+  test('Default and set min steam to heat up', () => {
+    expect(heatedTank.MinSteam).toBe(CstSteamSys.Boiler.OperatingPressure)
+    heatedTank.MinSteam = 4
+    expect(heatedTank.MinSteam).toBe(4)
+  })
+})
+describe('Steam intake', () => {
+  test('Has enough steam via intake valve', () => {
+    const { SteamIntakeValve, MinSteam } = heatedTank
+    SteamIntakeValve.Open()
+    expect(SteamIntakeValve.Content).toBeGreaterThanOrEqual(MinSteam)
+    expect(heatedTank.HasSteam).toBeTruthy()
+  })
+  test('Has not enough steam via intake valve', () => {
+    const { SteamIntakeValve, MinSteam } = heatedTank
+    dummySteamSource.Inside = MinSteam - 0.1
+    SteamIntakeValve.Open()
+
+    expect(SteamIntakeValve.Content).toBeLessThan(MinSteam)
+    expect(heatedTank.HasSteam).toBeFalsy()
+  })
+  test('Heating step', () => {
+    expect(heatedTank.HeatingStep).toBe(0)
+  })
+})
+
+describe('Warming / cooling', () => {
+  test('Has steam = warming', () => {
+    const { SteamIntakeValve } = heatedTank
+    const heatStep = 5
+    heatedTank.HeatingStep = heatStep
+    SteamIntakeValve.Open()
+    heatedTank.Thick()
+    expect(heatedTank.HasSteam).toBeTruthy()
+    expect(heatedTank.HeatingStep).toBe(heatStep)
+
+    expect(heatedTank.Temperature).toBe(CstChanges.StartTemp + heatStep)
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(CstChanges.StartTemp + heatStep * 2)
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(CstChanges.StartTemp + heatStep * 3)
+  })
+  test('Has steam but stops heating if setpoint is reached', () => {
+    const { SteamIntakeValve, SetpointTemp } = heatedTank
+    const heatStep = 5
+    heatedTank.HeatingStep = heatStep
+    heatedTank.Temperature = SetpointTemp - heatStep
+    SteamIntakeValve.Open()
+
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(SetpointTemp)
+    expect(heatedTank.IsAtSetpoint).toBeTruthy()
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(SetpointTemp)
+    expect(heatedTank.IsAtSetpoint).toBeTruthy()
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(SetpointTemp)
+    expect(heatedTank.IsAtSetpoint).toBeTruthy()
+  })
+  test('Has no steam = cooling', () => {
+    const heatStep = 5
+    heatedTank.HeatingStep = heatStep
+    heatedTank.Temperature = heatedTank.SetpointTemp
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(heatedTank.SetpointTemp - heatStep)
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(heatedTank.SetpointTemp - heatStep * 2)
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(heatedTank.SetpointTemp - heatStep * 3)
+  })
+  test('Has no steam but stops cooling if startpoints is reached', () => {
+    const heatStep = 5
+    heatedTank.HeatingStep = heatStep
+    heatedTank.Temperature = CstChanges.StartTemp + heatStep
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(CstChanges.StartTemp)
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(CstChanges.StartTemp)
+    heatedTank.Thick()
+    expect(heatedTank.Temperature).toBe(CstChanges.StartTemp)
+  })
+})

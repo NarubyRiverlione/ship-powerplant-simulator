@@ -1,6 +1,7 @@
 export const CstChanges = {
   Interval: 1000,
-  DrainRatio: 20  // how many step it takes to drain a tank (drain valve volume = tankvolume / drainratio)
+  DrainRatio: 20, // how many step it takes to drain a tank (drain valve volume = tankvolume / drainratio)
+  StartTemp: 25
 }
 export const CstPowerSys = {
   Voltage: 440,
@@ -26,7 +27,7 @@ export const CstLubSys = {
     IntakeValveVolume: 1
   }
 }
-export const CstFuelSys = {
+export const CstDsFuelSys = {
   ShoreVolume: 1e6,
   DsStorageTank: {
     TankVolume: 2000,
@@ -80,7 +81,6 @@ export const CstSteamSys = {
   FuelPump: 10,
   Boiler: {
     WaterVolume: 100,
-    StartTemp: 25,
 
     OperatingTemp: 166,
     OperatingPressure: 7.179,

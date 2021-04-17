@@ -2,7 +2,7 @@ import Appliance from "./Appliance";
 import PowerBus from "../PowerBus";
 import Valve, { iValve } from "../Valve";
 import Tank from "../Tank";
-import { CstFuelSys } from "../../Cst";
+import { CstDsFuelSys } from "../../Cst";
 import CstTxt from '../../CstTxt'
 import { computed, makeObservable, observable } from "mobx";
 
@@ -29,7 +29,7 @@ export default class PurificationUnit extends Appliance {
       HasSteam: computed
     })
   }
-  get HasSteam() { return this.SteamIntakeValve.Content >= CstFuelSys.Purification.SteamNeeded }
+  get HasSteam() { return this.SteamIntakeValve.Content >= CstDsFuelSys.Purification.SteamNeeded }
 
   Thick() {
     // cannot run without intake

@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx'
-import { CstChanges, CstPowerSys, CstStartConditions } from './Cst'
+import { CstChanges, CstStartConditions } from './Cst'
 import PowerSystem from './Systems/PowerSystem'
-import FuelSystem from './Systems/FuelSystem'
+import DieselFuelSystem from './Systems/DieselFuelSystem'
 import AirSystem from './Systems/AirSystem'
 import CoolingFreshWaterSystem from './Systems/CoolingFreshWaterSystem'
 import CoolingSeaWaterSystem from './Systems/CoolingSeaWaterSystem'
@@ -16,7 +16,7 @@ const { SimulationTxt: { StartConditionsTxt } } = CstTxt
 export default class Simulator {
   Running?: NodeJS.Timeout // ref setInterval
   AlarmSys!: AlarmSystem
-  FuelSys!: FuelSystem
+  DsFuelSys!: DieselFuelSystem
   LubSys!: LubricationSystem
   AirSys!: AirSystem
   PowerSys!: PowerSystem
@@ -30,7 +30,7 @@ export default class Simulator {
   }
   Reset() {
     this.AlarmSys = new AlarmSystem()
-    this.FuelSys = new FuelSystem(this.AlarmSys)
+    this.DsFuelSys = new DieselFuelSystem(this.AlarmSys)
     this.LubSys = new LubricationSystem(this.AlarmSys)
     this.CoolingSeaWaterSys = new CoolingSeaWaterSystem()
     this.CoolingFreshWaterSys = new CoolingFreshWaterSystem(
@@ -40,13 +40,13 @@ export default class Simulator {
     this.AirSys = new AirSystem(this.CoolingFreshWaterSys.StartAirCooler)
 
     this.PowerSys = new PowerSystem(
-      this.FuelSys.DsService.OutletValve,
+      this.DsFuelSys.DsService.OutletValve,
       this.LubSys.Storage.OutletValve,
       this.AirSys.EmergencyReceiver.OutletValve,
       this.CoolingFreshWaterSys.DsGenLubCooler
     )
 
-    this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.FuelSys.DsService,
+    this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.DsFuelSys.DsService,
       this.CoolingSeaWaterSys.SteamCondensor)
 
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
@@ -59,8 +59,8 @@ export default class Simulator {
     this.CoolingFreshWaterSys.FwPumpDsGen.Bus = this.PowerSys.EmergencyBus
     this.CoolingFreshWaterSys.FwPumpStartAir.Bus = this.PowerSys.MainBus1
 
-    this.FuelSys.DsPurification.Bus = this.PowerSys.MainBus1
-    this.FuelSys.DsPurification.SteamIntakeValve.Source = this.SteamSys.MainSteamValve
+    this.DsFuelSys.DsPurification.Bus = this.PowerSys.MainBus1
+    this.DsFuelSys.DsPurification.SteamIntakeValve.Source = this.SteamSys.MainSteamValve
 
     this.Running = undefined
   }
@@ -72,7 +72,7 @@ export default class Simulator {
     this.CoolingSeaWaterSys.Thick()
     this.CoolingFreshWaterSys.Thick()
     this.SteamSys.Thick()
-    this.FuelSys.Thick()  //must be evaluated last to consume fuel from other systems
+    this.DsFuelSys.Thick()  //must be evaluated last to consume fuel from other systems
   }
 
   Start() {

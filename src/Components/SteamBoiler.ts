@@ -2,7 +2,7 @@ import Item from './Item'
 import Tank, { iTank } from './Tank'
 import Valve from './Valve'
 import CstTxt from '../CstTxt'
-import { CstChanges, CstSteamSys, CstFuelSys } from '../Cst'
+import { CstChanges, CstSteamSys, CstDsFuelSys } from '../Cst'
 import CalcPressureViaTemp from '../CalcPressureTemp'
 import { makeAutoObservable } from 'mobx'
 const { SteamSysTxt } = CstTxt
@@ -53,7 +53,7 @@ export default class SteamBoiler implements Item {
 
     this.SafetyRelease = new Valve(SteamSysTxt.Boiler.SafetyRelease, this)
 
-    this.Temperature = CstSteamSys.Boiler.StartTemp
+    this.Temperature = CstChanges.StartTemp
 
     this.AutoFlame = false
 
@@ -98,7 +98,7 @@ export default class SteamBoiler implements Item {
   }
   CheckTemp() {
     //  no flame but not at start temp = cooling down
-    if (!this.HasFlame && this.Temperature > CstSteamSys.Boiler.StartTemp) {
+    if (!this.HasFlame && this.Temperature > CstChanges.StartTemp) {
       this.Temperature -= CstSteamSys.Boiler.TempCoolingStep
       return
     }
@@ -166,7 +166,7 @@ export default class SteamBoiler implements Item {
 
     if (this.HasFlame) {
       // burn fuel      
-      this.FuelSourceTank.RemoveThisStep += CstFuelSys.SteamBoiler.Consumption.Diesel
+      this.FuelSourceTank.RemoveThisStep += CstDsFuelSys.SteamBoiler.Consumption.Diesel
     }
 
     // expand / shrink water by heat / cooling down
