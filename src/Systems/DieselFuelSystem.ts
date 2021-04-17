@@ -24,7 +24,7 @@ Shore Valve
                                       
 */
 export default class DieselFuelSystem {
-  DsShoreValve: Valve
+  ShoreValve: Valve
   DsStorage: TankWithValves
   DsService: TankWithValves
   // DsHandpump: HandPump
@@ -35,13 +35,13 @@ export default class DieselFuelSystem {
   constructor(alarmSys: AlarmSystem) {
     //  Intake valve from shore to diesel storage tank
     const dummyShore = new Tank('Shore as tank', CstDsFuelSys.ShoreVolume, CstDsFuelSys.ShoreVolume)
-    this.DsShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
+    this.ShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
 
 
     //  Diesel storage tank,
     // filled from shore via the intake valve, outlet valve to service intake valve
     this.DsStorage = new TankWithValves(FuelSysTxt.DsStorageTank,
-      CstDsFuelSys.DsStorageTank.TankVolume, 0, this.DsShoreValve)
+      CstDsFuelSys.DsStorageTank.TankVolume, 0, this.ShoreValve)
     // fixed fill rate from shore
     this.DsStorage.IntakeValve.Volume = CstDsFuelSys.DsStorageTank.IntakeValveVolume
 

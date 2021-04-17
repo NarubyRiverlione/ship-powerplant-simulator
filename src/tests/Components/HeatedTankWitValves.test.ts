@@ -8,6 +8,7 @@ const SetpointTemp = 80
 const Volume = 10000
 const StartContent = 9000
 const SourceContent = 100
+const OutletVolume = 15
 const SteamSource = CstSteamSys.Boiler.OperatingPressure
 
 const dummySource = new mockTank('dummy source tank', 1000, SourceContent)
@@ -19,7 +20,7 @@ beforeEach(() => {
   const dummyMainSteamValve = new mockValve('dummy main steam valve', dummySteamSource)
 
   heatedTank = new HeatedTankWithValves('test tank', Volume, StartContent,
-    dummySourceValve, dummyMainSteamValve)
+    dummySourceValve, dummyMainSteamValve, OutletVolume)
   heatedTank.SetpointTemp = SetpointTemp
 })
 
@@ -110,5 +111,25 @@ describe('Warming / cooling', () => {
     expect(heatedTank.Temperature).toBe(CstChanges.StartTemp)
     heatedTank.Thick()
     expect(heatedTank.Temperature).toBe(CstChanges.StartTemp)
+  })
+})
+
+describe('only output when on setpoint', () => {
+  test('temp on setpoint =  open outlet valve has content', () => {
+    const { SteamIntakeValve, SetpointTemp, OutletValve, Tank } = heatedTank
+    heatedTank.Temperature = SetpointTemp
+    SteamIntakeValve.Open()
+    OutletValve.Open()
+    heatedTank.Thick()
+    expect(heatedTank.IsAtSetpoint).toBeTruthy()
+    expect(OutletValve.Content).toBe(OutletVolume)
+  })
+  test('temp not on setpoint =  open outlet valve has no content', () => {
+    const { SetpointTemp, OutletValve } = heatedTank
+    heatedTank.Temperature = SetpointTemp - 0.1
+    OutletValve.Open()
+    heatedTank.Thick()
+    expect(heatedTank.IsAtSetpoint).toBeFalsy()
+    expect(OutletValve.Content).toBe(0)
   })
 })

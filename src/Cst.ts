@@ -43,6 +43,31 @@ export const CstDsFuelSys = {
   DieselGenerator: { Consumption: { Diesel: 0.1 } },
   SteamBoiler: { Consumption: { Diesel: 0.5 } },
 }
+export const CstHfFuelSys = {
+  TempSetpoint: 80,  // tanks must be this temp before outlet valve has content
+  HfForeBunker: {
+    TankVolume: 10000,
+    IntakeValveVolume: 500
+  },
+  HfAftBunker: {
+    TankVolume: 50000,
+    IntakeValveVolume: 1000
+  },
+  HfPortBunker: {
+    TankVolume: 50000,
+    IntakeValveVolume: 1000
+  },
+  HfStarboardBunker: {
+    TankVolume: 10000,
+    IntakeValveVolume: 500
+  },
+  HfSettelingTank: {
+    TankVolume: 1000,
+    IntakeValveVolume: 50,
+    OutletValveVolume: 40
+  },
+  HfPumpVolume: 50
+}
 export const CstAirSys = {
   StartAirCompressor1: {
     AddStep: 0.5

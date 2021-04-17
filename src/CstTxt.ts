@@ -35,7 +35,16 @@ export default {
     DsShoreFillValve: 'Diesel shore fill valve',
     DsStorageOutletValve: 'Diesel storage - outlet valve',
     DsServiceIntakeValve: 'Diesel service - intake valve',
-    DsServiceOutletValve: 'Diesel service - outlet valve'
+    DsServiceOutletValve: 'Diesel service - outlet valve',
+    HfShoreValve: 'Heavy fuel shore fill valve',
+    HfForeBunker: 'Heavy fuel Fore Bunker',
+    HfAftBunker: 'Heavy fuel Aft Bunker',
+    HfPortBunker: 'Heavy fuel Port Bunker',
+    HfStarboardBunker: 'Heavy fuel Starboard Bunker',
+    HfPump: 'Heavy fuel pump',
+    HfPumpOutletValve: 'Heavy fuel pump outlet valve',
+    HfSettelingTank: 'Heavy fuel setteling tank'
+
   },
   LubSysTxt: {
     LubShoreFillValve: 'Lubrication shore fill valve',

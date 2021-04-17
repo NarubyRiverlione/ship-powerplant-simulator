@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { CstChanges, CstStartConditions } from './Cst'
 import PowerSystem from './Systems/PowerSystem'
 import DieselFuelSystem from './Systems/DieselFuelSystem'
+import HeavyFuelSystem from './Systems/HeavyFuelSystem'
 import AirSystem from './Systems/AirSystem'
 import CoolingFreshWaterSystem from './Systems/CoolingFreshWaterSystem'
 import CoolingSeaWaterSystem from './Systems/CoolingSeaWaterSystem'
@@ -17,6 +18,7 @@ export default class Simulator {
   Running?: NodeJS.Timeout // ref setInterval
   AlarmSys!: AlarmSystem
   DsFuelSys!: DieselFuelSystem
+  HfFuelSys!: HeavyFuelSystem
   LubSys!: LubricationSystem
   AirSys!: AirSystem
   PowerSys!: PowerSystem
@@ -31,6 +33,7 @@ export default class Simulator {
   Reset() {
     this.AlarmSys = new AlarmSystem()
     this.DsFuelSys = new DieselFuelSystem(this.AlarmSys)
+
     this.LubSys = new LubricationSystem(this.AlarmSys)
     this.CoolingSeaWaterSys = new CoolingSeaWaterSystem()
     this.CoolingFreshWaterSys = new CoolingFreshWaterSystem(
@@ -48,6 +51,8 @@ export default class Simulator {
 
     this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.DsFuelSys.DsService,
       this.CoolingSeaWaterSys.SteamCondensor)
+
+    this.HfFuelSys = new HeavyFuelSystem(this.SteamSys.MainSteamValve, this.PowerSys.MainBus1)
 
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
     this.AirSys.StartAirCompressor.Bus = this.PowerSys.MainBus1
