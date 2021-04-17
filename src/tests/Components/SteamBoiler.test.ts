@@ -84,6 +84,26 @@ describe('Water level', () => {
     expect(boiler.WaterLevel).toBe(startVolume - CstChanges.DrainRatio)
 
   })
+  test('Expand water by heat = raise water level', () => {
+    const { WaterTank, FuelIntakeValve } = boiler
+    WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
+    boiler.Temperature = CstSteamSys.Boiler.StartExpandTemp
+    FuelIntakeValve.Open()
+    boiler.Ignite()
+    boiler.Thick()
+    expect(WaterTank.Content).toBe(CstSteamSys.Boiler.MinWaterLvlForFlame + CstSteamSys.Boiler.ExpandRate)
+    boiler.Thick()
+    expect(WaterTank.Content).toBe(CstSteamSys.Boiler.MinWaterLvlForFlame + CstSteamSys.Boiler.ExpandRate * 2)
+  })
+  test('Shrink water by cooling down = raise water level', () => {
+    const { WaterTank } = boiler
+    WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
+    boiler.Temperature = CstSteamSys.Boiler.EndExpandTemp
+    boiler.Thick()
+    expect(WaterTank.Content).toBe(CstSteamSys.Boiler.MinWaterLvlForFlame - CstSteamSys.Boiler.ExpandRate)
+    boiler.Thick()
+    expect(WaterTank.Content).toBe(CstSteamSys.Boiler.MinWaterLvlForFlame - CstSteamSys.Boiler.ExpandRate * 2)
+  })
 })
 
 describe('Fuel', () => {

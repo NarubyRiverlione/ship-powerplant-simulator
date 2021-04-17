@@ -99,7 +99,11 @@ export const CstSteamSys = {
     MinWaterLvlForFlame: 30,
     WaterLossByNotCoolingSteam: 0.5,
 
-    AutoEnableZone: 2 // temp zone + and - operation temp where auto can be enabled
+    AutoEnableZone: 2, // temp zone + and - operation temp where auto can be enabled
+
+    StartExpandTemp: 80, // water expands by heat
+    EndExpandTemp: 99,
+    ExpandRate: 1
   },
   MinPressureForMainValve: 2
 }

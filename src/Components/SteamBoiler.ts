@@ -169,6 +169,10 @@ export default class SteamBoiler implements Item {
       this.FuelSourceTank.RemoveThisStep += CstFuelSys.SteamBoiler.Consumption.Diesel
     }
 
+    // expand / shrink water by heat / cooling down
+    if (this.Temperature > CstSteamSys.Boiler.StartExpandTemp && this.Temperature < CstSteamSys.Boiler.EndExpandTemp) {
+      this.WaterTank.Inside += CstSteamSys.Boiler.ExpandRate * (this.HasFlame ? 1 : -1)
+    }
     /* istanbul ignore if  */
     if (this.WaterTank.Content < 0) {
       console.warn('Boiler waterlevel negative! (readout < -50)')
