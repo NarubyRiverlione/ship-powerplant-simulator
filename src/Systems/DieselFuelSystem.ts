@@ -18,10 +18,10 @@ Shore Valve
     |
 (intake valve) DsStorage 
                 |
-               (outlet valve) |--> Handpump (todo) --> bypass valve --> |
-                              |                                         | => (MultiToOne) ==> --> (intake valve) DsService (outlet valve)                                   
-                              |-->-- Purification (WIP)           -->-- |
-                                      
+    (drain)   (outlet valve) |--> Handpump (todo) --> Bypass valve --> |
+                             |                                         | => (MultiToOne) ==> --> (intake valve) DsService (outlet valve)                                   
+                             |-->-- (intake valve) Purification  -->-- |
+                                                      (steam intake valve)              
 */
 export default class DieselFuelSystem {
   ShoreValve: Valve

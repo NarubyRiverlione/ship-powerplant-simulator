@@ -4,7 +4,7 @@ simulation of a ship engine power plant
 
 | Statements                  | Branches                | Functions                 | Lines                |
 | --------------------------- | ----------------------- | ------------------------- | -------------------- |
-| ![Statements](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-99.27%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)    |
+| ![Statements](https://img.shields.io/badge/Coverage-99.88%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-98.5%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-98.55%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-99.88%25-brightgreen.svg)    |
 
 ## Power systems
 ### Switchboard
@@ -41,15 +41,37 @@ Diesel generator 1 -->  Breaker Diesel Gen 1
 ```
 Shore Valve 
     |
-(intake valve) DsStorage 
-                |
-               (outlet valve) |--> Handpump (todo) --> bypass valve --> |
-                              |                                         |=>(MultiToOne)--> (intake valve) DsService (outlet valve)                                   
-                              |-->-- Purification (WIP)           -->-- |
+(intake) DsStorage 
+             |
+           (outlet) |--> Handpump (todo) --> bypass valve --> |
+                    |                                         |=>=(MultiToOne)->- (intake) DsService (outlet)                                   
+                    |->- (intake) Purification          -->-- |
+                                    |
+                                  (steam intake)
 ```
 
-### Todo Heavy Fuel
+### (WIP) Heavy Fuel
 
+#### Storage
+```
+                  |->-(intake) Fore Bunker (outlet)       -->-- |       |-->--(intake) Setteling tank (outlet)
+                  |                |-<- (steam intake)          |       |                |-<- (steam intake)  
+                  |                                             |    outlet valve 
+ Shore Valve -->--|->-(intake) Port Bunker (outlet)       -->-- |       |
+                   |               |-<- (steam intake)          |==>== Pump 
+                  |                                             |       (main bus)
+                  |->-(intake) Aft Bunker (outlet)        -->-- | 
+                  |                |-<- (steam intake)          |
+                  |                                             |
+                  |->-(intake) Starboard Bunker (outlet)  -->-- |
+                  |                |-<- (steam intake)          |
+```
+
+#### (todo) Service
+```
+(intake) Setteling tank (outlet) -->-- Purification -->-- (intake) Service tank (outlet)
+            |-<- (steam intake)           |-<- (steam intake)               |-<- (steam intake)  
+```
 
 ## Lubrication system
 ```
@@ -63,11 +85,11 @@ Shore Valve --->-- (intake valve) DsStorage (outlet valve)
 
 ### Start Air
 ```
-Start air compressor 1 ->- outlet valve  -->-- FW air compress cooler -->-- (intake valve) Start air receiver 1 (outlet valve)
+Start air compressor 1 ->- outlet valve  -->-- FW air compress cooler -->-- (intake) Start air receiver 1 (outlet)
              | safety                                                                            | (drain)
 
 
-Emergency compressor ->- outlet valve  -->-- (intake valve) Emergence receiver (outlet valve)
+Emergency compressor ->- outlet valve  -->-- (intake) Emergence receiver (outlet)
        | safety   
 ```
 

@@ -20,12 +20,6 @@ export default class HeatedTankWithValves extends TankWithValves {
     this.MinSteam = CstSteamSys.Boiler.OperatingPressure - 0.5 // prevent oscillation form boiler flame on / out
     this.HeatingStep = 0
     this.OutletVolume = outletVolume // remember te set volume as it's change via the setpoint (see Thick)
-
-    // makeObservable(this, {
-    //   HasSteam: computed,
-    //   IsAtSetpoint: computed
-    // })
-
   }
 
   get HasSteam() { return this.SteamIntakeValve.Content >= this.MinSteam }

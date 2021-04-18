@@ -10,6 +10,19 @@ import PowerBus from "../Components/PowerBus";
 
 const { FuelSysTxt } = CstTxt
 
+/*
+                  |->-(intake) Fore Bunker (outlet)       -->-- |       |-->--(intake) Setteling tank (outlet)
+                  |                |-<- (steam intake)          |       |
+                  |                                             |    outlet valve 
+ Shore Valve -->--|->-(intake) Port Bunker (outlet)       -->-- |       |
+                   |               |-<- (steam intake)          |==>== Pump 
+                  |                                             |       (main bus)
+                  |->-(intake) Aft Bunker (outlet)        -->-- | 
+                  |                |-<- (steam intake)          |
+                  |                                             |
+                  |->-(intake) Starboard Bunker (outlet)  -->-- |
+                 |                  |-<- (steam intake)         |
+*/
 export default class HeavyFuelSystem {
   HfShoreValve: Valve
   HfForeBunker: HeatedTankWithValves
