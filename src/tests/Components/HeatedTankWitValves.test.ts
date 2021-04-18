@@ -32,7 +32,8 @@ describe('Init', () => {
     expect(heatedTank.SetpointTemp).toBe(SetpointTemp)
   })
   test('Default and set min steam to heat up', () => {
-    expect(heatedTank.MinSteam).toBe(CstSteamSys.Boiler.OperatingPressure)
+    // prevent oscillation form boiler flame on / out
+    expect(heatedTank.MinSteam).toBe(CstSteamSys.Boiler.OperatingPressure - 0.5)
     heatedTank.MinSteam = 4
     expect(heatedTank.MinSteam).toBe(4)
   })

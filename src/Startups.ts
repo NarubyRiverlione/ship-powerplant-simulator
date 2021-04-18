@@ -61,12 +61,12 @@ export const SeaWaterCoolingSupplyPump1Running = (sim: Simulator) => {
   sim.Thick()
   const { CoolingSeaWaterSys } = sim
   CoolingSeaWaterSys.SuctionPump1.Start()
-  sim.Thick()
+  // sim.Thick()
   CoolingSeaWaterSys.AuxPump.Stop()
-  sim.Thick()
+  // sim.Thick()
 }
 export const BoilerOperational = (sim: Simulator) => {
-  RunningDsGen1(sim)
+  SeaWaterCoolingSupplyPump1Running(sim)
   sim.Thick()
   const { SteamSys, DsFuelSys } = sim
   const { FeedWaterSupply, FuelPump, FuelSourceValve, Boiler } = SteamSys
@@ -84,9 +84,19 @@ export const BoilerOperational = (sim: Simulator) => {
 }
 export const BoilerDeliversSteam = (sim: Simulator) => {
   BoilerOperational(sim)
-  SeaWaterCoolingSupplyPump1Running(sim)
   sim.Thick()
   const { SteamSys } = sim
   const { MainSteamValve } = SteamSys
   MainSteamValve.Open()
+}
+export const DsFuelPurificationRunning = (sim: Simulator) => {
+  BoilerDeliversSteam(sim)
+  const { DsFuelSys: { DsStorage, DsPurification, DsService } } = sim
+  DsStorage.OutletValve.Open()
+  DsPurification.IntakeValve.Open()
+  DsService.IntakeValve.Open()
+  DsPurification.SteamIntakeValve.Open()
+  sim.Thick()
+  DsPurification.Start()
+  sim.Thick()
 }

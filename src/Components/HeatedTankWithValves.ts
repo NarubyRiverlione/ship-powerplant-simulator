@@ -1,7 +1,7 @@
 import Valve, { iValve } from './Valve'
 import TankWithValves from './TankWithValves'
 import { CstChanges, CstSteamSys } from '../Cst'
-import { computed, makeObservable } from 'mobx'
+// import { computed, makeObservable } from 'mobx'
 
 export default class HeatedTankWithValves extends TankWithValves {
   SteamIntakeValve: iValve
@@ -17,14 +17,14 @@ export default class HeatedTankWithValves extends TankWithValves {
     this.SteamIntakeValve = new Valve(`${tankName} - Steam intake valve`, mainSteamValve)
     this.Temperature = 25
     this.SetpointTemp = this.Temperature
-    this.MinSteam = CstSteamSys.Boiler.OperatingPressure
+    this.MinSteam = CstSteamSys.Boiler.OperatingPressure - 0.5 // prevent oscillation form boiler flame on / out
     this.HeatingStep = 0
     this.OutletVolume = outletVolume // remember te set volume as it's change via the setpoint (see Thick)
 
-    makeObservable(this, {
-      HasSteam: computed,
-      IsAtSetpoint: computed
-    })
+    // makeObservable(this, {
+    //   HasSteam: computed,
+    //   IsAtSetpoint: computed
+    // })
 
   }
 
@@ -34,12 +34,13 @@ export default class HeatedTankWithValves extends TankWithValves {
   Thick() {
     super.Thick()
     // steam heats up until setpoint is reached
-    if (this.HasSteam && this.Temperature < this.SetpointTemp) { this.Temperature += this.HeatingStep }
+    if (this.HasSteam && this.Content !== 0 && this.Temperature < this.SetpointTemp) { this.Temperature += this.HeatingStep }
     // without steam cool down until global start temp
     if (!this.HasSteam && this.Temperature > CstChanges.StartTemp) { this.Temperature -= this.HeatingStep }
 
     // when not at setpoint, even an open outlet valve has no content, simulated by setting volume to zero
     this.OutletValve.Volume = !this.IsAtSetpoint ? 0 : this.OutletVolume
+    if (!this.IsAtSetpoint && this.OutletValve.isOpen) this.OutletValve.Close()
   }
 
 }

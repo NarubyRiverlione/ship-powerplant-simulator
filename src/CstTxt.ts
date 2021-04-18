@@ -3,17 +3,18 @@ export default {
     Stopped: 'Simulation not running',
     Started: 'Simulation is running',
     StartConditionsTxt: {
-      SetFuelTanksFull: 'Full fuel tanks',
-      SetLubTanksFull: 'Full lubrication tank',
-      SetEmergencyStartAir: 'Emergency start air available',
+      // SetFuelTanksFull: 'Full fuel tanks',
+      // SetLubTanksFull: 'Full lubrication tank',
+      // SetEmergencyStartAir: 'Emergency start air available',
       SetEmergencyPower: 'Emergency power available',
-      SetSeawaterCoolingAuxRunning: 'Sea water cooling via aux. pump',
-      SetFreshwaterCooling: 'Fresh water cooling available',
+      // SetSeawaterCoolingAuxRunning: 'Sea water cooling via aux. pump',
+      // SetFreshwaterCooling: 'Fresh water cooling available',
       RunningDsGen1: 'Diesel generator 1 is providing power for the main bus',
-      SeaWaterCoolingSupplyPump1Running: 'Seawater supply pump 1 is running',
+      // SeaWaterCoolingSupplyPump1Running: 'Seawater supply pump 1 is running',
       BoilerOperational: 'Boiler is operational',
       BoilerDeliversSteam: 'Boiler is delivering steam',
-      Undefined: 'Unknown start condition: '
+      DsFuelPurificationRunning: 'Diesel purification unit is running',
+      // Undefined: 'Unknown start condition: '
     }
   },
   PowerTxt: {

@@ -78,6 +78,7 @@ export default class Simulator {
     this.CoolingFreshWaterSys.Thick()
     this.SteamSys.Thick()
     this.DsFuelSys.Thick()  //must be evaluated last to consume fuel from other systems
+    this.HfFuelSys.Thick()
   }
 
   Start() {
@@ -131,8 +132,11 @@ export default class Simulator {
       case CstStartConditions.BoilerDeliversSteam:
         StartCondition.BoilerDeliversSteam(this)
         break
+      case CstStartConditions.DsFuelPurificationRunning:
+        StartCondition.DsFuelPurificationRunning(this)
+        break
       default:
-        throw new Error(StartConditionsTxt.Undefined + condition)
+        throw new Error(`Unknown startcondition : '${condition}'`)
     }
   }
   GetStartConditions() {

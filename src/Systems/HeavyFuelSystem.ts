@@ -1,3 +1,4 @@
+import { makeAutoObservable } from 'mobx'
 import HeatedTankWithValves from "../Components/HeatedTankWithValves";
 import Valve, { iValve } from "../Components/Valve";
 import Tank from '../Components/Tank'
@@ -27,21 +28,25 @@ export default class HeavyFuelSystem {
       0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
     this.HfForeBunker.IntakeValve.Volume = CstHfFuelSys.HfForeBunker.IntakeValveVolume
     this.HfForeBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
+    this.HfForeBunker.HeatingStep = CstHfFuelSys.HeatingStep
 
     this.HfAftBunker = new HeatedTankWithValves(FuelSysTxt.HfAftBunker, CstHfFuelSys.HfAftBunker.TankVolume,
       0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
     this.HfAftBunker.IntakeValve.Volume = CstHfFuelSys.HfAftBunker.IntakeValveVolume
     this.HfAftBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
+    this.HfAftBunker.HeatingStep = CstHfFuelSys.HeatingStep
 
     this.HfPortBunker = new HeatedTankWithValves(FuelSysTxt.HfPortBunker, CstHfFuelSys.HfPortBunker.TankVolume,
       0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
     this.HfPortBunker.IntakeValve.Volume = CstHfFuelSys.HfPortBunker.IntakeValveVolume
     this.HfPortBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
+    this.HfPortBunker.HeatingStep = CstHfFuelSys.HeatingStep
 
-    this.HfStarboardBunker = new HeatedTankWithValves(FuelSysTxt.HfForeBunker, CstHfFuelSys.HfStarboardBunker.TankVolume,
+    this.HfStarboardBunker = new HeatedTankWithValves(FuelSysTxt.HfStarboardBunker, CstHfFuelSys.HfStarboardBunker.TankVolume,
       0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
     this.HfStarboardBunker.IntakeValve.Volume = CstHfFuelSys.HfStarboardBunker.IntakeValveVolume
     this.HfStarboardBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
+    this.HfStarboardBunker.HeatingStep = CstHfFuelSys.HeatingStep
 
 
     this.HfPump = new ElectricPump(FuelSysTxt.HfPump, mainBus, CstHfFuelSys.HfPumpVolume)
@@ -51,7 +56,12 @@ export default class HeavyFuelSystem {
       0, this.HfPumpOutletValve, mainSteamValve, CstHfFuelSys.HfSettelingTank.OutletValveVolume)
     this.HfSettelingTank.IntakeValve.Volume = CstHfFuelSys.HfSettelingTank.IntakeValveVolume
     this.HfSettelingTank.SetpointTemp = CstHfFuelSys.TempSetpoint
+
+    makeAutoObservable(this)
   }
+
+
+  get HasOutlet() { return this.HfForeBunker.OutletValve.Content !== 0 || this.HfAftBunker.OutletValve.Content !== 0 || this.HfPortBunker.OutletValve.Content !== 0 || this.HfStarboardBunker.OutletValve.Content !== 0 }
 
   Thick() {
     // first heated tanks to determine if there temperature is at the setpoint to provide content to there outlet valve

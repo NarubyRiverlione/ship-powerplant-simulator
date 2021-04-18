@@ -124,13 +124,16 @@ describe('Pumping', () => {
   test('only from heated Fore tank, setteling tank is filling', () => {
     const { HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
     HfForeBunker.Tank.Inside = CstHfFuelSys.HfForeBunker.TankVolume
-    HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint
+    HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint - CstHfFuelSys.HeatingStep
     HfForeBunker.OutletValve.Open()
+    HfForeBunker.SteamIntakeValve.Open()
     HfPumpOutletValve.Open()
     HfSettelingTank.IntakeValve.Open()
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
     HfSys.Thick()
+    expect(HfForeBunker.HasSteam).toBeTruthy()
+    expect(HfForeBunker.Temperature).toBe(CstHfFuelSys.TempSetpoint)
     expect(HfForeBunker.IsAtSetpoint).toBeTruthy()
     expect(HfForeBunker.OutletValve.Content).toBe(CstHfFuelSys.HfPumpVolume)
 
@@ -153,6 +156,7 @@ describe('Pumping', () => {
     HfAftBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfAftBunker.OutletValve.Open()
     HfPumpOutletValve.Open()
+    HfAftBunker.SteamIntakeValve.Open()
     HfSettelingTank.IntakeValve.Open()
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
@@ -170,6 +174,7 @@ describe('Pumping', () => {
     HfPortBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfPortBunker.OutletValve.Open()
     HfPumpOutletValve.Open()
+    HfPortBunker.SteamIntakeValve.Open()
     HfSettelingTank.IntakeValve.Open()
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
@@ -187,6 +192,7 @@ describe('Pumping', () => {
     HfStarboardBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfStarboardBunker.OutletValve.Open()
     HfPumpOutletValve.Open()
+    HfStarboardBunker.SteamIntakeValve.Open()
     HfSettelingTank.IntakeValve.Open()
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
@@ -204,6 +210,8 @@ describe('Pumping', () => {
     HfAftBunker.Tank.Inside = CstHfFuelSys.HfAftBunker.TankVolume
     HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfAftBunker.Temperature = CstHfFuelSys.TempSetpoint
+    HfForeBunker.SteamIntakeValve.Open()
+    HfAftBunker.SteamIntakeValve.Open()
     HfForeBunker.OutletValve.Open()
     HfAftBunker.OutletValve.Open()
     HfPumpOutletValve.Open()
@@ -224,7 +232,7 @@ describe('Pumping', () => {
     HfForeBunker.Tank.Inside = CstHfFuelSys.HfForeBunker.TankVolume
     HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfForeBunker.OutletValve.Open()
-
+    HfForeBunker.SteamIntakeValve.Open()
     HfPumpOutletValve.Open()
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()

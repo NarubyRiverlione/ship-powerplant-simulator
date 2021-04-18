@@ -45,6 +45,7 @@ export const CstDsFuelSys = {
 }
 export const CstHfFuelSys = {
   TempSetpoint: 80,  // tanks must be this temp before outlet valve has content
+  HeatingStep: 1,
   HfForeBunker: {
     TankVolume: 10000,
     IntakeValveVolume: 500
@@ -143,5 +144,6 @@ export const CstStartConditions = {
   RunningDsGen1: 'RunningDsGen1',
   SeaWaterCoolingSupplyPump1Running: 'SeaWaterCoolingSupplyPump1Running',
   BoilerOperational: 'BoilerOperational',
-  BoilerDeliversSteam: 'BoilerDeliversSteam'
+  BoilerDeliversSteam: 'BoilerDeliversSteam',
+  DsFuelPurificationRunning: 'DsFuelPurificationRunning'
 }

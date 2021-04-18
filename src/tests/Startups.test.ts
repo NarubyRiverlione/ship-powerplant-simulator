@@ -9,7 +9,7 @@ beforeEach(() => {
 })
 
 describe('Get available start conditions', () => {
-  test('List of conditions', () => {
+  test('List of available conditions', () => {
     const conditions = sim.GetStartConditions()
     expect(conditions).toBe(CstTxt.SimulationTxt.StartConditionsTxt)
   })
@@ -21,7 +21,7 @@ describe('Use start conditions', () => {
       sim.SetStartConditions(tryCondition)
     }
     catch (error) {
-      expect(error.message).toBe(CstTxt.SimulationTxt.StartConditionsTxt.Undefined + tryCondition)
+      expect(error.message).toBe(`Unknown startcondition : '${tryCondition}'`)
     }
   })
   test('Cold & dark', () => {
@@ -104,9 +104,9 @@ describe('Use start conditions', () => {
     expect(Boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
     // DsGen in running and Boiler has flame ==> diesel consumption 
     expect(DsGen.isRunning).toBeTruthy()
-    // startup already did a 3 Thick so this is consumption step 4
+    // startup already did a 4 Thick so this is consumption step 5
     expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume -
-      CstDsFuelSys.DieselGenerator.Consumption.Diesel * 4
+      CstDsFuelSys.DieselGenerator.Consumption.Diesel * 5
       - CstDsFuelSys.SteamBoiler.Consumption.Diesel
       , 1 // percision for test
     )
@@ -120,5 +120,12 @@ describe('Use start conditions', () => {
     expect(MainSteamValve.Content).not.toBe(0)
     expect(SteamCondensor.HotCircuitComplete).toBeTruthy()
     expect(SteamCondensor.CoolCircuitComplete).toBeTruthy()
+  })
+  test('Diesel purification running', () => {
+    const { DsFuelSys: { DsPurification, DsService } } = sim
+    sim.SetStartConditions(CstStartConditions.DsFuelPurificationRunning)
+    sim.Thick()
+    expect(DsPurification.isRunning).toBeTruthy()
+    expect(DsService.IntakeValve.Content).toBe(CstDsFuelSys.Purification.Volume)
   })
 })
