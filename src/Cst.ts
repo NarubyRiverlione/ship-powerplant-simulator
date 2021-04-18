@@ -67,7 +67,13 @@ export const CstHfFuelSys = {
     IntakeValveVolume: 50,
     OutletValveVolume: 40
   },
-  HfPumpVolume: 50
+  HfServiceTank: {
+    TankVolume: 1000,
+    OutletValveVolume: 10
+
+  },
+  HfPumpVolume: 50,
+  HfPurification: { Volume: 10, SteamNeeded: 5.8 },
 }
 export const CstAirSys = {
   StartAirCompressor1: {

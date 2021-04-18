@@ -7,10 +7,13 @@ import { CstHfFuelSys } from "../Cst";
 import CstTxt from '../CstTxt'
 import ElectricPump from "../Components/Appliances/ElectricPump";
 import PowerBus from "../Components/PowerBus";
+import PurificationUnit from '../Components/Appliances/PurificationUnit';
+import TankWithValves from '../Components/TankWithValves';
 
 const { FuelSysTxt } = CstTxt
 
 /*
+1) STORAGE
                   |->-(intake) Fore Bunker (outlet)       -->-- |       |-->--(intake) Setteling tank (outlet)
                   |                |-<- (steam intake)          |       |
                   |                                             |    outlet valve 
@@ -22,6 +25,11 @@ const { FuelSysTxt } = CstTxt
                   |                                             |
                   |->-(intake) Starboard Bunker (outlet)  -->-- |
                  |                  |-<- (steam intake)         |
+
+2) SERVICE
+
+(intake)Setteling tank (outlet) ->- (intake) Purification unit ->- Purification Outlet valve ->- (intake) Service tank (outlet)
+          |-<- (steam intake)                   |-<- (steam intake)                                              |-<- (steam intake)  
 */
 export default class HeavyFuelSystem {
   HfShoreValve: Valve
@@ -32,8 +40,13 @@ export default class HeavyFuelSystem {
   HfPump: ElectricPump
   HfPumpOutletValve: iValve
   HfSettelingTank: HeatedTankWithValves
+  HfPurification: PurificationUnit
+  HfPurificationOutletValve: Valve
+  HfServiceTank: HeatedTankWithValves
+
 
   constructor(mainSteamValve: iValve, mainBus: PowerBus) {
+    //#region Storage
     const dummyShore = new Tank('Shore as tank', 10e6, 10e6)
     this.HfShoreValve = new Valve(FuelSysTxt.HfShoreValve, dummyShore)
 
@@ -64,17 +77,28 @@ export default class HeavyFuelSystem {
 
     this.HfPump = new ElectricPump(FuelSysTxt.HfPump, mainBus, CstHfFuelSys.HfPumpVolume)
     this.HfPumpOutletValve = new Valve(FuelSysTxt.HfPumpOutletValve, this.HfPump)
+    //#endregion
 
     this.HfSettelingTank = new HeatedTankWithValves(FuelSysTxt.HfSettelingTank, CstHfFuelSys.HfSettelingTank.TankVolume,
       0, this.HfPumpOutletValve, mainSteamValve, CstHfFuelSys.HfSettelingTank.OutletValveVolume)
     this.HfSettelingTank.IntakeValve.Volume = CstHfFuelSys.HfSettelingTank.IntakeValveVolume
     this.HfSettelingTank.SetpointTemp = CstHfFuelSys.TempSetpoint
 
+    //#region Service
+    this.HfPurification = new PurificationUnit(FuelSysTxt.HfPurification, CstHfFuelSys.HfPurification.Volume, this.HfSettelingTank.OutletValve, mainBus)
+    this.HfPurification.SteamIntakeValve.Source = mainSteamValve
+
+    this.HfPurificationOutletValve = new Valve(FuelSysTxt.HfPurificationOutletValve, this.HfPurification)
+
+    this.HfServiceTank = new HeatedTankWithValves(FuelSysTxt.HfSettelingTank, CstHfFuelSys.HfServiceTank.TankVolume,
+      0, this.HfPurificationOutletValve, mainSteamValve, CstHfFuelSys.HfServiceTank.OutletValveVolume)
+    //#endregion
+
     makeAutoObservable(this)
   }
 
 
-  get HasOutlet() { return this.HfForeBunker.OutletValve.Content !== 0 || this.HfAftBunker.OutletValve.Content !== 0 || this.HfPortBunker.OutletValve.Content !== 0 || this.HfStarboardBunker.OutletValve.Content !== 0 }
+  get HasBunkOutput() { return this.HfForeBunker.OutletValve.Content !== 0 || this.HfAftBunker.OutletValve.Content !== 0 || this.HfPortBunker.OutletValve.Content !== 0 || this.HfStarboardBunker.OutletValve.Content !== 0 }
 
   Thick() {
     // first heated tanks to determine if there temperature is at the setpoint to provide content to there outlet valve
@@ -102,6 +126,8 @@ export default class HeavyFuelSystem {
     this.HfPortBunker.Tank.RemoveThisStep = this.HfSettelingTank.Tank.AddThisStep
     this.HfStarboardBunker.Tank.RemoveThisStep = this.HfSettelingTank.Tank.AddThisStep
 
+    this.HfPurification.Thick()
+    this.HfServiceTank.Thick()
 
   }
 

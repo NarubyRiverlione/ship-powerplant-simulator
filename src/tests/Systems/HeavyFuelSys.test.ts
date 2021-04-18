@@ -46,6 +46,15 @@ describe('Init', () => {
   test('Fuel pump outlet valve is closed', () => {
     expect(HfSys.HfPumpOutletValve.isOpen).toBeFalsy()
   })
+  test('Purification not running', () => {
+    expect(HfSys.HfPurification.isRunning).toBeFalsy()
+  })
+  test('Purification outlet valve closed', () => {
+    expect(HfSys.HfPurificationOutletValve.isOpen).toBeFalsy()
+  })
+  test('Service tank is empty', () => (
+    expect(HfSys.HfServiceTank.Content).toBe(0)
+  ))
 })
 
 describe('Intake from shore', () => {
@@ -108,7 +117,7 @@ describe('Intake from shore', () => {
 
 describe('Pumping', () => {
   test('no pump output if tank is not heated', () => {
-    const { HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const { HasBunkOutput: HasBunkOutput, HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
     HfForeBunker.Tank.Inside = CstHfFuelSys.HfForeBunker.TankVolume
     HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint - 0.1
     HfForeBunker.OutletValve.Open()
@@ -116,6 +125,7 @@ describe('Pumping', () => {
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
     HfSys.Thick()
+    expect(HfSys.HasBunkOutput).toBeFalsy()
     expect(HfForeBunker.OutletValve.Content).toBe(0)
     expect(HfPump.isRunning).toBeFalsy()
     expect(HfPumpOutletValve.Content).toBe(0)
@@ -144,6 +154,7 @@ describe('Pumping', () => {
     expect(HfSettelingTank.Content).toBe(CstHfFuelSys.HfPumpVolume)
     // RemoveThisStep will only have effect next Thick, so check Bunk tank removale after next Thick
     HfSys.Thick()
+    expect(HfSys.HasBunkOutput).toBeTruthy()
     expect(HfForeBunker.Content).toBe(CstHfFuelSys.HfForeBunker.TankVolume - CstHfFuelSys.HfPumpVolume)
     expect(HfSettelingTank.Content).toBe(CstHfFuelSys.HfPumpVolume * 2)
 
@@ -179,6 +190,7 @@ describe('Pumping', () => {
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
     HfSys.Thick()
+    expect(HfSys.HasBunkOutput).toBeTruthy()
     expect(HfSettelingTank.Content).toBe(CstHfFuelSys.HfPumpVolume)
     HfSys.Thick()
     expect(HfPortBunker.Content).toBe(CstHfFuelSys.HfPortBunker.TankVolume - CstHfFuelSys.HfPumpVolume)
@@ -197,6 +209,7 @@ describe('Pumping', () => {
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
     HfSys.Thick()
+    expect(HfSys.HasBunkOutput).toBeTruthy()
     expect(HfSettelingTank.Content).toBe(CstHfFuelSys.HfPumpVolume)
     HfSys.Thick()
     expect(HfStarboardBunker.Content).toBe(CstHfFuelSys.HfStarboardBunker.TankVolume - CstHfFuelSys.HfPumpVolume)
@@ -219,6 +232,7 @@ describe('Pumping', () => {
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
     HfSys.Thick()
+    expect(HfSys.HasBunkOutput).toBeTruthy()
     expect(HfPumpOutletValve.Content).toBe(CstHfFuelSys.HfPumpVolume)
     expect(HfSettelingTank.Content).toBe(CstHfFuelSys.HfPumpVolume)
     HfSys.Thick()
@@ -236,6 +250,7 @@ describe('Pumping', () => {
     HfPumpOutletValve.Open()
     HfPump.Bus.Voltage = CstPowerSys.Voltage
     HfPump.Start()
+    expect(HfSys.HasBunkOutput).toBeTruthy()
     // setteling tank is already full
     HfSettelingTank.Tank.Inside = CstHfFuelSys.HfSettelingTank.TankVolume
     HfSettelingTank.IntakeValve.Open()
@@ -255,5 +270,26 @@ describe('Pumping', () => {
     HfSys.Thick()
     expect(HfForeBunker.Content).toBe(CstHfFuelSys.HfForeBunker.TankVolume)
 
+  })
+})
+
+describe('Purification', () => {
+  test('Running purification fill service tank', () => {
+    const { HfPurificationOutletValve, HfServiceTank, HfPurification, HfSettelingTank } = HfSys
+    HfSettelingTank.Tank.Inside = CstHfFuelSys.HfSettelingTank.TankVolume
+    HfSettelingTank.Temperature = CstHfFuelSys.TempSetpoint
+    HfSettelingTank.SteamIntakeValve.Open()
+    HfSys.Thick()
+    HfSettelingTank.OutletValve.Open()
+    HfPurification.IntakeValve.Open()
+    HfServiceTank.IntakeValve.Open()
+    HfPurificationOutletValve.Open()
+    HfPurification.SteamIntakeValve.Open()
+    HfPurification.Start()
+    HfSys.Thick()
+    expect(HfPurification.isRunning).toBeTruthy()
+    expect(HfPurification.Content).toBe(CstHfFuelSys.HfPurification.Volume)
+
+    expect(HfServiceTank.Content).toBe(CstHfFuelSys.HfPurification.Volume)
   })
 })

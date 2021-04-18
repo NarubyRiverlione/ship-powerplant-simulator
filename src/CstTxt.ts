@@ -44,7 +44,10 @@ export default {
     HfStarboardBunker: 'Heavy fuel Starboard Bunker',
     HfPump: 'Heavy fuel pump',
     HfPumpOutletValve: 'Heavy fuel pump outlet valve',
-    HfSettelingTank: 'Heavy fuel setteling tank'
+    HfSettelingTank: 'Heavy fuel setteling tank',
+    HfPurification: 'Heavy fuel purification',
+    HfPurificationOutletValve: 'Heavy fuel purification outlet valve',
+    HfService: 'Heavy fuel Service tank'
 
   },
   LubSysTxt: {
