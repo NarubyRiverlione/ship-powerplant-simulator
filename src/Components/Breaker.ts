@@ -2,17 +2,17 @@ import { makeAutoObservable } from 'mobx'
 import Item from "./Item"
 
 export default class Breaker implements Item {
-  Name: string
+  readonly Name: string
   isOpen: boolean
-  RatedFor: number
+  readonly RatedFor: number
   Load: number
   Providers: number
 
 
-  constructor(name: string) {
+  constructor(name: string, rated?: number) {
     this.Name = name
     this.isOpen = true
-    this.RatedFor = 0
+    this.RatedFor = rated || 0
     this.Load = 0
     this.Providers = 0
     makeAutoObservable(this)

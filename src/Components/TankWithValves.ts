@@ -4,7 +4,7 @@ import { CstChanges } from '../Cst'
 import Item from './Item'
 
 export default class TankWithValves implements Item {
-  Name: string
+  readonly Name: string
   IntakeValve: Valve
   OutletValve: Valve
   DrainValve: Valve

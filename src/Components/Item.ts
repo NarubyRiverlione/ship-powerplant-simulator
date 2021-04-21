@@ -1,5 +1,5 @@
 export default interface Item {
-  Name: string;
+  readonly Name: string;
   Content: number;
   Toggle?: () => void;
   Thick: () => void;

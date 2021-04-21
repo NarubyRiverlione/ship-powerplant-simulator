@@ -3,10 +3,10 @@ import Item from "../Item"
 import PowerBus from '../PowerBus'
 
 export default class Appliance implements Item {
-  Name: string
+  readonly Name: string
   Bus: PowerBus
   isRunning: boolean
-  RatedFor: number
+  readonly RatedFor: number
   Output: number
 
   constructor(name: string, bus: PowerBus, rate: number) {

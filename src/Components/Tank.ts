@@ -11,9 +11,9 @@ export interface iTank extends Item {
 }
 
 export default class Tank implements iTank {
-  Name: string
+  readonly Name: string
   Inside: number
-  Volume: number
+  readonly Volume: number
   AddThisStep: number
   RemoveThisStep: number
   ReadoutConsumption: number

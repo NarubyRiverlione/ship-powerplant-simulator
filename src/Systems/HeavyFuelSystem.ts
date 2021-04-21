@@ -83,6 +83,7 @@ export default class HeavyFuelSystem {
       0, this.HfPumpOutletValve, mainSteamValve, CstHfFuelSys.HfSettelingTank.OutletValveVolume)
     this.HfSettelingTank.IntakeValve.Volume = CstHfFuelSys.HfSettelingTank.IntakeValveVolume
     this.HfSettelingTank.SetpointTemp = CstHfFuelSys.TempSetpoint
+    this.HfSettelingTank.HeatingStep = CstHfFuelSys.HeatingStep
 
     //#region Service
     this.HfPurification = new PurificationUnit(FuelSysTxt.HfPurification, CstHfFuelSys.HfPurification.Volume, this.HfSettelingTank.OutletValve, mainBus)
@@ -92,6 +93,9 @@ export default class HeavyFuelSystem {
 
     this.HfServiceTank = new HeatedTankWithValves(FuelSysTxt.HfSettelingTank, CstHfFuelSys.HfServiceTank.TankVolume,
       0, this.HfPurificationOutletValve, mainSteamValve, CstHfFuelSys.HfServiceTank.OutletValveVolume)
+    this.HfServiceTank.SetpointTemp = CstHfFuelSys.TempSetpoint
+    this.HfServiceTank.HeatingStep = CstHfFuelSys.HeatingStep
+
     //#endregion
 
     makeAutoObservable(this)

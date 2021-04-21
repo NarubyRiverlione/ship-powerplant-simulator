@@ -47,9 +47,9 @@ export default class PowerSystem {
 
     this.Providers = 0 // sum of all providers, can be connected to main busses
     //  Shore power
-    this.ShoreBreaker = new Breaker(PowerTxt.ShoreBreaker)
+    // TODO use case rated for in breaker?
+    this.ShoreBreaker = new Breaker(PowerTxt.ShoreBreaker, CstPowerSys.Shore + 2000)
     this.ShoreBreaker.Providers = CstPowerSys.Shore
-    this.ShoreBreaker.RatedFor = CstPowerSys.Shore + 2000 // TODO use case rated for in breaker?
 
     // Mainbus & breaker
     this.MainBreaker1 = new Breaker(PowerTxt.MainBreaker1)

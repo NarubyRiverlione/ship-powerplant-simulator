@@ -12,7 +12,7 @@ export interface iValve extends Item {
 }
 
 export default class Valve implements iValve {
-  Name: string
+  readonly Name: string
   Source: Item
   Volume: number
   isOpen: boolean
