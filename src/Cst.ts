@@ -108,11 +108,12 @@ export const CstSteamSys = {
   FeedWaterSupply: {
     TankVolume: 100,
     IntakeValveVolume: 5,
+    AddFromCooling: 1,
   },
   FeedWaterPump: 1,
   FuelPump: 10,
   Boiler: {
-    WaterVolume: 100,
+    WaterVolume: 200,
 
     OperatingTemp: 166,
     OperatingPressure: 7.179,
@@ -128,8 +129,8 @@ export const CstSteamSys = {
     TempVentLoss: 0.1,
     WaterVentLoss: 1,
 
-    MinWaterLvlForFlame: 30,
-    WaterLossByNotCoolingSteam: 0.5,
+    MinWaterLvlForFlame: 50,
+    WaterLossBySteam: 2,
 
     AutoEnableZone: 2, // temp zone + and - operation temp where auto can be enabled
 

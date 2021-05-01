@@ -158,8 +158,8 @@ export default class SteamBoiler implements Item {
       && this.Temperature <= CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.AutoEnableZone / 2) { this.Ignite() }
     // #endregion
 
+    // burn fuel
     if (this.HasFlame) {
-      // burn fuel
       this.FuelSourceTank.RemoveThisStep += CstDsFuelSys.SteamBoiler.Consumption.Diesel
     }
 
@@ -167,6 +167,7 @@ export default class SteamBoiler implements Item {
     if (this.Temperature > CstSteamSys.Boiler.StartExpandTemp && this.Temperature < CstSteamSys.Boiler.EndExpandTemp) {
       this.WaterTank.Inside += CstSteamSys.Boiler.ExpandRate * (this.HasFlame ? 1 : -1)
     }
+
     /* istanbul ignore if  */
     if (this.WaterTank.Content < 0) {
       console.warn('Boiler waterlevel negative! (readout < -50)')

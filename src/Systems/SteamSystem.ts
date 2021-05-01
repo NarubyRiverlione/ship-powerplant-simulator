@@ -94,9 +94,16 @@ export default class SteamSystem {
       this.FeedWaterSupply.Tank.RemoveThisStep = CstSteamSys.FeedWaterPump
     }
 
+    // steam condensor is cooling => add to FeedWater Supply
+    if (this.SteamCondensor.IsCooling) {
+      // don't use addThisStep as this is only for the intake valve
+      this.FeedWaterSupply.Tank.Inside += CstSteamSys.FeedWaterSupply.AddFromCooling
+    }
+
     this.FeedWaterSupply.Thick()
 
     // #endregion
+
     // #region  Fuel
     this.FuelPump.Providers = this.FuelSourceValve.Content !== 0
       ? this.FuelPump.Providers = this.FuelSource.Tank.Content
@@ -112,9 +119,9 @@ export default class SteamSystem {
       this.MainSteamValve.Close()
     }
 
-    //  steam flow withou cooling = loss of steam == loss of water
-    if (this.MainSteamValve.Content && !this.SteamCondensor.CoolCircuitComplete) {
-      this.Boiler.WaterTank.Inside -= CstSteamSys.Boiler.WaterLossByNotCoolingSteam
+    //  steam flow = loss of water
+    if (this.MainSteamValve.Content) {
+      this.Boiler.WaterTank.Inside -= CstSteamSys.Boiler.WaterLossBySteam
     }
   }
 }
