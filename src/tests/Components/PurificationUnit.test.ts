@@ -1,21 +1,20 @@
 import PurificationUnit from '../../Components/Appliances/PurificationUnit'
 import { CstDsFuelSys } from '../../Cst'
-import mockPowerBus from '../mocks/mockPowerBus'
-import mockTank from '../mocks/mockTank'
-import mockValve from '../mocks/mockValve'
-
+import MockPowerBus from '../mocks/MockPowerBus'
+import MockTank from '../mocks/MockTank'
+import MockValve from '../mocks/MockValve'
 
 let purUnit: PurificationUnit
 const sourceContent = 100
 const steamSourceContent = CstDsFuelSys.Purification.SteamNeeded
 const testRate = 25
 
-const dummyBus = new mockPowerBus("dummy powerbus")
-const dummySourceTank = new mockTank("dummy source tank", 100, sourceContent)
-const dummySourceValve = new mockValve("dummy source valve", dummySourceTank)
+const dummyBus = new MockPowerBus('dummy powerbus')
+const dummySourceTank = new MockTank('dummy source tank', 100, sourceContent)
+const dummySourceValve = new MockValve('dummy source valve', dummySourceTank)
 
-const dummySteamSourceTank = new mockTank("dummy steam source tank", 100, steamSourceContent)
-const dummySteamSourceValve = new mockValve("dummy steam source valve", dummySteamSourceTank)
+const dummySteamSourceTank = new MockTank('dummy steam source tank', 100, steamSourceContent)
+const dummySteamSourceValve = new MockValve('dummy steam source valve', dummySteamSourceTank)
 
 beforeEach(() => {
   dummyBus.Voltage = 440
@@ -24,7 +23,7 @@ beforeEach(() => {
   purUnit.SteamIntakeValve.Source = dummySteamSourceValve
 })
 
-describe("init", () => {
+describe('init', () => {
   test('no running, no content', () => {
     expect(purUnit.isRunning).toBeFalsy()
     expect(purUnit.Content).toBe(0)
@@ -37,7 +36,7 @@ describe("init", () => {
   })
 })
 
-describe("start / stop", () => {
+describe('start / stop', () => {
   test('start with power & steam = content is rate', () => {
     purUnit.SteamIntakeValve.Open()
     purUnit.IntakeValve.Open()

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import Item from "./Item"
+import Item from './Item'
 
 export default class Breaker implements Item {
   readonly Name: string
@@ -7,7 +7,6 @@ export default class Breaker implements Item {
   readonly RatedFor: number
   Load: number
   Providers: number
-
 
   constructor(name: string, rated?: number) {
     this.Name = name
@@ -19,17 +18,21 @@ export default class Breaker implements Item {
   }
 
   get Content() { return this.isOpen ? 0 : this.Providers }
+
   // Load > RatedFor
   TestLoad() {
     if (this.Load > this.RatedFor) { this.isOpen = true }
   }
+
   // Load > Providers
   TestTripped() {
     if (this.Load > this.Providers) { this.isOpen = true }
   }
+
   Open() {
     this.isOpen = true
   }
+
   Close() {
     this.isOpen = false
     this.TestLoad()

@@ -1,8 +1,9 @@
+import {
+  action, computed, makeObservable, observable,
+} from 'mobx'
 import Item from './Item'
-import { action, computed, makeObservable, observable } from 'mobx'
 
-
-export interface iValve extends Item {
+export interface ValveInterface extends Item {
   Name: string
   Source: Item
   Volume: number
@@ -11,7 +12,7 @@ export interface iValve extends Item {
   Close: () => void
 }
 
-export default class Valve implements iValve {
+export default class Valve implements ValveInterface {
   readonly Name: string
   Source: Item
   Volume: number
@@ -34,10 +35,8 @@ export default class Valve implements iValve {
       Close: action,
       Content: computed,
       Toggle: action,
-      Thick: action
     })
   }
-
 
   get Content() {
     if (!this.isOpen) return 0
@@ -48,6 +47,7 @@ export default class Valve implements iValve {
     this.isOpen = true
     this.cbNowOpen()
   }
+
   Close() {
     this.isOpen = false
     this.cbNowClosed()
@@ -57,6 +57,4 @@ export default class Valve implements iValve {
     if (this.isOpen) this.Close()
     else this.Open()
   }
-
-  Thick() { }
 }

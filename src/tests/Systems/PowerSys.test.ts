@@ -1,26 +1,26 @@
 import PowerSystem from '../../Systems/PowerSystem'
 import { CstPowerSys, CstDsFuelSys, CstAirSys } from '../../Cst'
-import mockValve from '../mocks/mockValve'
-import mockTank from '../mocks/mockTank'
-import mockCooler from '../mocks/mockCooler'
+import MockValve from '../mocks/MockValve'
+import MockTank from '../mocks/MockTank'
+import MockCooler from '../mocks/MockCooler'
 
 let powerSys: PowerSystem
 
 const startFuelAmount = 10000
 const startLubAmount = 2000
 const startAirAmount = CstAirSys.DieselGenerator.StarAirConsumption
-let fuelSource: mockTank
+let fuelSource: MockTank
 
 beforeEach(() => {
-  fuelSource = new mockTank('dummy fuel source', 1e6, startFuelAmount)
-  const lubSource = new mockTank('dummy lub source', 1e6, startLubAmount)
-  const airSource = new mockTank('dummy air source', 1e6, startAirAmount)
+  fuelSource = new MockTank('dummy fuel source', 1e6, startFuelAmount)
+  const lubSource = new MockTank('dummy lub source', 1e6, startLubAmount)
+  const airSource = new MockTank('dummy air source', 1e6, startAirAmount)
 
-  const dummyFuelOutletValve = new mockValve('dummy fuel source valve', fuelSource)
-  const dummyLubOutletValve = new mockValve('dummy lub source valve', lubSource)
-  const dummyAirOutletValve = new mockValve('dummy air source valve', airSource)
+  const dummyFuelOutletValve = new MockValve('dummy fuel source valve', fuelSource)
+  const dummyLubOutletValve = new MockValve('dummy lub source valve', lubSource)
+  const dummyAirOutletValve = new MockValve('dummy air source valve', airSource)
 
-  const dummyLubCooler = new mockCooler('dummy FW cooler')
+  const dummyLubCooler = new MockCooler('dummy FW cooler')
   dummyLubCooler.CoolCircuitComplete = true
 
   powerSys = new PowerSystem(dummyFuelOutletValve, dummyLubOutletValve, dummyAirOutletValve,

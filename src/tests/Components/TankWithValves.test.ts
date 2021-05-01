@@ -1,6 +1,6 @@
 import TankWithValves from '../../Components/TankWithValves'
-import mockTank from '../mocks/mockTank'
-import mockValve from '../mocks/mockValve'
+import MockTank from '../mocks/MockTank'
+import MockValve from '../mocks/MockValve'
 import { CstChanges } from '../../Cst'
 
 let tankV: TankWithValves
@@ -8,11 +8,10 @@ const Volume = 10000
 const StartContent = 9000
 const SourceContent = 100
 const IntakeValveVolume = 5
-const OutletValveVolume = 15
+// const OutletValveVolume = 15
 
-
-const dummySource = new mockTank('dummy source tank', 1000, SourceContent)
-const dummySourceValve = new mockValve('test dummy source valve', dummySource)
+const dummySource = new MockTank('dummy source tank', 1000, SourceContent)
+const dummySourceValve = new MockValve('test dummy source valve', dummySource)
 
 beforeEach(() => {
   tankV = new TankWithValves('test tank', Volume, StartContent, dummySourceValve)
@@ -62,7 +61,7 @@ describe('Intake valve', () => {
     expect(tankV.IntakeValve.isOpen).toBeFalsy()
     expect(tankV.Tank.Inside).toBe(StartContent)
   })
-  test('both intake and source valves are open (unrestricted intake valve) --> filling with complete source content', () => {
+  test('intake & source valves are open (unrestricted intake valve) --> filling with complete source content', () => {
     dummySourceValve.Open()
     tankV.IntakeValve.Open()
     tankV.Thick()
@@ -86,7 +85,6 @@ describe('Intake valve', () => {
     tankV.IntakeValve.Close()
     tankV.Thick()
     expect(tankV.Tank.Inside).toBe(StartContent + SourceContent)
-
   })
   /*
   cannot test as there is no 'Thick' in a valve

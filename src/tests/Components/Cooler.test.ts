@@ -13,7 +13,6 @@ describe('Init', () => {
     expect(cooler.IsCooling).toBeFalsy()
     expect(cooler.Content).toBe(0)
   })
-
 })
 
 describe('Is cooling', () => {

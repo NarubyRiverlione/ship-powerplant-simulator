@@ -1,12 +1,12 @@
+import MockPowerBus from '../mocks/MockPowerBus'
 import Appliance from '../../Components/Appliances/Appliance'
-import mockPowerBus from '../mocks/mockPowerBus'
 
 const testVoltage = 440
 const testRate = 25
 let appliance: Appliance
 
 beforeEach(() => {
-  const testBus = new mockPowerBus('test bus')
+  const testBus = new MockPowerBus('test bus')
   testBus.Voltage = testVoltage
   appliance = new Appliance('test bus', testBus, testRate)
 })

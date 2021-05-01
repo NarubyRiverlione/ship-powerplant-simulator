@@ -15,7 +15,7 @@ export default {
       BoilerDeliversSteam: 'Boiler is delivering steam',
       DsFuelPurificationRunning: 'Diesel purification unit is running',
       // Undefined: 'Unknown start condition: '
-    }
+    },
   },
   PowerTxt: {
     ShoreBreaker: 'Shore breaker',
@@ -25,7 +25,7 @@ export default {
     DsGenBreaker: 'Breaker diesel generator',
     EmergencyGen: 'Emergency genertor',
     DieselGen: 'Diesel generator',
-    DsGen_FuelIntake: 'Diesel generator - fuel intake valve'
+    DsGen_FuelIntake: 'Diesel generator - fuel intake valve',
   },
   FuelSysTxt: {
     DsPurification: 'Diesel purification unit',
@@ -47,19 +47,19 @@ export default {
     HfSettelingTank: 'Heavy fuel setteling tank',
     HfPurification: 'Heavy fuel purification',
     HfPurificationOutletValve: 'Heavy fuel purification outlet valve',
-    HfService: 'Heavy fuel Service tank'
+    HfService: 'Heavy fuel Service tank',
 
   },
   LubSysTxt: {
     LubShoreFillValve: 'Lubrication shore fill valve',
     LubStorageTank: 'Lubrication storage tank',
-    LubStorageOutletValve: 'Lubrication storage outlet valve'
+    LubStorageOutletValve: 'Lubrication storage outlet valve',
   },
   AirSysTxt: {
     StartAirReceiver1: 'Start air receiver 1',
     EmergencyReceiver: 'Emergency  start air receiver',
     EmergencyCompressor: 'Emergency compressor',
-    Compressor1: 'Start air compressor 1'
+    Compressor1: 'Start air compressor 1',
   },
   CoolantSysTxt: {
     LowSuctionIntakeValve: 'Low suction Sea Chest intake valve ',
@@ -77,13 +77,13 @@ export default {
     DsGenLubCooler: 'Diesel generator  lubrication cooler',
     StartAirCooler: 'Start air cooler',
     FwPumpDsGen: 'Fresh water pump diesel generator cooler',
-    FwPumpStartAir: 'Fresh water pump start air cooler'
+    FwPumpStartAir: 'Fresh water pump start air cooler',
   },
   DieselGeneratorTxt: {
     FuelIntakeValve: ' - fuel intake valve',
     LubIntakeValve: ' - lubrication intake valve',
     AirIntakeValve: ' - Air intake valve',
-    LubSlump: 'slump'
+    LubSlump: 'slump',
   },
   SteamSysTxt: {
     FeedWaterSupply: 'Feed water supply',
@@ -97,11 +97,11 @@ export default {
       FuelIntakeValve: 'Fuel intake valve',
       MainSteamValve: 'Main steam valve',
       SafetyRelease: 'Safety release valve',
-      SteamVent: 'Steam vent valve'
-    }
+      SteamVent: 'Steam vent valve',
+    },
   },
   PurificationTxt: {
     IntakeValve: 'Intake valve',
-    SteamIntakeValve: 'Steam intake valve'
-  }
+    SteamIntakeValve: 'Steam intake valve',
+  },
 }

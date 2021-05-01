@@ -1,5 +1,7 @@
-import { makeObservable, observable, action, computed } from 'mobx'
-import Item from "../Item"
+import {
+  makeObservable, observable, action, computed,
+} from 'mobx'
+import Item from '../Item'
 import PowerBus from '../PowerBus'
 
 export default class Appliance implements Item {
@@ -23,11 +25,12 @@ export default class Appliance implements Item {
       CheckPower: computed,
       Start: action,
       Stop: action,
-      Thick: action
+      Thick: action,
     })
   }
 
   get Content() { return this.Output }
+
   get CheckPower() {
     return this.Bus.Voltage !== 0
   }

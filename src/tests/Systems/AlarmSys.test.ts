@@ -38,7 +38,6 @@ describe('add', () => {
     expect(alarmSys.AlarmExist(testAlarm)).toBeTruthy()
     expect(cbNumberCalled).toBe(1)
   })
-
 })
 
 describe('Remove alarm', () => {

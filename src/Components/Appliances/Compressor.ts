@@ -1,5 +1,5 @@
 import {
-  makeObservable, observable, action, computed
+  makeObservable, observable, computed,
 } from 'mobx'
 import Appliance from './Appliance'
 import Valve from '../Valve'
@@ -9,14 +9,13 @@ export default class Compressor extends Appliance {
   OutletValve: Valve
   HasReceiver: boolean
 
-
   constructor(name: string, bus: PowerBus, rate: number) {
     super(name, bus, rate)
 
     this.HasReceiver = false
-    this.OutletValve = new Valve(name + ' - outlet valve', this)
+    this.OutletValve = new Valve(`${name} - outlet valve`, this)
     makeObservable(this, {
-      HasReceiver: observable, SafetyOpen: computed
+      HasReceiver: observable, SafetyOpen: computed,
     })
   }
 

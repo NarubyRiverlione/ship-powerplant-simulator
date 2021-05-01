@@ -1,5 +1,7 @@
 import Simulator from '../Simulator'
-import { CstAirSys, CstCoolantSys, CstDsFuelSys, CstLubSys, CstPowerSys, CstStartConditions, CstSteamSys } from '../Cst'
+import {
+  CstAirSys, CstCoolantSys, CstDsFuelSys, CstLubSys, CstPowerSys, CstStartConditions, CstSteamSys,
+} from '../Cst'
 import CstTxt from '../CstTxt'
 
 let sim: Simulator
@@ -19,8 +21,7 @@ describe('Use start conditions', () => {
     const tryCondition = 'Undefined'
     try {
       sim.SetStartConditions(tryCondition)
-    }
-    catch (error) {
+    } catch (error) {
       expect(error.message).toBe(`Unknown startcondition : '${tryCondition}'`)
     }
   })
@@ -46,7 +47,7 @@ describe('Use start conditions', () => {
   test('Emergency power via emergency generator', () => {
     sim.SetStartConditions(CstStartConditions.SetEmergencyPower)
     sim.Thick()
-    const { PowerSys: { EmergencyBus, EmergencyGen } } = sim
+    const { PowerSys: { EmergencyBus } } = sim
     expect(EmergencyBus.Content).toBe(CstPowerSys.Voltage)
   })
   test('Emergency start air available via open outlet valve', () => {
@@ -64,29 +65,34 @@ describe('Use start conditions', () => {
   test('Fresh water cooling available', () => {
     sim.SetStartConditions(CstStartConditions.SetFreshwaterCooling)
     sim.Thick()
-    const { CoolingFreshWaterSys: { DsGenLubCooler, FwCoolerDsGen, FwPumpDsGen, FwExpandTank } } = sim
+    const {
+      CoolingFreshWaterSys: {
+        DsGenLubCooler, FwCoolerDsGen, FwPumpDsGen,
+      },
+    } = sim
     expect(FwPumpDsGen.CheckPower).toBeTruthy()
     expect(FwPumpDsGen.Providers).toBe(CstCoolantSys.FwExpandTank.TankVolume)
     expect(FwPumpDsGen.isRunning).toBeTruthy()
     expect(FwCoolerDsGen.IsCooling).toBeTruthy()
     expect(DsGenLubCooler.CoolCircuitComplete).toBeTruthy()
-
   })
   test('Diesel generator 1 running', () => {
     const { PowerSys: { MainBus1, DsGen }, DsFuelSys: { DsService } } = sim
     sim.SetStartConditions(CstStartConditions.RunningDsGen1)
-    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel)
+    expect(DsService.Tank.Content)
+      .toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel)
     expect(DsGen.isRunning).toBeTruthy()
     sim.Thick()
     expect(MainBus1.Content).toBe(CstPowerSys.Voltage)
     // startup already did a Thick so breakers could be closed
     // so consumption is here on step 2
-    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel * 2)
+    expect(DsService.Tank.Content)
+      .toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel * 2)
 
     sim.Thick()
     // so consumption is here on step 3
-    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel * 3)
-
+    expect(DsService.Tank.Content)
+      .toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume - CstDsFuelSys.DieselGenerator.Consumption.Diesel * 3)
   })
   test('Seawater suction pump 1 running , Aux pump stopped ', () => {
     const { CoolingSeaWaterSys } = sim
@@ -102,15 +108,13 @@ describe('Use start conditions', () => {
     expect(Boiler.AutoFlame).toBeTruthy()
     expect(Boiler.Temperature).toBe(CstSteamSys.Boiler.OperatingTemp + CstSteamSys.Boiler.TempAddStep)
     expect(Boiler.Pressure).toBeCloseTo(CstSteamSys.Boiler.OperatingPressure, 0)
-    // DsGen in running and Boiler has flame ==> diesel consumption 
+    // DsGen in running and Boiler has flame ==> diesel consumption
     expect(DsGen.isRunning).toBeTruthy()
     // startup already did a 4 Thick so this is consumption step 5
-    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume -
-      CstDsFuelSys.DieselGenerator.Consumption.Diesel * 5
-      - CstDsFuelSys.SteamBoiler.Consumption.Diesel
-      , 1 // percision for test
-    )
-
+    expect(DsService.Tank.Content).toBeCloseTo(CstDsFuelSys.DsServiceTank.TankVolume
+      - CstDsFuelSys.DieselGenerator.Consumption.Diesel * 5
+      - CstDsFuelSys.SteamBoiler.Consumption.Diesel,
+    1) // percision for test
   })
   test('Boiler delivers steam', () => {
     const { SteamSys: { SteamCondensor, MainSteamValve } } = sim

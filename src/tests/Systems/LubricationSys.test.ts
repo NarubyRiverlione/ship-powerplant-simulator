@@ -1,10 +1,10 @@
 import LubricationSystem from '../../Systems/LubricationSystem'
 import { CstLubSys } from '../../Cst'
 import { AlarmCode, AlarmLevel } from '../../CstAlarms'
-import mockAlarmSys from '../mocks/mockAlarmSys'
+import MockAlarmSys from '../mocks/MockAlarmSys'
 
 let lubSys: LubricationSystem
-const dummyAlarmSys = new mockAlarmSys()
+const dummyAlarmSys = new MockAlarmSys()
 
 beforeEach(() => {
   lubSys = new LubricationSystem(dummyAlarmSys)
@@ -86,7 +86,6 @@ describe('Storage tank: fill from shore', () => {
     lubSys.Thick()
     expect(lubSys.Storage.Tank.Content).toBe(contentBeforeReopeningIntakeValve)
   })
-
 })
 describe('Alarms', () => {
   test('Raise Low diesel storage tank', () => {

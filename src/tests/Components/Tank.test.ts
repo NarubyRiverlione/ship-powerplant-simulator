@@ -114,16 +114,16 @@ describe('Tank remove over time', () => {
 
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep)
-    
+
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep * 2)
-    
+
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep * 3)
-    
+
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep * 4)
-    
+
   })
   test('Remove in until empty ', () => {
     const start = 20
@@ -135,16 +135,16 @@ describe('Tank remove over time', () => {
 
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep)
-    
+
     tank.Thick()
     expect(tank.Content).toBe(start - removeEachStep * 2)
-    
+
     tank.Thick()
     expect(tank.Content).toBe(0)
-    
+
     tank.Thick()
     expect(tank.Content).toBe(0)
-    
+
   })
 })
 */
@@ -160,7 +160,7 @@ describe('Alarms', () => {
     dummyAlarmSys = {
       AddAlarm: (raise: number) => { raisedAlarmCode.add(raise) },
       RemoveAlarm: (kill: number) => { raisedAlarmCode.delete(kill) },
-      AlarmExist: (code: number) => raisedAlarmCode.has(code)
+      AlarmExist: (code: number) => raisedAlarmCode.has(code),
     }
     alarmTank = new Tank('test alarm tank', 250)
     alarmTank.AlarmSystem = dummyAlarmSys

@@ -11,10 +11,11 @@ import AlarmSystem from './Systems/AlarmSystem'
 import SteamSystem from './Systems/SteamSystem'
 import * as StartCondition from './Startups'
 import CstTxt from './CstTxt'
+import { Sim } from './Sim'
 
 const { SimulationTxt: { StartConditionsTxt } } = CstTxt
 
-export default class Simulator {
+export default class Simulator implements Sim {
   Running?: NodeJS.Timeout // ref setInterval
   AlarmSys!: AlarmSystem
   DsFuelSys!: DieselFuelSystem
@@ -30,6 +31,7 @@ export default class Simulator {
     this.Reset()
     makeAutoObservable(this)
   }
+
   Reset() {
     this.AlarmSys = new AlarmSystem()
     this.DsFuelSys = new DieselFuelSystem(this.AlarmSys)
@@ -37,7 +39,7 @@ export default class Simulator {
     this.LubSys = new LubricationSystem(this.AlarmSys)
     this.CoolingSeaWaterSys = new CoolingSeaWaterSystem()
     this.CoolingFreshWaterSys = new CoolingFreshWaterSystem(
-      this.CoolingSeaWaterSys.FwCoolerDsGen, this.CoolingSeaWaterSys.FwCoolerStartAir
+      this.CoolingSeaWaterSys.FwCoolerDsGen, this.CoolingSeaWaterSys.FwCoolerStartAir,
     )
 
     this.AirSys = new AirSystem(this.CoolingFreshWaterSys.StartAirCooler)
@@ -46,7 +48,7 @@ export default class Simulator {
       this.DsFuelSys.DsService.OutletValve,
       this.LubSys.Storage.OutletValve,
       this.AirSys.EmergencyReceiver.OutletValve,
-      this.CoolingFreshWaterSys.DsGenLubCooler
+      this.CoolingFreshWaterSys.DsGenLubCooler,
     )
 
     this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.DsFuelSys.DsService,
@@ -77,7 +79,7 @@ export default class Simulator {
     this.CoolingSeaWaterSys.Thick()
     this.CoolingFreshWaterSys.Thick()
     this.SteamSys.Thick()
-    this.DsFuelSys.Thick()  //must be evaluated last to consume fuel from other systems
+    this.DsFuelSys.Thick() // must be evaluated last to consume fuel from other systems
     this.HfFuelSys.Thick()
   }
 
@@ -93,10 +95,12 @@ export default class Simulator {
       this.Running = undefined
     }
   }
+
   Toggle() {
     if (this.Running) this.Stop()
     else this.Start()
   }
+
   SetStartConditions(condition: string) {
     switch (condition) {
       case CstStartConditions.ColdAndDark:
@@ -139,6 +143,8 @@ export default class Simulator {
         throw new Error(`Unknown startcondition : '${condition}'`)
     }
   }
+
+  // eslint-disable-next-line class-methods-use-this
   GetStartConditions() {
     return StartConditionsTxt
   }

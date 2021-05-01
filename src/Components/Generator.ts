@@ -1,6 +1,6 @@
 import { makeObservable, observable, action } from 'mobx'
 import Item from './Item'
-import Tank, { iTank } from './Tank'
+import { TankInterface } from './Tank'
 
 export default class Generator implements Item {
   Name: string
@@ -10,11 +10,10 @@ export default class Generator implements Item {
   HasFuel: boolean
   HasCooling: boolean
   HasLubrication: boolean
-  FuelProvider: iTank
+  FuelProvider: TankInterface
   FuelConsumption: number
 
-
-  constructor(Name: string, Rate: number, fuelProvider: iTank) {
+  constructor(Name: string, Rate: number, fuelProvider: TankInterface) {
     this.Name = Name
     this.RatedFor = Rate
     this.isRunning = false
@@ -36,10 +35,12 @@ export default class Generator implements Item {
       Start: action,
       Stop: action,
       Thick: action,
-      Toggle: action
+      Toggle: action,
     })
   }
+
   get Content() { return this.Output }
+
   TestRunning() {
     // not running, keep stopped
     if (!this.isRunning) return false

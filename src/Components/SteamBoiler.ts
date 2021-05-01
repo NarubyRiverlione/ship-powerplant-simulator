@@ -1,15 +1,16 @@
+import { makeAutoObservable } from 'mobx'
 import Item from './Item'
-import Tank, { iTank } from './Tank'
+import Tank, { TankInterface } from './Tank'
 import Valve from './Valve'
 import CstTxt from '../CstTxt'
 import { CstChanges, CstSteamSys, CstDsFuelSys } from '../Cst'
 import CalcPressureViaTemp from '../CalcPressureTemp'
-import { makeAutoObservable } from 'mobx'
+
 const { SteamSysTxt } = CstTxt
 
 /*
-  
-Fuel intake vale ==>==|                   |--> Safety Release valve 
+
+Fuel intake vale ==>==|                   |--> Safety Release valve
                       | BOILER =>=steam=>=|
 Water intake valve =>=|     |             |--> Steam Vent valve
                  water DrainValve         |
@@ -26,7 +27,7 @@ export default class SteamBoiler implements Item {
   WaterIntakeValve: Valve
   WaterDrainValve: Valve
 
-  FuelSourceTank: iTank
+  FuelSourceTank: TankInterface
   FuelIntakeValve: Valve
 
   SafetyRelease: Valve
@@ -36,9 +37,8 @@ export default class SteamBoiler implements Item {
   Temperature: number
   AutoFlame: boolean
 
-
   constructor(name: string, waterSource: Item,
-    fuelSource: Item, fuelSourceTank: iTank) {
+    fuelSource: Item, fuelSourceTank: TankInterface) {
     this.Name = name
     // Water supply
     this.WaterIntakeValve = new Valve(SteamSysTxt.Boiler.WaterIntakeValve, waterSource)
@@ -59,7 +59,6 @@ export default class SteamBoiler implements Item {
 
     makeAutoObservable(this)
   }
-
 
   get WaterLevel(): number { return this.WaterTank.Content }
   get HasFuel(): boolean { return this.FuelIntakeValve.Content !== 0 }
@@ -92,9 +91,8 @@ export default class SteamBoiler implements Item {
       console.warn('double Extinguishing')
       return
     }
-    // kill flame 
+    // kill flame
     this.HasFlame = false
-
   }
   CheckTemp() {
     //  no flame but not at start temp = cooling down
@@ -103,7 +101,7 @@ export default class SteamBoiler implements Item {
       return
     }
     if (this.HasFlame) {
-      // flame heats boiler 
+      // flame heats boiler
       this.Temperature += CstSteamSys.Boiler.TempAddStep
     }
   }
@@ -127,12 +125,10 @@ export default class SteamBoiler implements Item {
 
     this.WaterTank.Thick()
 
-
     this.CheckFlame() // auto trip with fuel or not enough water
     this.CheckTemp()
 
-
-    //#region safety release valve
+    // #region safety release valve
     // open safety release valve and kill flame is pressure is to high
     if (this.Pressure >= CstSteamSys.Boiler.SafetyPressure && !this.SafetyRelease.isOpen) {
       this.SafetyRelease.Open()
@@ -142,30 +138,28 @@ export default class SteamBoiler implements Item {
       // open safety valve = loss of temperature (to drop the pressure)
       this.Temperature -= CstSteamSys.Boiler.TempLossBySafetyRelease
     }
-    // close safety release is pressure is back below 
+    // close safety release is pressure is back below
     if (this.Pressure < CstSteamSys.Boiler.SafetyPressure && this.SafetyRelease.isOpen) {
       this.SafetyRelease.Close()
     }
-    //#endregion
+    // #endregion
 
-
-    //#region Auto flame
+    // #region Auto flame
     // auto flame can only works inside operation zone (operational temp + / - autoEnableZoner)
     if (this.AutoFlame && !this.TempInsideAutoZone) this.AutoFlame = false
 
     // auto flame controls kills flame when pressure above operational
     if (this.AutoFlame && this.HasFlame
-      && this.Temperature >= CstSteamSys.Boiler.OperatingTemp + CstSteamSys.Boiler.AutoEnableZone / 2)
-      this.Extinguishing()
+      // eslint-disable-next-line max-len
+      && this.Temperature >= CstSteamSys.Boiler.OperatingTemp + CstSteamSys.Boiler.AutoEnableZone / 2) { this.Extinguishing() }
 
     // auto flame starts flame when pressure below operational
     if (this.AutoFlame && !this.HasFlame
-      && this.Temperature <= CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.AutoEnableZone / 2)
-      this.Ignite()
-    //#endregion
+      && this.Temperature <= CstSteamSys.Boiler.OperatingTemp - CstSteamSys.Boiler.AutoEnableZone / 2) { this.Ignite() }
+    // #endregion
 
     if (this.HasFlame) {
-      // burn fuel      
+      // burn fuel
       this.FuelSourceTank.RemoveThisStep += CstDsFuelSys.SteamBoiler.Consumption.Diesel
     }
 
@@ -178,6 +172,5 @@ export default class SteamBoiler implements Item {
       console.warn('Boiler waterlevel negative! (readout < -50)')
       this.WaterTank.Inside = 0
     }
-
   }
 }

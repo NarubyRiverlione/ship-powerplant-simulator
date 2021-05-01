@@ -1,23 +1,26 @@
 import SteamSystem from '../../Systems/SteamSystem'
-import mockPowerBus from '../mocks/mockPowerBus'
-import { CstPowerSys, CstSteamSys, CstDsFuelSys, CstChanges } from '../../Cst'
-import mockTank from '../mocks/mockTank'
-import mockValve from '../mocks/mockValve'
-import mockCooler from '../mocks/mockCooler'
+import MockPowerBus from '../mocks/MockPowerBus'
+import {
+  CstPowerSys, CstSteamSys, CstDsFuelSys, CstChanges,
+} from '../../Cst'
+import MockTank from '../mocks/MockTank'
+import MockValve from '../mocks/MockValve'
+import MockCooler from '../mocks/MockCooler'
 import TankWithValves from '../../Components/TankWithValves'
+
 let steamSys: SteamSystem
 
-const dummyMainBus = new mockPowerBus('dummy main bus 1')
+const dummyMainBus = new MockPowerBus('dummy main bus 1')
 dummyMainBus.Voltage = CstPowerSys.Voltage
 
 beforeEach(() => {
-  const dummyFuelStortageTank = new mockTank('dummy fuel source', 100, 100)
-  const dummyFuelSourceValve = new mockValve('dummy fuel valve', dummyFuelStortageTank)
+  const dummyFuelStortageTank = new MockTank('dummy fuel source', 100, 100)
+  const dummyFuelSourceValve = new MockValve('dummy fuel valve', dummyFuelStortageTank)
 
   const dummyFuelSource = new TankWithValves('dummy fuel source', 100, 100, dummyFuelSourceValve)
   dummyFuelSource.OutletValve.Open()
   dummyFuelSource.Thick()
-  const dummySteamCondensor = new mockCooler('dummy steam condensor')
+  const dummySteamCondensor = new MockCooler('dummy steam condensor')
   steamSys = new SteamSystem(dummyMainBus, dummyFuelSource, dummySteamCondensor)
 })
 
@@ -63,7 +66,6 @@ describe('Feed water', () => {
     expect(FeedWaterPump.CheckPower).toBeTruthy()
     expect(FeedWaterPump.isRunning).toBeTruthy()
     expect(FeedWaterPump.Content).toBe(CstSteamSys.FeedWaterPump)
-
   })
   test('Feed water outlet valve open & pump running & boiler intake open = fill boiler &  remove from supply tank', () => {
     const { FeedWaterSupply, FeedWaterPump, Boiler } = steamSys
@@ -79,7 +81,6 @@ describe('Feed water', () => {
     expect(FeedWaterPump.Content).toBe(CstSteamSys.FeedWaterPump)
     expect(FeedWaterSupply.Tank.Content).toBe(startVolume - CstSteamSys.FeedWaterPump)
     expect(Boiler.WaterLevel).toBe(CstSteamSys.FeedWaterPump)
-
 
     steamSys.Thick()
     expect(Boiler.WaterIntakeValve.Content).toBe(CstSteamSys.FeedWaterPump)
@@ -105,7 +106,6 @@ describe('Feed water', () => {
 
     expect(FeedWaterSupply.Tank.Content).toBe(0)
     expect(Boiler.WaterLevel).toBe(CstSteamSys.FeedWaterPump)
-
   })
   test('running pump & open drain valve', () => {
     const { FeedWaterSupply, FeedWaterPump, Boiler } = steamSys
@@ -145,8 +145,8 @@ describe('Fuel', () => {
     expect(FuelPump.isRunning).toBeTruthy()
     expect(Boiler.HasFlame).toBeFalsy()
     expect(FuelPump.Content).toBe(CstSteamSys.FuelPump)
-    const fuelSourceOutlet = FuelSourceValve.Source as mockValve
-    const fuelSource = fuelSourceOutlet.Source as mockTank
+    const fuelSourceOutlet = FuelSourceValve.Source as MockValve
+    const fuelSource = fuelSourceOutlet.Source as MockTank
     expect(fuelSource.RemoveThisStep).toBe(0)
   })
   test('Fuel pump running & flame = burn fuel from FuelProviderTank', () => {
@@ -165,8 +165,8 @@ describe('Fuel', () => {
     expect(Boiler.HasFlame).toBeTruthy()
     expect(FuelPump.Content).toBe(CstSteamSys.FuelPump)
 
-    const fuelSourceOutlet = FuelSourceValve.Source as mockValve
-    const fuelSource = fuelSourceOutlet.Source as mockTank
+    const fuelSourceOutlet = FuelSourceValve.Source as MockValve
+    const fuelSource = fuelSourceOutlet.Source as MockTank
     expect(fuelSource.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
     fuelSource.Thick()
     steamSys.Thick()
@@ -185,8 +185,8 @@ describe('Fuel', () => {
     steamSys.Thick()
     expect(Boiler.HasFlame).toBeTruthy()
 
-    const fuelSourceOutlet = FuelSourceValve.Source as mockValve
-    const fuelSource = fuelSourceOutlet.Source as mockTank
+    const fuelSourceOutlet = FuelSourceValve.Source as MockValve
+    const fuelSource = fuelSourceOutlet.Source as MockTank
     expect(fuelSource.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
     fuelSource.Thick()
     FuelPump.Stop()
@@ -206,8 +206,8 @@ describe('Fuel', () => {
     steamSys.Thick()
     expect(Boiler.HasFlame).toBeTruthy()
 
-    const fuelSourceOutlet = FuelSourceValve.Source as mockValve
-    const fuelSource = fuelSourceOutlet.Source as mockTank
+    const fuelSourceOutlet = FuelSourceValve.Source as MockValve
+    const fuelSource = fuelSourceOutlet.Source as MockTank
     expect(fuelSource.RemoveThisStep).toBe(CstDsFuelSys.SteamBoiler.Consumption.Diesel)
     Boiler.Extinguishing()
     fuelSource.Thick()
@@ -332,7 +332,7 @@ describe('Steam condensor', () => {
     expect(SteamCondensor.HotCircuitComplete).toBeTruthy()
   })
   test('steam valve is closed = Condensor has no hot side', () => {
-    const { Boiler, MainSteamValve, SteamCondensor } = steamSys
+    const { Boiler, SteamCondensor } = steamSys
     const startTemp = CstSteamSys.Boiler.OperatingTemp
     Boiler.Temperature = startTemp
     Boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
@@ -344,7 +344,7 @@ describe('Steam condensor', () => {
     expect(SteamCondensor.HotCircuitComplete).toBeFalsy()
   })
   test('no cooling = loss steam = lower water level', () => {
-    const { Boiler, MainSteamValve, SteamCondensor } = steamSys
+    const { Boiler, MainSteamValve } = steamSys
     Boiler.WaterTank.Inside = CstSteamSys.Boiler.WaterVolume
     const startTemp = CstSteamSys.Boiler.OperatingTemp
     Boiler.Temperature = startTemp
@@ -378,4 +378,3 @@ describe('Steam condensor', () => {
     expect(Boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume)
   })
 })
-

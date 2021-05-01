@@ -1,16 +1,16 @@
 import AirSystem from '../../Systems/AirSystem'
 import { CstAirSys } from '../../Cst'
-import mockPowerBus from '../mocks/mockPowerBus'
-import mockCooler from '../mocks/mockCooler'
+import MockPowerBus from '../mocks/MockPowerBus'
+import MockCooler from '../mocks/MockCooler'
 
 let airSys: AirSystem
-const dummyMainBus = new mockPowerBus('dummy main bus')
+const dummyMainBus = new MockPowerBus('dummy main bus')
 dummyMainBus.Voltage = 440
 
-const dummyEmergencyBus = new mockPowerBus('dummy emergency bus')
+const dummyEmergencyBus = new MockPowerBus('dummy emergency bus')
 dummyEmergencyBus.Voltage = 440
 
-const dummyStartAirCooler = new mockCooler('dummy start air cooler')
+const dummyStartAirCooler = new MockCooler('dummy start air cooler')
 
 beforeEach(() => {
   airSys = new AirSystem(dummyStartAirCooler, dummyMainBus, dummyEmergencyBus)
@@ -58,6 +58,7 @@ describe('Emergency compressor', () => {
     expect(airSys.EmergencyReceiver.IntakeValve.Content).toBe(0)
     expect(airSys.EmergencyReceiver.Tank.Content).toBe(0)
   })
+  // eslint-disable-next-line max-len
   test('Open compressor outlet valve & running but closed intake valve = no receiver = open safety = not filling receiver', () => {
     airSys.EmergencyCompressor.Start()
     airSys.EmergencyCompressor.OutletValve.Open()
@@ -71,6 +72,7 @@ describe('Emergency compressor', () => {
     expect(airSys.EmergencyReceiver.IntakeValve.Content).toBe(0)
     expect(airSys.EmergencyReceiver.Tank.Content).toBe(0)
   })
+  // eslint-disable-next-line max-len
   test('open intake valve & running but closed compressor outlet valve = no receiver = open safety = not filling receiver', () => {
     airSys.EmergencyReceiver.IntakeValve.Open()
     airSys.EmergencyCompressor.Start()
@@ -116,7 +118,6 @@ describe('Emergency compressor', () => {
     expect(airSys.EmergencyCompressor.HasReceiver).toBeTruthy()
 
     expect(airSys.EmergencyReceiver.IntakeValve.Source.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
-
 
     expect(airSys.EmergencyReceiver.IntakeValve.Content).toBe(CstAirSys.EmergencyCompressor.AddStep)
     expect(airSys.EmergencyReceiver.Tank.AddThisStep).toBe(CstAirSys.EmergencyCompressor.AddStep)

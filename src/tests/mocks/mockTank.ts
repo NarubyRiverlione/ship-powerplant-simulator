@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
-import { iTank } from "../../Components/Tank"
+import { TankInterface } from '../../Components/Tank'
 
-export default class mockTank implements iTank {
+export default class MockTank implements TankInterface {
   Name: string
   Inside: number
   Volume: number
@@ -15,18 +15,19 @@ export default class mockTank implements iTank {
     this.Volume = Volume
     this.AddThisStep = 0.0
     this.RemoveThisStep = 0.0
-
   }
+
   Add() {
     this.Inside += this.AddThisStep
   }
+
   Remove() {
     this.Inside -= this.RemoveThisStep
     this.RemoveThisStep = 0
   }
-  CheckAlarmLevels() { }
 
   get Content() { return this.Inside }
+
   Thick = () => {
     this.Add()
     this.Remove()

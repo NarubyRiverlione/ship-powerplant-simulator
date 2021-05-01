@@ -1,17 +1,17 @@
 import HandPump from '../../Components/HandPump'
-import mockTank from '../mocks/mockTank'
-import mockValve from '../mocks/mockValve'
+import MockTank from '../mocks/MockTank'
+import MockValve from '../mocks/MockValve'
 
 let handPump: HandPump
 const CstPumpVolume = 10
 const sourceStartContent = 100
 
-let dummySourceTank: mockTank
-let dummySourceValve: mockValve
+let dummySourceTank: MockTank
+let dummySourceValve: MockValve
 
 beforeEach(() => {
-  dummySourceTank = new mockTank("dummy source", 100, sourceStartContent)
-  dummySourceValve = new mockValve("dummy source valve", dummySourceTank)
+  dummySourceTank = new MockTank('dummy source', 100, sourceStartContent)
+  dummySourceValve = new MockValve('dummy source valve', dummySourceTank)
   dummySourceValve.Open()
 
   handPump = new HandPump('Test handpump', CstPumpVolume, dummySourceValve)

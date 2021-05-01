@@ -1,28 +1,29 @@
+import {
+  CstAirSys, CstCoolantSys, CstDsFuelSys, CstLubSys, CstPowerSys, CstSteamSys,
+} from './Cst'
+import { Sim } from './Sim'
 
-import { CstAirSys, CstCoolantSys, CstDsFuelSys, CstLubSys, CstPowerSys, CstSteamSys } from "./Cst"
-import Simulator from "./Simulator"
-
-export const SetFuelTanksFull = (sim: Simulator) => {
+export const SetFuelTanksFull = (sim: Sim) => {
   const { DsFuelSys } = sim
   DsFuelSys.DsService.Tank.Inside = CstDsFuelSys.DsServiceTank.TankVolume
   DsFuelSys.DsService.OutletValve.Open()
   DsFuelSys.DsStorage.Tank.Inside = CstDsFuelSys.DsStorageTank.TankVolume
 }
-export const SetLubTanksFull = (sim: Simulator) => {
+export const SetLubTanksFull = (sim: Sim) => {
   const { LubSys } = sim
   LubSys.Storage.Tank.Inside = CstLubSys.StorageTank.TankVolume
   LubSys.Storage.OutletValve.Open()
 }
-export const SetEmergencyStartAir = (sim: Simulator) => {
+export const SetEmergencyStartAir = (sim: Sim) => {
   const { AirSys } = sim
   AirSys.EmergencyReceiver.Tank.Inside = CstAirSys.EmergencyReceiver.TankPressure
   AirSys.EmergencyReceiver.OutletValve.Open()
 }
-export const SetEmergencyPower = (sim: Simulator) => {
+export const SetEmergencyPower = (sim: Sim) => {
   const { PowerSys: { EmergencyGen } } = sim
   EmergencyGen.Start()
 }
-export const SetSeawaterCoolingAuxRunning = (sim: Simulator) => {
+export const SetSeawaterCoolingAuxRunning = (sim: Sim) => {
   const { CoolingSeaWaterSys } = sim
   const { SeaChestLowSuctionIntakeValve, AuxPump, OverboardDumpValve } = CoolingSeaWaterSys
   SetEmergencyPower(sim)
@@ -31,7 +32,7 @@ export const SetSeawaterCoolingAuxRunning = (sim: Simulator) => {
   sim.Thick()
   AuxPump.Start()
 }
-export const SetFreshwaterCooling = (sim: Simulator) => {
+export const SetFreshwaterCooling = (sim: Sim) => {
   const { CoolingFreshWaterSys: { FwExpandTank, FwPumpDsGen } } = sim
   SetEmergencyPower(sim)
   SetSeawaterCoolingAuxRunning(sim)
@@ -39,7 +40,7 @@ export const SetFreshwaterCooling = (sim: Simulator) => {
   FwPumpDsGen.Start()
   sim.Thick()
 }
-export const RunningDsGen1 = (sim: Simulator) => {
+export const RunningDsGen1 = (sim: Sim) => {
   SetFuelTanksFull(sim)
   SetLubTanksFull(sim)
   SetEmergencyStartAir(sim)
@@ -56,7 +57,7 @@ export const RunningDsGen1 = (sim: Simulator) => {
   DsGenBreaker1.Close()
   MainBreaker1.Close()
 }
-export const SeaWaterCoolingSupplyPump1Running = (sim: Simulator) => {
+export const SeaWaterCoolingSupplyPump1Running = (sim: Sim) => {
   RunningDsGen1(sim)
   sim.Thick()
   const { CoolingSeaWaterSys } = sim
@@ -65,11 +66,13 @@ export const SeaWaterCoolingSupplyPump1Running = (sim: Simulator) => {
   CoolingSeaWaterSys.AuxPump.Stop()
   // sim.Thick()
 }
-export const BoilerOperational = (sim: Simulator) => {
+export const BoilerOperational = (sim: Sim) => {
   SeaWaterCoolingSupplyPump1Running(sim)
   sim.Thick()
   const { SteamSys, DsFuelSys } = sim
-  const { FeedWaterSupply, FuelPump, FuelSourceValve, Boiler } = SteamSys
+  const {
+    FeedWaterSupply, FuelPump, FuelSourceValve, Boiler,
+  } = SteamSys
   const { FuelIntakeValve } = Boiler
   FeedWaterSupply.Tank.Inside = CstSteamSys.FeedWaterSupply.TankVolume
   Boiler.WaterTank.Inside = CstSteamSys.Boiler.MinWaterLvlForFlame
@@ -82,14 +85,14 @@ export const BoilerOperational = (sim: Simulator) => {
   Boiler.Temperature = CstSteamSys.Boiler.OperatingTemp
   Boiler.AutoFlame = true
 }
-export const BoilerDeliversSteam = (sim: Simulator) => {
+export const BoilerDeliversSteam = (sim: Sim) => {
   BoilerOperational(sim)
   sim.Thick()
   const { SteamSys } = sim
   const { MainSteamValve } = SteamSys
   MainSteamValve.Open()
 }
-export const DsFuelPurificationRunning = (sim: Simulator) => {
+export const DsFuelPurificationRunning = (sim: Sim) => {
   BoilerDeliversSteam(sim)
   const { DsFuelSys: { DsStorage, DsPurification, DsService } } = sim
   DsStorage.OutletValve.Open()

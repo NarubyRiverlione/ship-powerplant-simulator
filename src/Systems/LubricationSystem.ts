@@ -7,6 +7,7 @@ import AlarmSystem from './AlarmSystem'
 import { CstLubSys } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
 import CstTxt from '../CstTxt'
+
 const { LubSysTxt } = CstTxt
 
 /*
@@ -14,8 +15,8 @@ Shore Valve --> (intake valve) DsStorage (outlet valve)
 */
 export default class LubricationSystem {
   ShoreValve: Valve
-  Storage: TankWithValves
 
+  Storage: TankWithValves
 
   constructor(alarmSys: AlarmSystem) {
     makeObservable(this, { Thick: action })
@@ -34,7 +35,6 @@ export default class LubricationSystem {
   }
 
   Thick() {
-
     this.Storage.Thick()
   }
 }

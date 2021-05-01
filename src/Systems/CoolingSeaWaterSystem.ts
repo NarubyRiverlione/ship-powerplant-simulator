@@ -1,7 +1,6 @@
 import { makeAutoObservable } from 'mobx'
-import { CstCoolantSys, CstChanges } from '../Cst'
+import { CstCoolantSys } from '../Cst'
 import CstTxt from '../CstTxt'
-const { CoolantSysTxt } = CstTxt
 
 import Tank from '../Components/Tank'
 import Valve from '../Components/Valve'
@@ -9,11 +8,13 @@ import Pump from '../Components/Appliances/ElectricPump'
 import Cooler from '../Components/Cooler'
 import PowerBus from '../Components/PowerBus'
 
+const { CoolantSysTxt } = CstTxt
+
 /* eslint-disable max-len */
 /*
 ** Sea water cooling circuit **
 
-Sea chest high  - suction Valve ->- |  
+Sea chest high  - suction Valve ->- |
                                     | - Suction pump 1 (main bus) --|     |- Steam condensor                                    -->-|
                                     | - Suction pump 2 (main bus) --|==>==|- Fresh water cooler Start Air compressor             ->-|==>== over board dump valve
                                     | - Aux pump (emergency bus)  --|     |- Fresh water cooler Diesel generator 1 (aux capable) ->-|
@@ -21,24 +22,29 @@ Sea chest low  - suction valve ->-  |
 */
 /* eslint-enable max-len */
 
-
 export default class CoolingSeaWaterSystem {
   // Sea water cools the Fresh water coolers
   FwCoolerDsGen: Cooler
+
   FwCoolerStartAir: Cooler
+
   SteamCondensor: Cooler
+
   // Seawater intake chests
   SeaChestLowSuctionIntakeValve: Valve
+
   SeaChestHighSuctionIntakeValve: Valve
+
   // Seawater pumps
-  AuxPump: Pump       // aux can run on emergency bus
+  AuxPump: Pump // aux can run on emergency bus
+
   SuctionPump1: Pump
+
   SuctionPump2: Pump
 
   OverboardDumpValve: Valve
 
   SwAvailable: Tank // virtual tank that combines the possible outputs of AuxPump, SuctionPump 1 & 2
-
 
   constructor(mainBus = new PowerBus('dummy mainBus'), emergencyBus = new PowerBus('dummy emergency power bus')) {
     this.SwAvailable = new Tank('virtual tank that combines the possible outputs of AuxPump, SuctionPump 1 & 2', 1e6, 0)
@@ -69,7 +75,8 @@ export default class CoolingSeaWaterSystem {
   }
 
   CheckCoolCircuit() {
-    return (this.SeaChestHighSuctionIntakeValve.isOpen || this.SeaChestLowSuctionIntakeValve.isOpen) && this.OverboardDumpValve.isOpen
+    return (this.SeaChestHighSuctionIntakeValve.isOpen || this.SeaChestLowSuctionIntakeValve.isOpen)
+      && this.OverboardDumpValve.isOpen
   }
 
   Thick() {
@@ -91,15 +98,13 @@ export default class CoolingSeaWaterSystem {
 
     this.OverboardDumpValve.Source = this.SwAvailable
 
+    this.FwCoolerDsGen.CoolCircuitComplete = this.CheckCoolCircuit()
+      && (this.AuxPump.isRunning || this.SuctionPump1.isRunning || this.SuctionPump2.isRunning)
 
-    this.FwCoolerDsGen.CoolCircuitComplete = this.CheckCoolCircuit() &&
-      (this.AuxPump.isRunning || this.SuctionPump1.isRunning || this.SuctionPump2.isRunning)
+    this.FwCoolerStartAir.CoolCircuitComplete = this.CheckCoolCircuit()
+      && (this.SuctionPump1.isRunning || this.SuctionPump2.isRunning)
 
-    this.FwCoolerStartAir.CoolCircuitComplete = this.CheckCoolCircuit() &&
-      (this.SuctionPump1.isRunning || this.SuctionPump2.isRunning)
-
-    this.SteamCondensor.CoolCircuitComplete = this.CheckCoolCircuit() &&
-      (this.SuctionPump1.isRunning || this.SuctionPump2.isRunning)
-
+    this.SteamCondensor.CoolCircuitComplete = this.CheckCoolCircuit()
+      && (this.SuctionPump1.isRunning || this.SuctionPump2.isRunning)
   }
 }

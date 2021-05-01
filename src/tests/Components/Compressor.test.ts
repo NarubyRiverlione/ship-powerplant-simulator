@@ -1,11 +1,11 @@
-import mockPowerBus from '../mocks/mockPowerBus'
+import MockPowerBus from '../mocks/MockPowerBus'
 import Compressor from '../../Components/Appliances/Compressor'
 
 let comp: Compressor
 const ratedFor = 13568
 
 beforeEach(() => {
-  const testBus = new mockPowerBus('test bus')
+  const testBus = new MockPowerBus('test bus')
   testBus.Voltage = ratedFor
 
   comp = new Compressor('test', testBus, ratedFor)

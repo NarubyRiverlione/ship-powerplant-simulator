@@ -1,16 +1,15 @@
-import mockPowerBus from '../mocks/mockPowerBus'
+import MockPowerBus from '../mocks/MockPowerBus'
 import { CstCoolantSys, CstChanges } from '../../Cst'
 import CoolingFreshWaterSystem from '../../Systems/CoolingFreshWaterSystem'
-import mockCooler from '../mocks/mockCooler'
+import MockCooler from '../mocks/MockCooler'
 
-const dummyEmergencyBus = new mockPowerBus('dummy emergency bus')
+const dummyEmergencyBus = new MockPowerBus('dummy emergency bus')
 dummyEmergencyBus.Voltage = 440
-const dummyMainBus = new mockPowerBus('dummy main bus')
+const dummyMainBus = new MockPowerBus('dummy main bus')
 dummyMainBus.Voltage = 440
 
-const dummyFwCoolerDsGen = new mockCooler('dummy FW Ds Gen cooler')
-const dummyFwCoolerStartAir = new mockCooler('dummy FW Start air cooler')
-
+const dummyFwCoolerDsGen = new MockCooler('dummy FW Ds Gen cooler')
+const dummyFwCoolerStartAir = new MockCooler('dummy FW Start air cooler')
 
 let coolingFreshSys: CoolingFreshWaterSystem
 beforeEach(() => {
@@ -21,7 +20,6 @@ beforeEach(() => {
     dummyFwCoolerDsGen, dummyFwCoolerStartAir,
     dummyMainBus, dummyEmergencyBus,
   )
-
 })
 
 describe('Init', () => {
@@ -48,7 +46,6 @@ describe('Init', () => {
   test('Fw pump start air compressor cooler not running', () => {
     expect(coolingFreshSys.FwPumpStartAir.isRunning).toBeFalsy()
   })
-
 })
 
 describe('Fresh water expand tank', () => {
@@ -87,7 +84,9 @@ describe('Fresh water expand tank', () => {
 
 describe('Diesel gen lubrication cooler', () => {
   test('Fresh water available & FW cooler dsgen is cooling & pump running => lub cooler is also cooling', () => {
-    const { FwPumpDsGen, DsGenLubCooler, FwCoolerDsGen, FwExpandTank } = coolingFreshSys
+    const {
+      FwPumpDsGen, DsGenLubCooler, FwCoolerDsGen, FwExpandTank,
+    } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling + 1
     FwExpandTank.Inside = FwContent
     DsGenLubCooler.HotCircuitComplete = true
@@ -99,10 +98,11 @@ describe('Diesel gen lubrication cooler', () => {
 
     expect(DsGenLubCooler.CoolCircuitComplete).toBeTruthy()
     expect(DsGenLubCooler.IsCooling).toBeTruthy()
-
   })
   test('lub cooler is cooling but pump stopped ==> stop cooling', () => {
-    const { FwPumpDsGen, DsGenLubCooler, FwCoolerDsGen, FwExpandTank } = coolingFreshSys
+    const {
+      FwPumpDsGen, DsGenLubCooler, FwCoolerDsGen, FwExpandTank,
+    } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling + 1
     FwExpandTank.Inside = FwContent
     DsGenLubCooler.HotCircuitComplete = true
@@ -119,7 +119,8 @@ describe('Diesel gen lubrication cooler', () => {
     expect(DsGenLubCooler.CoolCircuitComplete).toBeFalsy()
   })
   test('FW dsgen cooler is not cooling => lub cooler is not cooling', () => {
-    const { FwPumpDsGen, FwCoolerDsGen, DsGenLubCooler, FwExpandTank
+    const {
+      FwPumpDsGen, FwCoolerDsGen, DsGenLubCooler, FwExpandTank,
     } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling + 1
     FwExpandTank.Inside = FwContent
@@ -136,7 +137,8 @@ describe('Diesel gen lubrication cooler', () => {
     expect(DsGenLubCooler.IsCooling).toBeFalsy()
   })
   test('not enough Fresh water ==> lub cooler is not cooling', () => {
-    const { FwPumpDsGen, FwCoolerDsGen, DsGenLubCooler, FwExpandTank
+    const {
+      FwPumpDsGen, FwCoolerDsGen, DsGenLubCooler, FwExpandTank,
     } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling - 1
     FwExpandTank.Inside = FwContent
@@ -150,7 +152,8 @@ describe('Diesel gen lubrication cooler', () => {
     expect(DsGenLubCooler.IsCooling).toBeFalsy()
   })
   test('enough Fresh water but pump not runing ==> lub cooler has not cooling', () => {
-    const { FwPumpDsGen, FwCoolerDsGen, DsGenLubCooler, FwExpandTank
+    const {
+      FwPumpDsGen, FwCoolerDsGen, DsGenLubCooler, FwExpandTank,
     } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling - 1
     FwExpandTank.Inside = FwContent
@@ -167,7 +170,9 @@ describe('Diesel gen lubrication cooler', () => {
 
 describe('Start air cooler', () => {
   test('Fresh water available & FW cooler start air  is cooling => start air cooler is cooling', () => {
-    const { FwPumpStartAir, StartAirCooler, FwCoolerStartAir, FwExpandTank } = coolingFreshSys
+    const {
+      FwPumpStartAir, StartAirCooler, FwCoolerStartAir, FwExpandTank,
+    } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling + 1
     FwExpandTank.Inside = FwContent
     StartAirCooler.HotCircuitComplete = true
@@ -178,7 +183,9 @@ describe('Start air cooler', () => {
     expect(StartAirCooler.IsCooling).toBeTruthy()
   })
   test('start air cooler is cooling but pump stopped ==> stop cooling', () => {
-    const { FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank } = coolingFreshSys
+    const {
+      FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank,
+    } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling + 1
     FwExpandTank.Inside = FwContent
     StartAirCooler.HotCircuitComplete = true
@@ -195,7 +202,8 @@ describe('Start air cooler', () => {
     expect(StartAirCooler.CoolCircuitComplete).toBeFalsy()
   })
   test('FW start air cooler is not cooling => start air cooler is not cooling', () => {
-    const { FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank
+    const {
+      FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank,
     } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling + 1
     FwExpandTank.Inside = FwContent
@@ -209,7 +217,8 @@ describe('Start air cooler', () => {
     expect(StartAirCooler.IsCooling).toBeFalsy()
   })
   test('not enough Fresh water ==> start air cooler is not cooling', () => {
-    const { FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank
+    const {
+      FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank,
     } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling - 1
     FwExpandTank.Inside = FwContent
@@ -221,7 +230,8 @@ describe('Start air cooler', () => {
     expect(StartAirCooler.IsCooling).toBeFalsy()
   })
   test('enough Fresh water but pump not runing ==> start air cooler is not cooling', () => {
-    const { FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank
+    const {
+      FwPumpStartAir, FwCoolerStartAir, StartAirCooler, FwExpandTank,
     } = coolingFreshSys
     const FwContent = CstCoolantSys.FwExpandTank.MinForCooling - 1
     FwExpandTank.Inside = FwContent

@@ -1,4 +1,4 @@
-import Valve, { iValve } from './Valve'
+import Valve, { ValveInterface } from './Valve'
 import Tank from './Tank'
 import { CstChanges } from '../Cst'
 import Item from './Item'
@@ -10,8 +10,7 @@ export default class TankWithValves implements Item {
   DrainValve: Valve
   Tank: Tank
 
-
-  constructor(tankName: string, volume: number, startContent: number, sourceValve: iValve) {
+  constructor(tankName: string, volume: number, startContent: number, sourceValve: ValveInterface) {
     this.Name = tankName
     this.IntakeValve = new Valve(`${tankName} - intake valve`, sourceValve)
     this.Tank = new Tank(tankName, volume, startContent)
@@ -20,7 +19,6 @@ export default class TankWithValves implements Item {
       // how many step it takes to drain a tank (drain valve volume = tankvolume / drainratio)
       this.Tank.Volume / CstChanges.DrainRatio)
   }
-
 
   get Content() { return this.Tank.Content }
 

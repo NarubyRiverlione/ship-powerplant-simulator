@@ -1,10 +1,9 @@
-import Valve, { iValve } from './Valve'
+import Valve, { ValveInterface } from './Valve'
 import TankWithValves from './TankWithValves'
 import { CstChanges, CstSteamSys } from '../Cst'
-// import { computed, makeObservable } from 'mobx'
 
 export default class HeatedTankWithValves extends TankWithValves {
-  SteamIntakeValve: iValve
+  SteamIntakeValve: ValveInterface
   Temperature: number
   SetpointTemp: number
   MinSteam: number
@@ -12,7 +11,7 @@ export default class HeatedTankWithValves extends TankWithValves {
   OutletVolume: number
 
   constructor(tankName: string, volume: number, startContent: number,
-    sourceValve: iValve, mainSteamValve: iValve, outletVolume: number) {
+    sourceValve: ValveInterface, mainSteamValve: ValveInterface, outletVolume: number) {
     super(tankName, volume, startContent, sourceValve)
     this.SteamIntakeValve = new Valve(`${tankName} - Steam intake valve`, mainSteamValve)
     this.Temperature = 25
@@ -23,12 +22,14 @@ export default class HeatedTankWithValves extends TankWithValves {
   }
 
   get HasSteam() { return this.SteamIntakeValve.Content >= this.MinSteam }
+
   get IsAtSetpoint() { return this.Temperature === this.SetpointTemp }
 
   Thick() {
     super.Thick()
     // steam heats up until setpoint is reached
-    if (this.HasSteam && this.Content !== 0 && this.Temperature < this.SetpointTemp) { this.Temperature += this.HeatingStep }
+    if (this.HasSteam && this.Content !== 0
+      && this.Temperature < this.SetpointTemp) { this.Temperature += this.HeatingStep }
     // without steam cool down until global start temp
     if (!this.HasSteam && this.Temperature > CstChanges.StartTemp) { this.Temperature -= this.HeatingStep }
 
@@ -36,5 +37,4 @@ export default class HeatedTankWithValves extends TankWithValves {
     this.OutletValve.Volume = !this.IsAtSetpoint ? 0 : this.OutletVolume
     if (!this.IsAtSetpoint && this.OutletValve.isOpen) this.OutletValve.Close()
   }
-
 }

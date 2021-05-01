@@ -1,14 +1,14 @@
 import Generator from '../../Components/Generator'
-import mockTank from '../mocks/mockTank'
+import MockTank from '../mocks/MockTank'
 
 let generator: Generator
 const testRate = 12345
 const startFuelContent = 800
 const consumption = 50
-let testFuelProvider: mockTank
+let testFuelProvider: MockTank
 
 beforeEach(() => {
-  testFuelProvider = new mockTank('test tank', 1000, startFuelContent)
+  testFuelProvider = new MockTank('test tank', 1000, startFuelContent)
   generator = new Generator('test generator', testRate, testFuelProvider)
   generator.FuelConsumption = consumption
 })
@@ -27,7 +27,7 @@ describe('Generator init', () => {
 describe('Generator start/stop', () => {
   test('Cannot start without fuel provider', () => {
     generator.HasLubrication = true; generator.HasCooling = true
-    generator.FuelProvider = new mockTank('empty tank', 100, 0)
+    generator.FuelProvider = new MockTank('empty tank', 100, 0)
     generator.Thick()
     expect(generator.HasFuel).toBeFalsy()
     generator.Start()
@@ -128,7 +128,6 @@ describe('Fuel consumption', () => {
     generator.Thick()
     testFuelProvider.Thick()
     expect(generator.FuelProvider.Content).toBe(startFuelContent - consumption * 2)
-
   })
   test('stop after running = no fuel consumption', () => {
     generator.HasFuel = true

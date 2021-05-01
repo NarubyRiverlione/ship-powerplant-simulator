@@ -1,13 +1,13 @@
-import { CstPowerSys } from '../Cst'
 import { makeAutoObservable } from 'mobx'
-import Item from "./Item"
+import { CstPowerSys } from '../Cst'
+import Item from './Item'
 
-export interface iPowerBus extends Item {
+export interface PowerBusInterface extends Item {
   Voltage: number
   Providers: number
 }
 
-export default class PowerBus implements iPowerBus {
+export default class PowerBus implements PowerBusInterface {
   Name: string
   Voltage: number
   Providers: number
@@ -18,7 +18,6 @@ export default class PowerBus implements iPowerBus {
     this.Providers = 0
     makeAutoObservable(this)
   }
-
 
   get Content() { return this.Voltage }
 

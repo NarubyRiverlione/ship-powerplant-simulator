@@ -1,13 +1,14 @@
 import { makeAutoObservable } from 'mobx'
 import { CstCoolantSys, CstChanges } from '../Cst'
 import CstTxt from '../CstTxt'
-const { CoolantSysTxt } = CstTxt
 
 import Tank from '../Components/Tank'
 import Valve from '../Components/Valve'
 import Pump from '../Components/Appliances/ElectricPump'
 import Cooler from '../Components/Cooler'
 import PowerBus from '../Components/PowerBus'
+
+const { CoolantSysTxt } = CstTxt
 
 /* eslint-disable max-len */
 /*
@@ -20,11 +21,10 @@ Pump FW Air cooler (Main bus)         |        Pump Diesel generator cooler (Eme
   |                                   |         |                                           |
   |-<- Fresh water Start Air cooler-<-|         |-<- Fresh water Diesel generator cooler -<-|
               ||                                            ||
-              Sea water cooling Systems                     Sea water cooling system       
+              Sea water cooling Systems                     Sea water cooling system
 
 */
 /* eslint-enable max-len */
-
 
 export default class CoolingFreshWaterSystem {
   // Sea water cools the Fresh water coolers
@@ -58,7 +58,8 @@ export default class CoolingFreshWaterSystem {
     this.FwIntakeValve = new Valve(CoolantSysTxt.FwIntakeValve, FwMakeUp)
     this.FwIntakeValve.Volume = CstCoolantSys.FwExpandTank.IntakeValveVolume
 
-    this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve, this.FwExpandTank, this.FwExpandTank.Volume / CstChanges.DrainRatio)
+    this.FwDrainValve = new Valve(CoolantSysTxt.FwDrainValve, this.FwExpandTank,
+      this.FwExpandTank.Volume / CstChanges.DrainRatio)
 
     // #endregion
     // DsGen Lubrication cooler (secundaire FW circuit)
@@ -72,10 +73,10 @@ export default class CoolingFreshWaterSystem {
     this.FwPumpDsGen = new Pump(CoolantSysTxt.FwPumpDsGen, emergencyBus, CstCoolantSys.FwPumpDsGen)
 
     //  pump between FW start air cooler and Start air cooler via main bus
-    this.FwPumpStartAir = new Pump(CoolantSysTxt.FwCoolerStartAir, mainBus, CstCoolantSys.FwPumpStartAir
-    )
+    this.FwPumpStartAir = new Pump(CoolantSysTxt.FwCoolerStartAir, mainBus, CstCoolantSys.FwPumpStartAir)
     makeAutoObservable(this)
   }
+
   get FwEnoughForCooling() { return this.FwExpandTank.Content > CstCoolantSys.FwExpandTank.MinForCooling }
 
   Thick() {

@@ -6,14 +6,14 @@ import Generator from '../Components/Generator'
 import DieselGenerator from '../Components/DieselGenerator'
 import Breaker from '../Components/Breaker'
 import PowerBus from '../Components/PowerBus'
-import { iValve } from '../Components/Valve'
+import { ValveInterface } from '../Components/Valve'
 import Cooler from '../Components/Cooler'
 import Tank from '../Components/Tank'
 
 const { PowerTxt } = CstTxt
 /*
 ** Switchboard **
-Diesel generator -->  Breaker DsGen 
+Diesel generator -->  Breaker DsGen
                                   |         ShoreBreaker <-- Shore
                                   |                |       |-<--- Emergency generator
 ==== PROVIDERS  ============================================
@@ -40,11 +40,10 @@ export default class PowerSystem {
   DsGen: DieselGenerator
   DsGenBreaker: Breaker
 
-  constructor(DsGen1FuelValve: iValve,
-    DsGenLubValve: iValve,
-    DsGenAirValve: iValve,
+  constructor(DsGen1FuelValve: ValveInterface,
+    DsGenLubValve: ValveInterface,
+    DsGenAirValve: ValveInterface,
     LubCooler: Cooler) {
-
     this.Providers = 0 // sum of all providers, can be connected to main busses
     //  Shore power
     // TODO use case rated for in breaker?
@@ -64,7 +63,7 @@ export default class PowerSystem {
     this.EmergencyGen.HasCooling = true; this.EmergencyGen.HasLubrication = true
     this.EmergencyGen.HasFuel = true
 
-    // Diesel Generator 
+    // Diesel Generator
     this.DsGen = new DieselGenerator(PowerTxt.DieselGen,
       CstPowerSys.DsGen.RatedFor, DsGen1FuelValve, DsGenLubValve, DsGenAirValve, LubCooler)
     this.DsGen.FuelConsumption = CstDsFuelSys.DieselGenerator.Consumption.Diesel
@@ -92,7 +91,7 @@ export default class PowerSystem {
     if (this.DsGen.isRunning && !this.DsGenBreaker.isOpen && this.EmergencyGen.isRunning) this.EmergencyGen.Stop()
     // DsGen is stopped and generator breaker is closed --> trip generator breaker
     if (!this.DsGen.isRunning && !this.DsGenBreaker.isOpen) this.DsGenBreaker.Open()
-    // DsGen is stopped, without Shore power and main breaker is closed --> trip main breaker 
+    // DsGen is stopped, without Shore power and main breaker is closed --> trip main breaker
     if (!this.DsGen.isRunning && this.ShoreBreaker.isOpen && !this.MainBreaker1.isOpen) this.MainBreaker1.Open()
 
     // Check generators

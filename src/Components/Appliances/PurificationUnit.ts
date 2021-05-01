@@ -1,10 +1,10 @@
-import Appliance from "./Appliance";
-import PowerBus from "../PowerBus";
-import Valve, { iValve } from "../Valve";
-import Tank from "../Tank";
-import { CstDsFuelSys } from "../../Cst";
+import { computed, makeObservable } from 'mobx'
+import Appliance from './Appliance'
+import PowerBus from '../PowerBus'
+import Valve, { ValveInterface } from '../Valve'
+import Tank from '../Tank'
+import { CstDsFuelSys } from '../../Cst'
 import CstTxt from '../../CstTxt'
-import { computed, makeObservable, observable } from "mobx";
 
 const { PurificationTxt } = CstTxt
 
@@ -12,13 +12,12 @@ const { PurificationTxt } = CstTxt
 // as the Steam Sys is later instantiate in Simulator than the FuelSys
 const dummySteamMainValve = new Valve('dummy main steam valve', new Tank('dummy steam source', 0, 0))
 
-
 export default class PurificationUnit extends Appliance {
-  IntakeValve: iValve
-  SteamIntakeValve: iValve
+  IntakeValve: ValveInterface
 
+  SteamIntakeValve: ValveInterface
 
-  constructor(name: string, rate: number, sourceValve: iValve,
+  constructor(name: string, rate: number, sourceValve: ValveInterface,
     powerbus = new PowerBus('dummy powerbus')) {
     super(name, powerbus, rate)
 
@@ -26,9 +25,10 @@ export default class PurificationUnit extends Appliance {
     this.SteamIntakeValve = new Valve(PurificationTxt.SteamIntakeValve, dummySteamMainValve)
 
     makeObservable(this, {
-      HasSteam: computed
+      HasSteam: computed,
     })
   }
+
   get HasSteam() { return this.SteamIntakeValve.Content >= CstDsFuelSys.Purification.SteamNeeded }
 
   Thick() {
@@ -38,5 +38,4 @@ export default class PurificationUnit extends Appliance {
     this.isRunning = this.isRunning && this.HasSteam
     super.Thick()
   }
-
 }

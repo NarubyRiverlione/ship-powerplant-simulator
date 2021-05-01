@@ -1,14 +1,14 @@
 import { makeObservable, computed, observable } from 'mobx'
 import Item from './Item'
-import { iTank } from './Tank'
+import { TankInterface } from './Tank'
 import Valve from './Valve'
 
 export default class MultiInputs extends Valve {
   Inputs: Array<Item>
 
-  constructor(name: string, sourceTank: iTank) {
+  constructor(name: string, sourceTank: TankInterface) {
     super(name, sourceTank)
-    this.Inputs = new Array()
+    this.Inputs = []
     this.Open()
 
     makeObservable(this, {
@@ -20,6 +20,7 @@ export default class MultiInputs extends Valve {
   get AddInputs() {
     return this.Inputs.reduce((prev, item) => prev + item.Content, 0)
   }
+
   get Content() {
     return this.AddInputs
   }

@@ -1,19 +1,18 @@
 import { action, makeObservable } from 'mobx'
 import Tank from './Tank'
-import { iValve } from './Valve'
+import { ValveInterface } from './Valve'
 
 export default class HandPump extends Tank {
   isCranked: boolean
-  SourceValve: iValve
+  SourceValve: ValveInterface
 
-
-  constructor(name: string, volume: number, sourceValve: iValve) {
+  constructor(name: string, volume: number, sourceValve: ValveInterface) {
     super(name, volume)
     this.isCranked = false
     this.SourceValve = sourceValve
 
     makeObservable(this, {
-      Crank: action
+      Crank: action,
     })
   }
 
@@ -33,12 +32,9 @@ export default class HandPump extends Tank {
       sourceTank.Inside -= this.AddThisStep
 
       this.isCranked = false
-    }
-    else {
+    } else {
       // clear content
       this.Inside = 0
-      return
     }
   }
 }
-

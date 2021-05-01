@@ -1,10 +1,10 @@
-import mockPowerBus from '../mocks/mockPowerBus'
+import MockPowerBus from '../mocks/MockPowerBus'
 import { CstCoolantSys } from '../../Cst'
 import CoolingSeaSystem from '../../Systems/CoolingSeaWaterSystem'
 
-const dummyEmergencyBus = new mockPowerBus('dummy emergency bus')
+const dummyEmergencyBus = new MockPowerBus('dummy emergency bus')
 dummyEmergencyBus.Voltage = 440
-const dummyMainBus = new mockPowerBus('dummy main bus')
+const dummyMainBus = new MockPowerBus('dummy main bus')
 dummyMainBus.Voltage = 440
 
 let coolingSeaSys: CoolingSeaSystem
@@ -50,7 +50,6 @@ describe('Init', () => {
     const { FwCoolerDsGen } = coolingSeaSys
     expect(FwCoolerDsGen.IsCooling).toBeFalsy()
   })
-
 })
 
 describe('Sea chests', () => {
@@ -130,7 +129,9 @@ describe('Over board valve', () => {
     expect(OverboardDumpValve.Content).toBe(0)
   })
   test('over board vale open and aux pump running = valve has  content', () => {
-    const { OverboardDumpValve, AuxPump, SeaChestLowSuctionIntakeValve, FwCoolerDsGen } = coolingSeaSys
+    const {
+      OverboardDumpValve, AuxPump, SeaChestLowSuctionIntakeValve, FwCoolerDsGen,
+    } = coolingSeaSys
     OverboardDumpValve.Open()
     SeaChestLowSuctionIntakeValve.Open()
     coolingSeaSys.Thick()
@@ -143,7 +144,7 @@ describe('Over board valve', () => {
   })
   test('Aux pump running, low sea suction valve open but over board valve is closed = not cooling', () => {
     const {
-      AuxPump, FwCoolerDsGen: FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor
+      AuxPump, FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor,
     } = coolingSeaSys
 
     coolingSeaSys.SeaChestLowSuctionIntakeValve.Open()
@@ -159,7 +160,7 @@ describe('Over board valve', () => {
   })
   test('Had cooling via high sea chest & SuctionPump1 but now closing overboard valve = stop cooling', () => {
     const {
-      SuctionPump1, FwCoolerDsGen: FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor
+      SuctionPump1, FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor,
     } = coolingSeaSys
 
     coolingSeaSys.SeaChestLowSuctionIntakeValve.Open()
@@ -176,7 +177,7 @@ describe('Over board valve', () => {
 describe('Aux pump', () => {
   test('Aux pump providing cooling for FW dsgen, not for Start Air nor Steam Condensor', () => {
     const {
-      AuxPump, FwCoolerDsGen: FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor
+      AuxPump, FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor,
     } = coolingSeaSys
     FwCoolerDsGen.HotCircuitComplete = true
     FwCoolerStartAir.HotCircuitComplete = true
@@ -201,7 +202,7 @@ describe('Aux pump', () => {
 describe('Suction pumps ', () => {
   test('Suction pump 1 providing cooling for all coolers', () => {
     const {
-      SuctionPump1, FwCoolerDsGen: FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor
+      SuctionPump1, FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor,
     } = coolingSeaSys
     FwCoolerDsGen.HotCircuitComplete = true
     FwCoolerStartAir.HotCircuitComplete = true
@@ -220,7 +221,7 @@ describe('Suction pumps ', () => {
   })
   test('Suction pump 2 providing cooling for all coolers', () => {
     const {
-      SuctionPump2, FwCoolerDsGen: FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor
+      SuctionPump2, FwCoolerDsGen, FwCoolerStartAir, OverboardDumpValve, SteamCondensor,
     } = coolingSeaSys
     FwCoolerDsGen.HotCircuitComplete = true
     FwCoolerStartAir.HotCircuitComplete = true
@@ -238,4 +239,3 @@ describe('Suction pumps ', () => {
     expect(SteamCondensor.IsCooling).toBeTruthy()
   })
 })
-

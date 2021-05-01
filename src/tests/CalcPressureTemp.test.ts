@@ -1,4 +1,4 @@
-import CalcPressureViaTemp from '../../src/CalcPressureTemp'
+import CalcPressureViaTemp from '../CalcPressureTemp'
 
 describe('Calculate water pressure at given temperature', () => {
   test('0°C = no pressure', () => {

@@ -1,16 +1,19 @@
-import { action, makeAutoObservable, makeObservable, observable } from 'mobx'
+import {
+  action, makeObservable, observable,
+} from 'mobx'
 import AlarmSystem from '../Systems/AlarmSystem'
-import Item from "./Item"
+import Item from './Item'
 
-export interface iTank extends Item {
+export interface TankInterface extends Item {
   Name: string
   Inside: number
   Volume: number
   AddThisStep: number
   RemoveThisStep: number
+  Thick: () => void
 }
 
-export default class Tank implements iTank {
+export default class Tank implements TankInterface {
   readonly Name: string
   Inside: number
   readonly Volume: number
@@ -21,7 +24,6 @@ export default class Tank implements iTank {
   LowLevelAlarmCode: number
   LowLevelAlarm: number
   EmptyAlarmCode: number
-
 
   constructor(Name: string, Volume: number, StartContent = 0.0) {
     this.Name = Name
@@ -37,7 +39,6 @@ export default class Tank implements iTank {
     this.LowLevelAlarm = 0
     this.EmptyAlarmCode = 0
 
-
     // Tank is Super class for Handpump and can't use makeAutoObservable
     makeObservable(this, {
       Inside: observable,
@@ -47,9 +48,10 @@ export default class Tank implements iTank {
       RemoveThisStep: observable,
       Add: action,
       Remove: action,
-      Thick: action
+      Thick: action,
     })
   }
+
   get Content() {
     return this.Inside
   }
@@ -73,7 +75,7 @@ export default class Tank implements iTank {
       this.Inside = 0.0
     }
     // save amount thats be remove als readout consumption
-    // reset RemoveThisStep so each step multiple systems can add there consumption 
+    // reset RemoveThisStep so each step multiple systems can add there consumption
     this.RemoveThisStep = 0
   }
 
@@ -113,7 +115,6 @@ export default class Tank implements iTank {
     /* istanbul ignore if  */
     if (this.RemoveThisStep < 0) {
       console.warn(`Tank:${this.Name} had a negative RemoveThisStep :${this.RemoveThisStep}`)
-      debugger
     }
     /* istanbul ignore if  */
     if (this.RemoveThisStep === undefined || Number.isNaN(this.RemoveThisStep)) {

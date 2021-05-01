@@ -1,5 +1,4 @@
-
-export interface iAlarmSys {
+export interface AlarmSysInterface {
   cbAlarmAdded: (addedAlarmCode: number) => void
   cbAlarmRemoved: (addedAlarmCode: number) => void
   AlarmList: Set<number>
@@ -8,15 +7,17 @@ export interface iAlarmSys {
   AlarmExist: (code: number) => boolean
 }
 
-export default class AlarmSystem implements iAlarmSys {
+export default class AlarmSystem implements AlarmSysInterface {
   cbAlarmAdded: (addedAlarmCode: number) => void
+
   cbAlarmRemoved: (addedAlarmCode: number) => void
+
   AlarmList: Set<number>
 
   constructor() {
     this.AlarmList = new Set()
-    this.cbAlarmAdded = (addedAlarmCode: number) => { }
-    this.cbAlarmRemoved = (removedAlarmCode: number) => { }
+    this.cbAlarmAdded = (addedAlarmCode: number): void => { }
+    this.cbAlarmRemoved = (removedAlarmCode: number): void => { }
   }
 
   AddAlarm(alarmCode: number) {

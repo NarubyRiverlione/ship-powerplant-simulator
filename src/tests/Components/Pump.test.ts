@@ -1,8 +1,8 @@
 import Pump from '../../Components/Appliances/ElectricPump'
-import mockPowerBus from '../mocks/mockPowerBus'
+import MockPowerBus from '../mocks/MockPowerBus'
 
 const ratedFor = 6916
-const testBus = new mockPowerBus('dummy bus')
+const testBus = new MockPowerBus('dummy bus')
 let pump: Pump
 
 beforeEach(() => {
@@ -15,7 +15,6 @@ describe('Init', () => {
     expect(pump.RatedFor).toBe(ratedFor)
   })
   test('no output', () => {
-
     expect(pump.Output).toBe(0)
     expect(pump.Content).toBe(0)
   })

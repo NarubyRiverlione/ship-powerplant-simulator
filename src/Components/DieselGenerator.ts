@@ -1,30 +1,31 @@
 import {
-  makeObservable, action, computed
+  makeObservable, computed,
 } from 'mobx'
 import Generator from './Generator'
-import Valve, { iValve } from './Valve'
+import Valve, { ValveInterface } from './Valve'
 import Cooler from './Cooler'
-import Tank, { iTank } from './Tank'
+import Tank, { TankInterface } from './Tank'
 
 import {
-  CstAirSys, CstPowerSys, CstLubSys
+  CstAirSys, CstPowerSys, CstLubSys,
 } from '../Cst'
 import CstTxt from '../CstTxt'
+
 const { DieselGeneratorTxt } = CstTxt
 
 export default class DieselGenerator extends Generator {
-  FuelIntakeValve: iValve
-  LubIntakeValve: iValve
+  FuelIntakeValve: ValveInterface
+  LubIntakeValve: ValveInterface
   LubSlump: Tank
-  LubProvider: iTank
-  AirIntakeValve: iValve
-  AirProvider: iTank
+  LubProvider: TankInterface
+  AirIntakeValve: ValveInterface
+  AirProvider: TankInterface
   LubCooler: Cooler
 
   constructor(name: string, rate: number,
-    dieselValve: iValve,
-    lubValve: iValve,
-    airValve: iValve,
+    dieselValve: ValveInterface,
+    lubValve: ValveInterface,
+    airValve: ValveInterface,
     lubCooler: Cooler) {
     super(name, rate, dieselValve.Source as Tank)
     this.FuelIntakeValve = new Valve(`${name} ${DieselGeneratorTxt.FuelIntakeValve}`, dieselValve)
@@ -41,19 +42,20 @@ export default class DieselGenerator extends Generator {
     this.LubCooler = lubCooler
 
     makeObservable(this, {
-      CheckAir: computed
+      CheckAir: computed,
     })
   }
-
 
   CheckFuel() {
     this.HasFuel = this.FuelIntakeValve.Content !== 0
   }
+
   CheckLubrication() {
     this.HasLubrication = this.LubSlump.Content >= CstPowerSys.DsGen.Slump.MinForLubrication
   }
+
   CheckCooling() {
-    // lub cooler only works 
+    // lub cooler only works
     // with enough lubrication (hot side Ok)
     // and fresh water cooling (cool side Ok)
     this.LubCooler.HotCircuitComplete = this.HasLubrication
@@ -61,6 +63,7 @@ export default class DieselGenerator extends Generator {
     // generator has cooling of lub cooler is cooling
     this.HasCooling = this.LubCooler.IsCooling
   }
+
   get CheckAir() {
     return this.AirIntakeValve.Content - CstAirSys.DieselGenerator.StarAirConsumption >= 0
   }

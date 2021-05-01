@@ -1,14 +1,14 @@
 import { CstHfFuelSys, CstPowerSys, CstSteamSys } from '../../Cst'
 import HeavyFuelSystem from '../../Systems/HeavyFuelSystem'
-import mockPowerBus from '../mocks/mockPowerBus'
-import mockTank from '../mocks/mockTank'
-import mockValve from '../mocks/mockValve'
+import MockPowerBus from '../mocks/MockPowerBus'
+import MockTank from '../mocks/MockTank'
+import MockValve from '../mocks/MockValve'
 
 let HfSys: HeavyFuelSystem
 
-const dummySteamSource = new mockTank('dummy steam source', 100, CstSteamSys.Boiler.OperatingPressure)
-const dummyMainSteamValve = new mockValve('dummy main steam valve', dummySteamSource)
-const dummyMainbus = new mockPowerBus('dummy mainbus')
+const dummySteamSource = new MockTank('dummy steam source', 100, CstSteamSys.Boiler.OperatingPressure)
+const dummyMainSteamValve = new MockValve('dummy main steam valve', dummySteamSource)
+const dummyMainbus = new MockPowerBus('dummy mainbus')
 
 beforeEach(() => {
   HfSys = new HeavyFuelSystem(dummyMainSteamValve, dummyMainbus)
@@ -117,7 +117,9 @@ describe('Intake from shore', () => {
 
 describe('Pumping', () => {
   test('no pump output if tank is not heated', () => {
-    const { HasBunkOutput: HasBunkOutput, HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const {
+      HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank,
+    } = HfSys
     HfForeBunker.Tank.Inside = CstHfFuelSys.HfForeBunker.TankVolume
     HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint - 0.1
     HfForeBunker.OutletValve.Open()
@@ -132,7 +134,9 @@ describe('Pumping', () => {
     expect(HfSettelingTank.Content).toBe(0)
   })
   test('only from heated Fore tank, setteling tank is filling', () => {
-    const { HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const {
+      HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank,
+    } = HfSys
     HfForeBunker.Tank.Inside = CstHfFuelSys.HfForeBunker.TankVolume
     HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint - CstHfFuelSys.HeatingStep
     HfForeBunker.OutletValve.Open()
@@ -162,7 +166,9 @@ describe('Pumping', () => {
     expect(HfForeBunker.Content).toBe(CstHfFuelSys.HfForeBunker.TankVolume - CstHfFuelSys.HfPumpVolume * 2)
   })
   test('only from heated Aft tank, setteling tank is filling', () => {
-    const { HfAftBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const {
+      HfAftBunker, HfPump, HfPumpOutletValve, HfSettelingTank,
+    } = HfSys
     HfAftBunker.Tank.Inside = CstHfFuelSys.HfAftBunker.TankVolume
     HfAftBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfAftBunker.OutletValve.Open()
@@ -180,7 +186,9 @@ describe('Pumping', () => {
     expect(HfAftBunker.Content).toBe(CstHfFuelSys.HfAftBunker.TankVolume - CstHfFuelSys.HfPumpVolume * 2)
   })
   test('only from heated Port tank, setteling tank is filling', () => {
-    const { HfPortBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const {
+      HfPortBunker, HfPump, HfPumpOutletValve, HfSettelingTank,
+    } = HfSys
     HfPortBunker.Tank.Inside = CstHfFuelSys.HfPortBunker.TankVolume
     HfPortBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfPortBunker.OutletValve.Open()
@@ -199,7 +207,9 @@ describe('Pumping', () => {
     expect(HfPortBunker.Content).toBe(CstHfFuelSys.HfPortBunker.TankVolume - CstHfFuelSys.HfPumpVolume * 2)
   })
   test('only from heated starboard tank, setteling tank is filling', () => {
-    const { HfStarboardBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const {
+      HfStarboardBunker, HfPump, HfPumpOutletValve, HfSettelingTank,
+    } = HfSys
     HfStarboardBunker.Tank.Inside = CstHfFuelSys.HfStarboardBunker.TankVolume
     HfStarboardBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfStarboardBunker.OutletValve.Open()
@@ -218,7 +228,9 @@ describe('Pumping', () => {
     expect(HfStarboardBunker.Content).toBe(CstHfFuelSys.HfStarboardBunker.TankVolume - CstHfFuelSys.HfPumpVolume * 2)
   })
   test('from heated Fore & Aft tanks, pump is limited to his rate', () => {
-    const { HfForeBunker, HfAftBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const {
+      HfForeBunker, HfAftBunker, HfPump, HfPumpOutletValve, HfSettelingTank,
+    } = HfSys
     HfForeBunker.Tank.Inside = CstHfFuelSys.HfForeBunker.TankVolume
     HfAftBunker.Tank.Inside = CstHfFuelSys.HfAftBunker.TankVolume
     HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint
@@ -236,13 +248,14 @@ describe('Pumping', () => {
     expect(HfPumpOutletValve.Content).toBe(CstHfFuelSys.HfPumpVolume)
     expect(HfSettelingTank.Content).toBe(CstHfFuelSys.HfPumpVolume)
     HfSys.Thick()
-    // FIXME don't remove form both
+    // FIXME don't remove from both
     expect(HfForeBunker.Content).toBe(CstHfFuelSys.HfForeBunker.TankVolume - CstHfFuelSys.HfPumpVolume)
     expect(HfAftBunker.Content).toBe(CstHfFuelSys.HfAftBunker.TankVolume - CstHfFuelSys.HfPumpVolume)
-
   })
   test('setteling tank is full, don\'t add nor remove from bunk tanks', () => {
-    const { HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank } = HfSys
+    const {
+      HfForeBunker, HfPump, HfPumpOutletValve, HfSettelingTank,
+    } = HfSys
     HfForeBunker.Tank.Inside = CstHfFuelSys.HfForeBunker.TankVolume
     HfForeBunker.Temperature = CstHfFuelSys.TempSetpoint
     HfForeBunker.OutletValve.Open()
@@ -269,13 +282,14 @@ describe('Pumping', () => {
 
     HfSys.Thick()
     expect(HfForeBunker.Content).toBe(CstHfFuelSys.HfForeBunker.TankVolume)
-
   })
 })
 
 describe('Purification', () => {
   test('Running purification fill service tank', () => {
-    const { HfPurificationOutletValve, HfServiceTank, HfPurification, HfSettelingTank } = HfSys
+    const {
+      HfPurificationOutletValve, HfServiceTank, HfPurification, HfSettelingTank,
+    } = HfSys
     HfSettelingTank.Tank.Inside = CstHfFuelSys.HfSettelingTank.TankVolume
     HfSettelingTank.Temperature = CstHfFuelSys.TempSetpoint
     HfSettelingTank.SteamIntakeValve.Open()

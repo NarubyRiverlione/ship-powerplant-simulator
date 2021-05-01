@@ -1,10 +1,12 @@
 /* istanbul ignore file */
 
-import { iPowerBus } from '../../Components/PowerBus'
+import { PowerBusInterface } from '../../Components/PowerBus'
 
-export default class mockPowerBus implements iPowerBus {
+export default class MockPowerBus implements PowerBusInterface {
   Name: string
+
   Voltage: number
+
   Providers: number
 
   constructor(name: string) {
@@ -12,6 +14,8 @@ export default class mockPowerBus implements iPowerBus {
     this.Voltage = 0
     this.Providers = 0
   }
+
   get Content() { return this.Voltage }
+
   Thick = () => { }
 }

@@ -7,21 +7,20 @@ import CstTxt from '../CstTxt'
 import AlarmSystem from './AlarmSystem'
 import { CstDsFuelSys } from '../Cst'
 import { AlarmCode, AlarmLevel } from '../CstAlarms'
-import HandPump from '../Components/HandPump'
+// import HandPump from '../Components/HandPump'
 import MultiInputs from '../Components/MultiToOne'
 import PurificationUnit from '../Components/Appliances/PurificationUnit'
 
-
 const { FuelSysTxt } = CstTxt
 /*
-Shore Valve 
+Shore Valve
     |
-(intake valve) DsStorage 
+(intake valve) DsStorage
                 |
     (drain)   (outlet valve) |--> Handpump (todo) --> Bypass valve --> |
-                             |                                         | => (MultiToOne) ==> --> (intake valve) DsService (outlet valve)                                   
+                             |                                         | => (MultiToOne) ==> --> (intake valve) DsService (outlet valve)
                              |-->-- (intake valve) Purification  -->-- |
-                                                      (steam intake valve)              
+                                                      (steam intake valve)
 */
 export default class DieselFuelSystem {
   ShoreValve: Valve
@@ -36,7 +35,6 @@ export default class DieselFuelSystem {
     //  Intake valve from shore to diesel storage tank
     const dummyShore = new Tank('Shore as tank', CstDsFuelSys.ShoreVolume, CstDsFuelSys.ShoreVolume)
     this.ShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
-
 
     //  Diesel storage tank,
     // filled from shore via the intake valve, outlet valve to service intake valve
@@ -63,18 +61,18 @@ export default class DieselFuelSystem {
     this.DsPurification = new PurificationUnit(FuelSysTxt.DsPurification,
       CstDsFuelSys.Purification.Volume, this.DsStorage.OutletValve)
 
-    //#region Combine inputs from Purification and Bypass valve to 1 
-    this.DsServiceMulti = new MultiInputs("Multi Ds Service inputs", this.DsStorage.Tank)
+    // #region Combine inputs from Purification and Bypass valve to 1
+    this.DsServiceMulti = new MultiInputs('Multi Ds Service inputs', this.DsStorage.Tank)
     this.DsServiceMulti.Inputs.push(this.DsPurification)
     this.DsServiceMulti.Inputs.push(this.DsBypassValve)
-    //#endregion
+    // #endregion
 
     // #region Diesel service tank,
     // filled from the storage outlet valve
     this.DsService = new TankWithValves(FuelSysTxt.DsServiceTank,
       CstDsFuelSys.DsServiceTank.TankVolume, 0, this.DsServiceMulti)
 
-    //#endregion
+    // #endregion
 
     // #region Alarms
     this.DsService.Tank.AlarmSystem = alarmSys
@@ -82,7 +80,6 @@ export default class DieselFuelSystem {
     this.DsService.Tank.EmptyAlarmCode = AlarmCode.EmptyDsServiceTank
     this.DsService.Tank.LowLevelAlarm = AlarmLevel.FuelSys.LowDsService
     // #endregion
-
 
     makeAutoObservable(this)
   }

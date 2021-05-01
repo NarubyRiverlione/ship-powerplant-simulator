@@ -1,6 +1,6 @@
 {
   "name": "ship-powerplant-simulator",
-  "version": "7.0.10",
+  "version": "7.1.0",
   "description": "Logic for ship simulator app",
   "main": "lib/Simulator.js",
   "types": "lib/Simulator.d.ts",
@@ -22,8 +22,9 @@
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.41",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
     "eslint": "^7.24.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.3.5",
     "istanbul-badges-readme": "^1.2.1",
@@ -54,7 +55,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "airbnb-base/legacy"
+      "airbnb-typescript/base"
     ],
     "plugins": [
       "jest"
@@ -65,11 +66,11 @@
       "jest/globals": true
     },
     "parserOptions": {
-      "ecmaVersion": 8,
-      "sourceType": "module"
+      "project": "./tsconfig.json"
     },
     "ignorePatterns": "/lib/",
     "rules": {
+      "@typescript-eslint/lines-between-class-members": "off",
       "no-mixed-operators": "off",
       "class-methods-use-this": "warn",
       "max-len": [
@@ -79,7 +80,8 @@
           "comments": 150
         }
       ],
-      "indent": [
+      "indent": "off",
+      "@typescript-eslint/indent": [
         "warn",
         2
       ],
@@ -90,7 +92,7 @@
         "error",
         "single"
       ],
-      "semi": [
+      "@typescript-eslint/semi": [
         "error",
         "never"
       ],

@@ -12,7 +12,7 @@ describe('Simulator running tests', () => {
   test('Not running after init', () => {
     expect(simulator.Running).toBeUndefined()
   })
-  test('Running after start', done => {
+  test('Running after start', (done) => {
     simulator.Start()
     expect(simulator.Running).not.toBeNull()
     setTimeout(() => {

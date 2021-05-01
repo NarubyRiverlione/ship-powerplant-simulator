@@ -4,7 +4,7 @@ export const AlarmCode = {
   LowDsServiceTank: 3,
   EmptyDsServiceTank: 4,
   LowLubStorageTank: 5,
-  EmptyLubStorageTank: 6
+  EmptyLubStorageTank: 6,
 }
 
 export const AlarmDescription = {
@@ -13,15 +13,15 @@ export const AlarmDescription = {
   [AlarmCode.LowDsServiceTank]: 'Diesel service tank level is low',
   [AlarmCode.EmptyDsServiceTank]: 'Diesel service tank is empty',
   [AlarmCode.LowLubStorageTank]: 'Lubrication storage tank level is low',
-  [AlarmCode.EmptyLubStorageTank]: 'Lubrication storage  tank is empty'
+  [AlarmCode.EmptyLubStorageTank]: 'Lubrication storage  tank is empty',
 }
 
 export const AlarmLevel = {
   FuelSys: {
     LowDsStorage: 25,
-    LowDsService: 25
+    LowDsService: 25,
   },
   LubSys: {
-    LowStorage: 25
-  }
+    LowStorage: 25,
+  },
 }

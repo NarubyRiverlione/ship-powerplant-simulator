@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/naming-convention */
 const Pressure_mmHG_Bar = 750.06
 
 // Antoine_pressure mmHG = 10^[A - (B / (C + temperature °C))]
@@ -11,8 +11,8 @@ const AntoinePressure = {
   },
 }
 
-const Formula = (Antione: { A: number, B: number, C: number }, Temp: number): number =>
-  Math.pow(10, (Antione.A - (Antione.B / (Antione.C + Temp))))
+// eslint-disable-next-line max-len
+const Formula = (Antione: { A: number, B: number, C: number }, Temp: number): number => 10 ** (Antione.A - (Antione.B / (Antione.C + Temp)))
 
 export const Pressure_mmHG_to_Bar = (pressure: number): number => pressure / Pressure_mmHG_Bar
 

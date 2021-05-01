@@ -1,10 +1,10 @@
 import Valve from '../../Components/Valve'
-import mockTank from '../mocks/mockTank'
+import MockTank from '../mocks/MockTank'
 
 const name = 'Test valve'
 const sourceContent = 20
 const testVolume = 5
-const source = new mockTank('dummy source', 100, sourceContent)
+const source = new MockTank('dummy source', 100, sourceContent)
 
 let valve: Valve
 beforeEach(() => {
@@ -13,7 +13,6 @@ beforeEach(() => {
 
 describe('Valve init', () => {
   test('Valve starts closed, without output', () => {
-    valve.Thick()
     expect(valve.isOpen).toBeFalsy()
     expect(valve.Content).toBe(0)
     expect(valve.Name).toBe(name)

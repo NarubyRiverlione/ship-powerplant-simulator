@@ -29,7 +29,6 @@ describe('Open / close without load', () => {
 })
 describe('Breaker loaded', () => {
   test('Close with load < RatedFor --> stay closed', () => {
-
     breaker.Providers = 390
     breaker.Load = 100
     breaker.Close()
@@ -39,7 +38,6 @@ describe('Breaker loaded', () => {
     expect(breaker.Content).toBe(breaker.Providers)
   })
   test('Closed with load > RatedFor --> open', () => {
-
     breaker.Load = 100
     breaker.Close()
     expect(breaker.isOpen).toBeFalsy()
@@ -48,7 +46,6 @@ describe('Breaker loaded', () => {
     expect(breaker.isOpen).toBeTruthy()
   })
   test('Tripped : Load < Providers', () => {
-
     breaker.Providers = 300
     breaker.Close()
     breaker.Load = 350

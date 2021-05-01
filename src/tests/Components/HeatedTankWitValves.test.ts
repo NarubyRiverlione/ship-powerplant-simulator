@@ -1,27 +1,27 @@
 import HeatedTankWithValves from '../../Components/HeatedTankWithValves'
 import { CstChanges, CstSteamSys } from '../../Cst'
-import mockTank from '../mocks/mockTank'
-import mockValve from '../mocks/mockValve'
+import MockTank from '../mocks/MockTank'
+import MockValve from '../mocks/MockValve'
 
 let heatedTank: HeatedTankWithValves
-const SetpointTemp = 80
+const TestSetpointTemp = 80
 const Volume = 10000
 const StartContent = 9000
 const SourceContent = 100
 const OutletVolume = 15
 const SteamSource = CstSteamSys.Boiler.OperatingPressure
 
-const dummySource = new mockTank('dummy source tank', 1000, SourceContent)
-const dummySourceValve = new mockValve('dummy source valve', dummySource)
-let dummySteamSource: mockTank
+const dummySource = new MockTank('dummy source tank', 1000, SourceContent)
+const dummySourceValve = new MockValve('dummy source valve', dummySource)
+let dummySteamSource: MockTank
 
 beforeEach(() => {
-  dummySteamSource = new mockTank('dummy steam source', 100, SteamSource)
-  const dummyMainSteamValve = new mockValve('dummy main steam valve', dummySteamSource)
+  dummySteamSource = new MockTank('dummy steam source', 100, SteamSource)
+  const dummyMainSteamValve = new MockValve('dummy main steam valve', dummySteamSource)
 
   heatedTank = new HeatedTankWithValves('test tank', Volume, StartContent,
     dummySourceValve, dummyMainSteamValve, OutletVolume)
-  heatedTank.SetpointTemp = SetpointTemp
+  heatedTank.SetpointTemp = TestSetpointTemp
 })
 
 describe('Init', () => {
@@ -29,7 +29,7 @@ describe('Init', () => {
     expect(heatedTank.Temperature).toBe(CstChanges.StartTemp)
   })
   test('Set setpoint', () => {
-    expect(heatedTank.SetpointTemp).toBe(SetpointTemp)
+    expect(heatedTank.SetpointTemp).toBe(TestSetpointTemp)
   })
   test('Default and set min steam to heat up', () => {
     // prevent oscillation form boiler flame on / out
@@ -117,7 +117,9 @@ describe('Warming / cooling', () => {
 
 describe('only output when on setpoint', () => {
   test('temp on setpoint =  open outlet valve has content', () => {
-    const { SteamIntakeValve, SetpointTemp, OutletValve, Tank } = heatedTank
+    const {
+      SteamIntakeValve, SetpointTemp, OutletValve,
+    } = heatedTank
     heatedTank.Temperature = SetpointTemp
     SteamIntakeValve.Open()
     OutletValve.Open()

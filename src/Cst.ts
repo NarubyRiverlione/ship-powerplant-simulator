@@ -1,22 +1,22 @@
 export const CstChanges = {
   Interval: 1000,
   DrainRatio: 20, // how many step it takes to drain a tank (drain valve volume = tankvolume / drainratio)
-  StartTemp: 25
+  StartTemp: 25,
 }
 export const CstPowerSys = {
   Voltage: 440,
   Shore: 1000, // 10 kW
   EmergencyGen: {
-    RatedFor: 1 // 1 kW
+    RatedFor: 1, // 1 kW
   },
   DsGen: {
     RatedFor: 1000, // 10 kW
     Slump: {
       TankVolume: 100,
       IntakeValveVolume: 10,
-      MinForLubrication: 40
-    }
-  }
+      MinForLubrication: 40,
+    },
+  },
 }
 export const CstLubSys = {
   ShoreVolume: 1e6,
@@ -24,19 +24,19 @@ export const CstLubSys = {
   RatioStorageDsGenSlump: 5,
   StorageTank: {
     TankVolume: 100,
-    IntakeValveVolume: 1
-  }
+    IntakeValveVolume: 1,
+  },
 }
 export const CstDsFuelSys = {
   ShoreVolume: 1e6,
   DsStorageTank: {
     TankVolume: 2000,
-    IntakeValveVolume: 100
+    IntakeValveVolume: 100,
   },
   DsHandpumpVolume: 5,
   DsServiceTank: {
     TankVolume: 100,
-    IntakeValveVolume: 10
+    IntakeValveVolume: 10,
   },
   BypassValveVolume: 0.5,
   Purification: { Volume: 1, SteamNeeded: 4 },
@@ -44,32 +44,32 @@ export const CstDsFuelSys = {
   SteamBoiler: { Consumption: { Diesel: 0.5 } },
 }
 export const CstHfFuelSys = {
-  TempSetpoint: 80,  // tanks must be this temp before outlet valve has content
+  TempSetpoint: 80, // tanks must be this temp before outlet valve has content
   HeatingStep: 1,
   HfForeBunker: {
     TankVolume: 10000,
-    IntakeValveVolume: 500
+    IntakeValveVolume: 500,
   },
   HfAftBunker: {
     TankVolume: 50000,
-    IntakeValveVolume: 1000
+    IntakeValveVolume: 1000,
   },
   HfPortBunker: {
     TankVolume: 50000,
-    IntakeValveVolume: 1000
+    IntakeValveVolume: 1000,
   },
   HfStarboardBunker: {
     TankVolume: 10000,
-    IntakeValveVolume: 500
+    IntakeValveVolume: 500,
   },
   HfSettelingTank: {
     TankVolume: 1000,
     IntakeValveVolume: 50,
-    OutletValveVolume: 40
+    OutletValveVolume: 40,
   },
   HfServiceTank: {
     TankVolume: 1000,
-    OutletValveVolume: 10
+    OutletValveVolume: 10,
 
   },
   HfPumpVolume: 50,
@@ -77,18 +77,18 @@ export const CstHfFuelSys = {
 }
 export const CstAirSys = {
   StartAirCompressor1: {
-    AddStep: 0.5
+    AddStep: 0.5,
   },
   EmergencyCompressor: {
-    AddStep: 1
+    AddStep: 1,
   },
   StartAirReceiver1: {
-    TankPressure: 100
+    TankPressure: 100,
   },
   EmergencyReceiver: {
-    TankPressure: 100
+    TankPressure: 100,
   },
-  DieselGenerator: { StarAirConsumption: 60 }
+  DieselGenerator: { StarAirConsumption: 60 },
 }
 export const CstCoolantSys = {
   SeaChest: 1e6,
@@ -98,16 +98,16 @@ export const CstCoolantSys = {
   FwExpandTank: {
     TankVolume: 100,
     IntakeValveVolume: 5,
-    MinForCooling: 30
+    MinForCooling: 30,
   },
   FwPumpDsGen: 1000,
-  FwPumpStartAir: 2000
+  FwPumpStartAir: 2000,
 
 }
 export const CstSteamSys = {
   FeedWaterSupply: {
     TankVolume: 100,
-    IntakeValveVolume: 5
+    IntakeValveVolume: 5,
   },
   FeedWaterPump: 1,
   FuelPump: 10,
@@ -135,9 +135,9 @@ export const CstSteamSys = {
 
     StartExpandTemp: 80, // water expands by heat
     EndExpandTemp: 99,
-    ExpandRate: 1
+    ExpandRate: 1,
   },
-  MinPressureForMainValve: 2
+  MinPressureForMainValve: 2,
 }
 export const CstStartConditions = {
   ColdAndDark: 'ColdAndDark',
@@ -151,5 +151,5 @@ export const CstStartConditions = {
   SeaWaterCoolingSupplyPump1Running: 'SeaWaterCoolingSupplyPump1Running',
   BoilerOperational: 'BoilerOperational',
   BoilerDeliversSteam: 'BoilerDeliversSteam',
-  DsFuelPurificationRunning: 'DsFuelPurificationRunning'
+  DsFuelPurificationRunning: 'DsFuelPurificationRunning',
 }
