@@ -107,11 +107,11 @@ export const CstCoolantSys = {
 export const CstSteamSys = {
   FeedWaterSupply: {
     TankVolume: 100,
-    IntakeValveVolume: 5,
-    AddFromCooling: 1,
+    IntakeValveVolume: 1,
+    AddFromCooling: 2,
     AddFromCoolingRandom: 0.5,
   },
-  FeedWaterPump: 1,
+  FeedWaterPump: 2,
   FuelPump: 10,
   WaterLossBySteam: 2,
   WaterLossBySteamRandom: 1,

@@ -13,7 +13,7 @@ dummyEmergencyBus.Voltage = 440
 const dummyStartAirCooler = new MockCooler('dummy start air cooler')
 
 beforeEach(() => {
-  airSys = new AirSystem(dummyStartAirCooler, dummyMainBus, dummyEmergencyBus)
+  airSys = new AirSystem(dummyStartAirCooler, false, dummyMainBus, dummyEmergencyBus)
 })
 
 describe('Init', () => {
