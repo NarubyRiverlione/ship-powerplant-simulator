@@ -1,6 +1,6 @@
 import Valve, { ValveInterface } from './Valve'
 import TankWithValves from './TankWithValves'
-import { CstChanges, CstSteamSys } from '../Cst'
+import { CstChanges, CstSteamSys } from '../Constants/Cst'
 
 export default class HeatedTankWithValves extends TankWithValves {
   SteamIntakeValve: ValveInterface
@@ -11,8 +11,8 @@ export default class HeatedTankWithValves extends TankWithValves {
   OutletVolume: number
 
   constructor(tankName: string, volume: number, startContent: number,
-    sourceValve: ValveInterface, mainSteamValve: ValveInterface, outletVolume: number) {
-    super(tankName, volume, startContent, sourceValve)
+    sourceValve: ValveInterface, mainSteamValve: ValveInterface, outletVolume: number, randomize = false) {
+    super(tankName, volume, startContent, sourceValve, randomize)
     this.SteamIntakeValve = new Valve(`${tankName} - Steam intake valve`, mainSteamValve)
     this.Temperature = 25
     this.SetpointTemp = this.Temperature

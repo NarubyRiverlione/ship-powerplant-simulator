@@ -4,7 +4,7 @@ simulation of a ship engine power plant
 
 | Statements                  | Branches                | Functions                 | Lines                |
 | --------------------------- | ----------------------- | ------------------------- | -------------------- |
-| ![Statements](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-99.27%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)    |
+| ![Statements](https://img.shields.io/badge/Coverage-99.54%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-99.63%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-99.28%25-brightgreen.svg) | ![Lines](https://img.shields.io/badge/Coverage-99.52%25-brightgreen.svg)    |
 
 ## Power systems
 ### Switchboard
@@ -136,12 +136,9 @@ Pump FW Air cooler (Main bus)         |        Pump Diesel generator cooler (Eme
 
 ### Water diagram
 ```
- BOILER   -<- Water Intake Valve ==<== Feed Water Pump 
-                                        |==<== Feed Water Supply Outlet Valve 
-                                        |
-                                        |-<- Feed Water Supply Tank 
-                                              |             |-<- Feed Water Inlet Valve -<- (Feed water Make up)
-                                        Drain valve                             
+(Feed water Make up) ->- (Inlet Valve) Feed Water Supply Tank (outlet) ->- Feed Water Pump  ->- (intake) BOILER
+                                        |       (drain)
+            ==>== Steam Condensor  ==>==|
 ```
 
 ### Steam diagram
@@ -151,9 +148,7 @@ BOILER |
        |--> Steam Vent valve
        |
        |
-       |==>== Main Steam valve ==>==
-       |
-       |==<== Steam Condensor ==<==
+       |==>== Main Steam valve ==>==  
 ```
 
 ## (Todo) Main Engine

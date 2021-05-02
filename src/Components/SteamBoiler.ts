@@ -2,9 +2,10 @@ import { makeAutoObservable } from 'mobx'
 import Item from './Item'
 import Tank, { TankInterface } from './Tank'
 import Valve from './Valve'
-import CstTxt from '../CstTxt'
-import { CstChanges, CstSteamSys, CstDsFuelSys } from '../Cst'
+import CstTxt from '../Constants/CstTxt'
+import { CstChanges, CstSteamSys, CstDsFuelSys } from '../Constants/Cst'
 import CalcPressureViaTemp from '../CalcPressureTemp'
+import RandomChange from '../RandomChange'
 
 const { SteamSysTxt } = CstTxt
 
@@ -16,9 +17,6 @@ Water intake valve =>=|     |             |--> Steam Vent valve
                  water DrainValve         |
                                           |
                                           |==>== Main Steam valve ==>==
-                                          |
-                                          |==<== Steam Condensor ==<==
-  |
 */
 export default class SteamBoiler implements Item {
   Name: string
@@ -36,6 +34,8 @@ export default class SteamBoiler implements Item {
   HasFlame: boolean
   Temperature: number
   AutoFlame: boolean
+
+  RandomizeChange: boolean
 
   constructor(name: string, waterSource: Item,
     fuelSource: Item, fuelSourceTank: TankInterface) {
@@ -56,6 +56,7 @@ export default class SteamBoiler implements Item {
     this.Temperature = CstChanges.StartTemp
 
     this.AutoFlame = false
+    this.RandomizeChange = false
 
     makeAutoObservable(this)
   }
@@ -97,12 +98,14 @@ export default class SteamBoiler implements Item {
   CheckTemp() {
     //  no flame but not at start temp = cooling down
     if (!this.HasFlame && this.Temperature > CstChanges.StartTemp) {
-      this.Temperature -= CstSteamSys.Boiler.TempCoolingStep
+      this.Temperature -= RandomChange(this.RandomizeChange,
+        CstSteamSys.Boiler.TempCoolingStep, CstSteamSys.Boiler.TempRandom)
       return
     }
     if (this.HasFlame) {
       // flame heats boiler
-      this.Temperature += CstSteamSys.Boiler.TempAddStep
+      this.Temperature += RandomChange(this.RandomizeChange,
+        CstSteamSys.Boiler.TempAddStep, CstSteamSys.Boiler.TempRandom)
     }
   }
   AutoFlameToggle() {
@@ -165,7 +168,8 @@ export default class SteamBoiler implements Item {
 
     // expand / shrink water by heat / cooling down
     if (this.Temperature > CstSteamSys.Boiler.StartExpandTemp && this.Temperature < CstSteamSys.Boiler.EndExpandTemp) {
-      this.WaterTank.Inside += CstSteamSys.Boiler.ExpandRate * (this.HasFlame ? 1 : -1)
+      const expand = RandomChange(this.RandomizeChange, CstSteamSys.Boiler.ExpandRate, CstSteamSys.Boiler.ExpandRandom)
+      this.WaterTank.Inside += expand * (this.HasFlame ? 1 : -1)
     }
 
     /* istanbul ignore if  */

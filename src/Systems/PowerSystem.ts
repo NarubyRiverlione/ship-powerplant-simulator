@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 
-import { CstPowerSys, CstDsFuelSys } from '../Cst'
-import CstTxt from '../CstTxt'
+import { CstPowerSys, CstDsFuelSys } from '../Constants/Cst'
+import CstTxt from '../Constants/CstTxt'
 import Generator from '../Components/Generator'
 import DieselGenerator from '../Components/DieselGenerator'
 import Breaker from '../Components/Breaker'

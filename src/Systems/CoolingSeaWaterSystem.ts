@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
-import { CstCoolantSys } from '../Cst'
-import CstTxt from '../CstTxt'
+import { CstCoolantSys } from '../Constants/Cst'
+import CstTxt from '../Constants/CstTxt'
 
 import Tank from '../Components/Tank'
 import Valve from '../Components/Valve'

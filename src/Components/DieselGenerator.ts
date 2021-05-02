@@ -8,8 +8,8 @@ import Tank, { TankInterface } from './Tank'
 
 import {
   CstAirSys, CstPowerSys, CstLubSys,
-} from '../Cst'
-import CstTxt from '../CstTxt'
+} from '../Constants/Cst'
+import CstTxt from '../Constants/CstTxt'
 
 const { DieselGeneratorTxt } = CstTxt
 

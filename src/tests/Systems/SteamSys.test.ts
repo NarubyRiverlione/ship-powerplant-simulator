@@ -2,7 +2,7 @@ import SteamSystem from '../../Systems/SteamSystem'
 import MockPowerBus from '../mocks/MockPowerBus'
 import {
   CstPowerSys, CstSteamSys, CstDsFuelSys, CstChanges,
-} from '../../Cst'
+} from '../../Constants/Cst'
 import MockTank from '../mocks/MockTank'
 import MockValve from '../mocks/MockValve'
 import MockCooler from '../mocks/MockCooler'
@@ -261,7 +261,7 @@ describe('Main steam valve', () => {
     Boiler.WaterDrainValve.Open()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam * 2 - CstChanges.DrainRatio)
+      - CstSteamSys.WaterLossBySteam * 2 - CstChanges.DrainRatio)
   })
   test('drain open the open main steam valve', () => {
     const { Boiler, MainSteamValve } = steamSys
@@ -277,7 +277,7 @@ describe('Main steam valve', () => {
     MainSteamValve.Open()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam - CstChanges.DrainRatio * 2)
+      - CstSteamSys.WaterLossBySteam - CstChanges.DrainRatio * 2)
   })
   test('re-close previous open drain while  main steam valve remains open', () => {
     const { Boiler, MainSteamValve } = steamSys
@@ -295,7 +295,7 @@ describe('Main steam valve', () => {
     Boiler.WaterDrainValve.Close()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam * 2 - CstChanges.DrainRatio * 2)
+      - CstSteamSys.WaterLossBySteam * 2 - CstChanges.DrainRatio * 2)
   })
   test('re-close previous open main steam valve while  drain  valve remains open', () => {
     const { Boiler, MainSteamValve } = steamSys
@@ -313,7 +313,7 @@ describe('Main steam valve', () => {
     MainSteamValve.Close()
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam - CstChanges.DrainRatio * 3)
+      - CstSteamSys.WaterLossBySteam - CstChanges.DrainRatio * 3)
   })
 })
 
@@ -356,11 +356,11 @@ describe('Steam condensor', () => {
 
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam)
+      - CstSteamSys.WaterLossBySteam)
 
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBeCloseTo(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam * 2)
+      - CstSteamSys.WaterLossBySteam * 2)
   })
   test('even with cooling, loss water', () => {
     const { Boiler, MainSteamValve, SteamCondensor } = steamSys
@@ -376,7 +376,7 @@ describe('Steam condensor', () => {
 
     steamSys.Thick()
     expect(Boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam)
+      - CstSteamSys.WaterLossBySteam)
   })
   test('cooling = add to feed water supply', () => {
     const {
@@ -398,6 +398,6 @@ describe('Steam condensor', () => {
       + CstSteamSys.FeedWaterSupply.AddFromCooling)
 
     expect(Boiler.WaterLevel).toBe(CstSteamSys.Boiler.WaterVolume
-      - CstSteamSys.Boiler.WaterLossBySteam)
+      - CstSteamSys.WaterLossBySteam)
   })
 })

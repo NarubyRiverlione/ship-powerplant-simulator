@@ -1,6 +1,6 @@
 import LubricationSystem from '../../Systems/LubricationSystem'
-import { CstLubSys } from '../../Cst'
-import { AlarmCode, AlarmLevel } from '../../CstAlarms'
+import { CstLubSys } from '../../Constants/Cst'
+import { AlarmCode, AlarmLevel } from '../../Constants/CstAlarms'
 import MockAlarmSys from '../mocks/MockAlarmSys'
 
 let lubSys: LubricationSystem

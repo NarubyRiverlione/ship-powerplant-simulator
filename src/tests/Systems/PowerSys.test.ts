@@ -1,5 +1,5 @@
 import PowerSystem from '../../Systems/PowerSystem'
-import { CstPowerSys, CstDsFuelSys, CstAirSys } from '../../Cst'
+import { CstPowerSys, CstDsFuelSys, CstAirSys } from '../../Constants/Cst'
 import MockValve from '../mocks/MockValve'
 import MockTank from '../mocks/MockTank'
 import MockCooler from '../mocks/MockCooler'

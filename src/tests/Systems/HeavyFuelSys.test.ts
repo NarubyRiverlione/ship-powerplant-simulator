@@ -1,4 +1,4 @@
-import { CstHfFuelSys, CstPowerSys, CstSteamSys } from '../../Cst'
+import { CstHfFuelSys, CstPowerSys, CstSteamSys } from '../../Constants/Cst'
 import HeavyFuelSystem from '../../Systems/HeavyFuelSystem'
 import MockPowerBus from '../mocks/MockPowerBus'
 import MockTank from '../mocks/MockTank'

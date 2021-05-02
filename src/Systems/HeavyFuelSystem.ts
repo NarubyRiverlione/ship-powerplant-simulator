@@ -3,8 +3,8 @@ import HeatedTankWithValves from '../Components/HeatedTankWithValves'
 import Valve, { ValveInterface } from '../Components/Valve'
 import Tank from '../Components/Tank'
 
-import { CstHfFuelSys } from '../Cst'
-import CstTxt from '../CstTxt'
+import { CstHfFuelSys } from '../Constants/Cst'
+import CstTxt from '../Constants/CstTxt'
 import ElectricPump from '../Components/Appliances/ElectricPump'
 import PowerBus from '../Components/PowerBus'
 import PurificationUnit from '../Components/Appliances/PurificationUnit'
@@ -32,53 +32,43 @@ const { FuelSysTxt } = CstTxt
 */
 export default class HeavyFuelSystem {
   HfShoreValve: Valve
-
   HfForeBunker: HeatedTankWithValves
-
   HfAftBunker: HeatedTankWithValves
-
   HfPortBunker: HeatedTankWithValves
-
   HfStarboardBunker: HeatedTankWithValves
-
   HfPump: ElectricPump
-
   HfPumpOutletValve: ValveInterface
-
   HfSettelingTank: HeatedTankWithValves
-
   HfPurification: PurificationUnit
-
   HfPurificationOutletValve: Valve
-
   HfServiceTank: HeatedTankWithValves
 
-  constructor(mainSteamValve: ValveInterface, mainBus: PowerBus) {
+  constructor(mainSteamValve: ValveInterface, mainBus: PowerBus, randomize = false) {
     // #region Storage
     const dummyShore = new Tank('Shore as tank', 10e6, 10e6)
     this.HfShoreValve = new Valve(FuelSysTxt.HfShoreValve, dummyShore)
 
     this.HfForeBunker = new HeatedTankWithValves(FuelSysTxt.HfForeBunker, CstHfFuelSys.HfForeBunker.TankVolume,
-      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
+      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume, randomize)
     this.HfForeBunker.IntakeValve.Volume = CstHfFuelSys.HfForeBunker.IntakeValveVolume
     this.HfForeBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
     this.HfForeBunker.HeatingStep = CstHfFuelSys.HeatingStep
 
     this.HfAftBunker = new HeatedTankWithValves(FuelSysTxt.HfAftBunker, CstHfFuelSys.HfAftBunker.TankVolume,
-      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
+      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume, randomize)
     this.HfAftBunker.IntakeValve.Volume = CstHfFuelSys.HfAftBunker.IntakeValveVolume
     this.HfAftBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
     this.HfAftBunker.HeatingStep = CstHfFuelSys.HeatingStep
 
     this.HfPortBunker = new HeatedTankWithValves(FuelSysTxt.HfPortBunker, CstHfFuelSys.HfPortBunker.TankVolume,
-      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
+      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume, randomize)
     this.HfPortBunker.IntakeValve.Volume = CstHfFuelSys.HfPortBunker.IntakeValveVolume
     this.HfPortBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
     this.HfPortBunker.HeatingStep = CstHfFuelSys.HeatingStep
 
     this.HfStarboardBunker = new HeatedTankWithValves(FuelSysTxt.HfStarboardBunker,
       CstHfFuelSys.HfStarboardBunker.TankVolume,
-      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume)
+      0, this.HfShoreValve, mainSteamValve, CstHfFuelSys.HfPumpVolume, randomize)
     this.HfStarboardBunker.IntakeValve.Volume = CstHfFuelSys.HfStarboardBunker.IntakeValveVolume
     this.HfStarboardBunker.SetpointTemp = CstHfFuelSys.TempSetpoint
     this.HfStarboardBunker.HeatingStep = CstHfFuelSys.HeatingStep
@@ -88,7 +78,7 @@ export default class HeavyFuelSystem {
     // #endregion
 
     this.HfSettelingTank = new HeatedTankWithValves(FuelSysTxt.HfSettelingTank, CstHfFuelSys.HfSettelingTank.TankVolume,
-      0, this.HfPumpOutletValve, mainSteamValve, CstHfFuelSys.HfSettelingTank.OutletValveVolume)
+      0, this.HfPumpOutletValve, mainSteamValve, CstHfFuelSys.HfSettelingTank.OutletValveVolume, randomize)
     this.HfSettelingTank.IntakeValve.Volume = CstHfFuelSys.HfSettelingTank.IntakeValveVolume
     this.HfSettelingTank.SetpointTemp = CstHfFuelSys.TempSetpoint
     this.HfSettelingTank.HeatingStep = CstHfFuelSys.HeatingStep
@@ -101,7 +91,7 @@ export default class HeavyFuelSystem {
     this.HfPurificationOutletValve = new Valve(FuelSysTxt.HfPurificationOutletValve, this.HfPurification)
 
     this.HfServiceTank = new HeatedTankWithValves(FuelSysTxt.HfSettelingTank, CstHfFuelSys.HfServiceTank.TankVolume,
-      0, this.HfPurificationOutletValve, mainSteamValve, CstHfFuelSys.HfServiceTank.OutletValveVolume)
+      0, this.HfPurificationOutletValve, mainSteamValve, CstHfFuelSys.HfServiceTank.OutletValveVolume, randomize)
     this.HfServiceTank.SetpointTemp = CstHfFuelSys.TempSetpoint
     this.HfServiceTank.HeatingStep = CstHfFuelSys.HeatingStep
 

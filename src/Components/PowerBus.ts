@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { CstPowerSys } from '../Cst'
+import { CstPowerSys } from '../Constants/Cst'
 import Item from './Item'
 
 export interface PowerBusInterface extends Item {

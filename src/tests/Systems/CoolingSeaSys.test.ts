@@ -1,5 +1,5 @@
 import MockPowerBus from '../mocks/MockPowerBus'
-import { CstCoolantSys } from '../../Cst'
+import { CstCoolantSys } from '../../Constants/Cst'
 import CoolingSeaSystem from '../../Systems/CoolingSeaWaterSystem'
 
 const dummyEmergencyBus = new MockPowerBus('dummy emergency bus')

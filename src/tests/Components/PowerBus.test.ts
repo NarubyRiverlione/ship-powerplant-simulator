@@ -1,5 +1,5 @@
 import PowerBus from '../../Components/PowerBus'
-import { CstPowerSys } from '../../Cst'
+import { CstPowerSys } from '../../Constants/Cst'
 
 describe('Init', () => {
   test('init', () => {

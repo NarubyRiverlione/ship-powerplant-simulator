@@ -3,8 +3,8 @@ import Appliance from './Appliance'
 import PowerBus from '../PowerBus'
 import Valve, { ValveInterface } from '../Valve'
 import Tank from '../Tank'
-import { CstDsFuelSys } from '../../Cst'
-import CstTxt from '../../CstTxt'
+import { CstDsFuelSys } from '../../Constants/Cst'
+import CstTxt from '../../Constants/CstTxt'
 
 const { PurificationTxt } = CstTxt
 

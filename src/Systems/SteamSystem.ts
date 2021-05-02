@@ -6,35 +6,33 @@ import Pump from '../Components/Appliances/ElectricPump'
 import PowerBus from '../Components/PowerBus'
 import Cooler from '../Components/Cooler'
 import SteamBoiler from '../Components/SteamBoiler'
-import { CstSteamSys } from '../Cst'
-import CstTxt from '../CstTxt'
+import { CstSteamSys } from '../Constants/Cst'
+import CstTxt from '../Constants/CstTxt'
+import RandomChange from '../RandomChange'
 
 const { SteamSysTxt } = CstTxt
 
-/*
-Fuel diagram
+/* Fuel diagram
   BOILER  -<- Fuel Intake Valve  ==<== Fuel Pump
                                           |
                                           | ==<== Fuel intake valve
                                                    |
                                                    |==<== (fuelSourceValve = Diesel Service Outlet Valve)
-Water diagram
- BOILER   -<- Water Intake Valve ==<== Feed Water Pump
-                                        |==<== Feed Water Supply Outlet Valve
-                                        |
-                                        |-<- Feed Water Supply Tank
-                                              |             |-<- Feed Water Inlet Valve -<- (Feed water Make up)
-                                        Drain valve
+*/
 
-Steam diagram
+/* Water diagram
+(Feed water Make up) ->- (Inlet Valve) Feed Water Supply Tank (outlet) ->- Feed Water Pump  ->- (intake) BOILER
+                                        |       (drain)
+            ==>== Steam Condensor  ==>==|
+*/
+
+/* Steam diagram
        |--> Safety Release valve
 BOILER |
        |--> Steam Vent valve
        |
        |
        |==>== Main Steam valve ==>==
-       |
-       |==<== Steam Condensor ==<==
 */
 
 export default class SteamSystem {
@@ -46,8 +44,10 @@ export default class SteamSystem {
   Boiler: SteamBoiler
   MainSteamValve: Valve
   SteamCondensor: Cooler
+  RandomizeChange: boolean
 
-  constructor(mainBus1: PowerBus, fuelSource: TankWithValves, condensor: Cooler) {
+  constructor(mainBus1: PowerBus, fuelSource: TankWithValves, condensor: Cooler, randomize = false) {
+    this.RandomizeChange = randomize
     // #region Feed Water
     const FeedWaterMakeup = new Tank('dummy feed water makeup tank', 1e6, 1e6)
     const FeedWaterMakeUpValve = new Valve('dummy feed water makeup valve, always open', FeedWaterMakeup)
@@ -97,7 +97,8 @@ export default class SteamSystem {
     // steam condensor is cooling => add to FeedWater Supply
     if (this.SteamCondensor.IsCooling) {
       // don't use addThisStep as this is only for the intake valve
-      this.FeedWaterSupply.Tank.Inside += CstSteamSys.FeedWaterSupply.AddFromCooling
+      this.FeedWaterSupply.Tank.Inside += RandomChange(this.RandomizeChange,
+        CstSteamSys.FeedWaterSupply.AddFromCooling, CstSteamSys.FeedWaterSupply.AddFromCoolingRandom)
     }
 
     this.FeedWaterSupply.Thick()
@@ -121,7 +122,8 @@ export default class SteamSystem {
 
     //  steam flow = loss of water
     if (this.MainSteamValve.Content) {
-      this.Boiler.WaterTank.Inside -= CstSteamSys.Boiler.WaterLossBySteam
+      this.Boiler.WaterTank.Inside -= RandomChange(this.RandomizeChange,
+        CstSteamSys.WaterLossBySteam, CstSteamSys.WaterLossBySteamRandom)
     }
   }
 }

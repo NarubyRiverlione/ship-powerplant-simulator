@@ -1,5 +1,5 @@
 import MockPowerBus from '../mocks/MockPowerBus'
-import { CstCoolantSys, CstChanges } from '../../Cst'
+import { CstCoolantSys, CstChanges } from '../../Constants/Cst'
 import CoolingFreshWaterSystem from '../../Systems/CoolingFreshWaterSystem'
 import MockCooler from '../mocks/MockCooler'
 

@@ -1,5 +1,5 @@
 import HeatedTankWithValves from '../../Components/HeatedTankWithValves'
-import { CstChanges, CstSteamSys } from '../../Cst'
+import { CstChanges, CstSteamSys } from '../../Constants/Cst'
 import MockTank from '../mocks/MockTank'
 import MockValve from '../mocks/MockValve'
 

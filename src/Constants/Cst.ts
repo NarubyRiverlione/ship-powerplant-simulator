@@ -109,9 +109,12 @@ export const CstSteamSys = {
     TankVolume: 100,
     IntakeValveVolume: 5,
     AddFromCooling: 1,
+    AddFromCoolingRandom: 0.5,
   },
   FeedWaterPump: 1,
   FuelPump: 10,
+  WaterLossBySteam: 2,
+  WaterLossBySteamRandom: 1,
   Boiler: {
     WaterVolume: 200,
 
@@ -125,18 +128,19 @@ export const CstSteamSys = {
 
     TempAddStep: 0.5,
     TempCoolingStep: 0.3,
+    TempRandom: 0.2,
 
     TempVentLoss: 0.1,
     WaterVentLoss: 1,
 
     MinWaterLvlForFlame: 50,
-    WaterLossBySteam: 2,
 
     AutoEnableZone: 2, // temp zone + and - operation temp where auto can be enabled
 
     StartExpandTemp: 80, // water expands by heat
     EndExpandTemp: 99,
     ExpandRate: 1,
+    ExpandRandom: 0.5,
   },
   MinPressureForMainValve: 2,
 }

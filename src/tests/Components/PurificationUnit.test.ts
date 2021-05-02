@@ -1,5 +1,5 @@
 import PurificationUnit from '../../Components/Appliances/PurificationUnit'
-import { CstDsFuelSys } from '../../Cst'
+import { CstDsFuelSys } from '../../Constants/Cst'
 import MockPowerBus from '../mocks/MockPowerBus'
 import MockTank from '../mocks/MockTank'
 import MockValve from '../mocks/MockValve'

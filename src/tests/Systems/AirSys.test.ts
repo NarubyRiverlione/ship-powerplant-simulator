@@ -1,5 +1,5 @@
 import AirSystem from '../../Systems/AirSystem'
-import { CstAirSys } from '../../Cst'
+import { CstAirSys } from '../../Constants/Cst'
 import MockPowerBus from '../mocks/MockPowerBus'
 import MockCooler from '../mocks/MockCooler'
 

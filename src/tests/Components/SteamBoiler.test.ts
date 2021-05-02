@@ -1,5 +1,5 @@
 import SteamBoiler from '../../Components/SteamBoiler'
-import { CstChanges, CstSteamSys, CstDsFuelSys } from '../../Cst'
+import { CstChanges, CstSteamSys, CstDsFuelSys } from '../../Constants/Cst'
 
 import MockTank from '../mocks/MockTank'
 import MockValve from '../mocks/MockValve'

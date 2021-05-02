@@ -4,9 +4,9 @@ import TankWithValves from '../Components/TankWithValves'
 import Valve from '../Components/Valve'
 import AlarmSystem from './AlarmSystem'
 
-import { CstLubSys } from '../Cst'
-import { AlarmCode, AlarmLevel } from '../CstAlarms'
-import CstTxt from '../CstTxt'
+import { CstLubSys } from '../Constants/Cst'
+import { AlarmCode, AlarmLevel } from '../Constants/CstAlarms'
+import CstTxt from '../Constants/CstTxt'
 
 const { LubSysTxt } = CstTxt
 

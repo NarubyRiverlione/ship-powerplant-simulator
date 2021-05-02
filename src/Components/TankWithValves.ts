@@ -1,7 +1,8 @@
 import Valve, { ValveInterface } from './Valve'
 import Tank from './Tank'
-import { CstChanges } from '../Cst'
+import { CstChanges } from '../Constants/Cst'
 import Item from './Item'
+import RandomChange from '../RandomChange'
 
 export default class TankWithValves implements Item {
   readonly Name: string
@@ -9,8 +10,10 @@ export default class TankWithValves implements Item {
   OutletValve: Valve
   DrainValve: Valve
   Tank: Tank
+  RandomizeChange: boolean
 
-  constructor(tankName: string, volume: number, startContent: number, sourceValve: ValveInterface) {
+  constructor(tankName: string, volume: number, startContent: number, sourceValve: ValveInterface, randomize = false) {
+    this.RandomizeChange = randomize
     this.Name = tankName
     this.IntakeValve = new Valve(`${tankName} - intake valve`, sourceValve)
     this.Tank = new Tank(tankName, volume, startContent)
@@ -23,8 +26,8 @@ export default class TankWithValves implements Item {
   get Content() { return this.Tank.Content }
 
   Thick() {
-    this.Tank.AddThisStep = this.IntakeValve.Content
-    this.Tank.RemoveThisStep += this.DrainValve.Content
+    this.Tank.AddThisStep = RandomChange(this.RandomizeChange, this.IntakeValve.Content, this.IntakeValve.Content / 2)
+    this.Tank.RemoveThisStep += RandomChange(this.RandomizeChange, this.DrainValve.Content, this.DrainValve.Content / 2)
     this.Tank.Thick()
   }
 }

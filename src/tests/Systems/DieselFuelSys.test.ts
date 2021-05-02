@@ -1,14 +1,12 @@
 /* eslint-disable max-len */
 import DieselFuelSystem from '../../Systems/DieselFuelSystem'
-import CstTxt from '../../CstTxt'
-import { AlarmCode, AlarmLevel } from '../../CstAlarms'
+import CstTxt from '../../Constants/CstTxt'
+import { AlarmCode, AlarmLevel } from '../../Constants/CstAlarms'
 import MockAlarmSys from '../mocks/MockAlarmSys'
 import MockTank from '../mocks/MockTank'
 import MockValve from '../mocks/MockValve'
 import MockPowerBus from '../mocks/MockPowerBus'
-import { CstPowerSys } from '../../Cst'
-
-const { CstDsFuelSys, CstChanges } = require('../../Cst')
+import { CstPowerSys, CstDsFuelSys, CstChanges } from '../../Constants/Cst'
 
 const { FuelSysTxt } = CstTxt
 

@@ -1,6 +1,6 @@
 import {
   CstAirSys, CstCoolantSys, CstDsFuelSys, CstLubSys, CstPowerSys, CstSteamSys,
-} from './Cst'
+} from './Constants/Cst'
 import { Sim } from './Sim'
 
 export const SetFuelTanksFull = (sim: Sim) => {

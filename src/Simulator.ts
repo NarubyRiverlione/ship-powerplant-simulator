@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { CstChanges, CstStartConditions } from './Cst'
+import { CstChanges, CstStartConditions } from './Constants/Cst'
 import PowerSystem from './Systems/PowerSystem'
 import DieselFuelSystem from './Systems/DieselFuelSystem'
 import HeavyFuelSystem from './Systems/HeavyFuelSystem'
@@ -10,7 +10,7 @@ import LubricationSystem from './Systems/LubricationSystem'
 import AlarmSystem from './Systems/AlarmSystem'
 import SteamSystem from './Systems/SteamSystem'
 import * as StartCondition from './Startups'
-import CstTxt from './CstTxt'
+import CstTxt from './Constants/CstTxt'
 import { Sim } from './Sim'
 
 const { SimulationTxt: { StartConditionsTxt } } = CstTxt
@@ -26,15 +26,17 @@ export default class Simulator implements Sim {
   CoolingSeaWaterSys!: CoolingSeaWaterSystem
   CoolingFreshWaterSys!: CoolingFreshWaterSystem
   SteamSys!: SteamSystem
+  RandomizeChange: boolean
 
-  constructor() {
+  constructor(randomize = false) {
+    this.RandomizeChange = randomize
     this.Reset()
     makeAutoObservable(this)
   }
 
   Reset() {
     this.AlarmSys = new AlarmSystem()
-    this.DsFuelSys = new DieselFuelSystem(this.AlarmSys)
+    this.DsFuelSys = new DieselFuelSystem(this.AlarmSys, this.RandomizeChange)
 
     this.LubSys = new LubricationSystem(this.AlarmSys)
     this.CoolingSeaWaterSys = new CoolingSeaWaterSystem()
@@ -42,7 +44,7 @@ export default class Simulator implements Sim {
       this.CoolingSeaWaterSys.FwCoolerDsGen, this.CoolingSeaWaterSys.FwCoolerStartAir,
     )
 
-    this.AirSys = new AirSystem(this.CoolingFreshWaterSys.StartAirCooler)
+    this.AirSys = new AirSystem(this.CoolingFreshWaterSys.StartAirCooler, this.RandomizeChange)
 
     this.PowerSys = new PowerSystem(
       this.DsFuelSys.DsService.OutletValve,
@@ -52,9 +54,9 @@ export default class Simulator implements Sim {
     )
 
     this.SteamSys = new SteamSystem(this.PowerSys.MainBus1, this.DsFuelSys.DsService,
-      this.CoolingSeaWaterSys.SteamCondensor)
+      this.CoolingSeaWaterSys.SteamCondensor, this.RandomizeChange)
 
-    this.HfFuelSys = new HeavyFuelSystem(this.SteamSys.MainSteamValve, this.PowerSys.MainBus1)
+    this.HfFuelSys = new HeavyFuelSystem(this.SteamSys.MainSteamValve, this.PowerSys.MainBus1, this.RandomizeChange)
 
     this.AirSys.EmergencyCompressor.Bus = this.PowerSys.EmergencyBus
     this.AirSys.StartAirCompressor.Bus = this.PowerSys.MainBus1

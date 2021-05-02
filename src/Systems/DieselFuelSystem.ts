@@ -3,10 +3,10 @@ import Tank from '../Components/Tank'
 import TankWithValves from '../Components/TankWithValves'
 import Valve from '../Components/Valve'
 
-import CstTxt from '../CstTxt'
+import CstTxt from '../Constants/CstTxt'
 import AlarmSystem from './AlarmSystem'
-import { CstDsFuelSys } from '../Cst'
-import { AlarmCode, AlarmLevel } from '../CstAlarms'
+import { CstDsFuelSys } from '../Constants/Cst'
+import { AlarmCode, AlarmLevel } from '../Constants/CstAlarms'
 // import HandPump from '../Components/HandPump'
 import MultiInputs from '../Components/MultiToOne'
 import PurificationUnit from '../Components/Appliances/PurificationUnit'
@@ -31,7 +31,7 @@ export default class DieselFuelSystem {
   DsServiceMulti: MultiInputs
   DsPurification: PurificationUnit
 
-  constructor(alarmSys: AlarmSystem) {
+  constructor(alarmSys: AlarmSystem, randomize = false) {
     //  Intake valve from shore to diesel storage tank
     const dummyShore = new Tank('Shore as tank', CstDsFuelSys.ShoreVolume, CstDsFuelSys.ShoreVolume)
     this.ShoreValve = new Valve(FuelSysTxt.DsShoreFillValve, dummyShore)
@@ -39,7 +39,7 @@ export default class DieselFuelSystem {
     //  Diesel storage tank,
     // filled from shore via the intake valve, outlet valve to service intake valve
     this.DsStorage = new TankWithValves(FuelSysTxt.DsStorageTank,
-      CstDsFuelSys.DsStorageTank.TankVolume, 0, this.ShoreValve)
+      CstDsFuelSys.DsStorageTank.TankVolume, 0, this.ShoreValve, randomize)
     // fixed fill rate from shore
     this.DsStorage.IntakeValve.Volume = CstDsFuelSys.DsStorageTank.IntakeValveVolume
 
@@ -70,7 +70,7 @@ export default class DieselFuelSystem {
     // #region Diesel service tank,
     // filled from the storage outlet valve
     this.DsService = new TankWithValves(FuelSysTxt.DsServiceTank,
-      CstDsFuelSys.DsServiceTank.TankVolume, 0, this.DsServiceMulti)
+      CstDsFuelSys.DsServiceTank.TankVolume, 0, this.DsServiceMulti, randomize)
 
     // #endregion
 

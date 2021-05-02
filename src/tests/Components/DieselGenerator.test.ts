@@ -4,7 +4,7 @@ import MockValve from '../mocks/MockValve'
 import MockCooler from '../mocks/MockCooler'
 import {
   CstDsFuelSys, CstAirSys, CstPowerSys, CstLubSys,
-} from '../../Cst'
+} from '../../Constants/Cst'
 
 const Rated = 30000
 const startFuelAmount = 10.0

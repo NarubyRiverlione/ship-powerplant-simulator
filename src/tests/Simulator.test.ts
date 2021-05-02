@@ -1,5 +1,5 @@
 import Simulator from '../Simulator'
-import { CstChanges } from '../Cst'
+import { CstChanges } from '../Constants/Cst'
 
 let simulator: Simulator
 beforeEach(() => {

@@ -1,7 +1,7 @@
 import TankWithValves from '../../Components/TankWithValves'
 import MockTank from '../mocks/MockTank'
 import MockValve from '../mocks/MockValve'
-import { CstChanges } from '../../Cst'
+import { CstChanges } from '../../Constants/Cst'
 
 let tankV: TankWithValves
 const Volume = 10000

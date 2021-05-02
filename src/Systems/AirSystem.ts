@@ -3,8 +3,8 @@ import TankWithValves from '../Components/TankWithValves'
 import PowerBus from '../Components/PowerBus'
 import Compressor from '../Components/Appliances/Compressor'
 
-import { CstAirSys } from '../Cst'
-import CstTxt from '../CstTxt'
+import { CstAirSys } from '../Constants/Cst'
+import CstTxt from '../Constants/CstTxt'
 import Cooler from '../Components/Cooler'
 
 const { AirSysTxt } = CstTxt
@@ -18,17 +18,14 @@ Emergency compressor - outlet valve  ------ (intake valve) Emergence receiver (o
 
 export default class AirSystem {
   StartAirCompressor: Compressor
-
   StartAirCooler: Cooler
-
   StartAirReceiver: TankWithValves
-
   EmergencyCompressor: Compressor
-
   EmergencyReceiver: TankWithValves
 
   constructor(
     _startAirCooler: Cooler,
+    randomize = false,
     mainBus = new PowerBus('dummy mainBus'),
     emergencyBus = new PowerBus('dummy emergency power bus'),
   ) {
@@ -41,7 +38,7 @@ export default class AirSystem {
 
     this.StartAirReceiver = new TankWithValves(AirSysTxt.StartAirReceiver1,
       CstAirSys.StartAirReceiver1.TankPressure, 0,
-      this.StartAirCompressor.OutletValve)
+      this.StartAirCompressor.OutletValve, randomize)
 
     this.StartAirReceiver.Tank.AddThisStep = CstAirSys.StartAirCompressor1.AddStep
     // #endregion
@@ -52,7 +49,7 @@ export default class AirSystem {
 
     this.EmergencyReceiver = new TankWithValves(AirSysTxt.EmergencyReceiver,
       CstAirSys.EmergencyReceiver.TankPressure, 0,
-      this.EmergencyCompressor.OutletValve)
+      this.EmergencyCompressor.OutletValve, randomize)
 
     // #endregion
     this.EmergencyReceiver.Tank.AddThisStep = CstAirSys.EmergencyCompressor.AddStep
